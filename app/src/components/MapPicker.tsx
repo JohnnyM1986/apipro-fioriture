@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, CircleMarker, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, LayersControl, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { LocationSource } from '../lib/types'
 
@@ -87,7 +87,25 @@ export function MapPicker({ lat, lon, onChange, readOnly, height = 300 }: Props)
         </div>
       )}
       <MapContainer center={lat != null && lon != null ? [lat, lon] : VENETO} zoom={lat != null ? 15 : 8} style={{ height }} scrollWheelZoom={!readOnly} dragging={!readOnly || true}>
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer checked name="Satellite">
+            <TileLayer
+              attribution='Immagini &copy; Esri, Maxar, Earthstar Geographics'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              maxZoom={19}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Mappa">
+            <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </LayersControl.BaseLayer>
+          <LayersControl.Overlay checked name="Nomi e strade">
+            <TileLayer
+              attribution='&copy; Esri'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+              maxZoom={19}
+            />
+          </LayersControl.Overlay>
+        </LayersControl>
         {!readOnly && <ClickHandler onPick={(a, b) => onChange(a, b, 'map')} />}
         <Recenter lat={lat} lon={lon} />
         {lat != null && lon != null && <CircleMarker center={[lat, lon]} radius={10} pathOptions={{ color: '#7a4a12', fillColor: '#f2b632', fillOpacity: 0.9 }} />}

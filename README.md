@@ -98,7 +98,7 @@ Non serve stimare percentuali e non c'è una sequenza obbligatoria: una prima se
 
 | Componente | Soluzione |
 |---|---|
-| WebApp | PWA in React + TypeScript (Vite), mappa Leaflet + OpenStreetMap |
+| WebApp | PWA in React + TypeScript (Vite), mappa Leaflet con base satellitare Esri World Imagery (predefinita) e OpenStreetMap |
 | Archivio | [Supabase](https://supabase.com) (PostgreSQL): accesso anonimo, permessi per partecipante (RLS), archivio foto privato, vista di esportazione |
 | Meteo (fasi 2–3) | [Open-Meteo](https://open-meteo.com): ERA5-Land dal 1950 e previsioni a 16 giorni |
 | Modelli fenologici (fasi 2–3) | [pyPhenology](https://github.com/sdtaylor/pyPhenology): modelli a gradi giorno con calibrazione |
@@ -155,7 +155,7 @@ Coordinamento tecnico e sviluppo: Dott. For. Johnny Moretto, Ph.D. (ATEA Group /
 Fonti e software di terzi:
 - Taylor S.D. (2018). *pyPhenology: A python framework for plant phenology modelling*. JOSS 3(28):827. https://doi.org/10.21105/joss.00827
 - Open-Meteo, dati ERA5 / ERA5-Land (CC BY 4.0).
-- Mappe © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, libreria Leaflet.
+- Mappe © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors; immagini satellitari © Esri, Maxar, Earthstar Geographics; libreria Leaflet.
 - Finestre di fioritura: fonti indicate per specie in [`config/species.yaml`](config/species.yaml).
 
 Codice distribuito con **licenza MIT** (vedi [`LICENSE`](LICENSE)).
