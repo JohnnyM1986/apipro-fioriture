@@ -7,6 +7,7 @@ import { Sites } from './screens/Sites'
 import { Info } from './screens/Info'
 import { Export } from './screens/Export'
 import { speciesById } from './data/catalog'
+import { Istituzionale } from './components/Istituzionale'
 
 type View = 'home' | 'new' | 'mine' | 'sites' | 'info' | 'export'
 
@@ -52,8 +53,8 @@ export default function App() {
     <>
       <header className="top">
         <button className="brand" onClick={() => go('home')}>
-          <img src="./icon.svg" alt="" width={30} height={30} />
-          <span>ApiPRO <b>Fioriture</b></span>
+          <img src="./img/brand/apipro-logo-bianco.png" alt="ApiPro" height={30} />
+          <span>Fioriture</span>
         </button>
         {envLabel && <span className="env">{envLabel}</span>}
       </header>
@@ -63,6 +64,7 @@ export default function App() {
 
         {view === 'home' && (
           <section className="home">
+            <img className="home-logo" src="./img/brand/apipro-logo.png" alt="ApiPro – Apicoltura e Innovazione per la Produzione Regionale Ottimizzata" />
             <h1>Segnala le fioriture per le api</h1>
             <p>Indica luogo, pianta, fase della fioritura e data: bastano meno di un minuto e aiuti a prevedere le fioriture in Veneto.</p>
             <button className="btn big" onClick={() => go('new')}>🌼 Nuova segnalazione</button>
@@ -80,6 +82,7 @@ export default function App() {
             </div>
             {admin && store.mode === 'supabase' && <button className="btn link" onClick={() => go('export')}>Esportazione dati (responsabili)</button>}
             {store.mode === 'demo' && <button className="btn link" onClick={() => go('export')}>Prova l'esportazione CSV</button>}
+            <Istituzionale />
           </section>
         )}
 

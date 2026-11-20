@@ -1,4 +1,6 @@
-# 🌼 ApiPRO Fioriture
+<p align="center"><img src="docs/img/apipro-logo.png" width="240" alt="ApiPro"></p>
+
+# ApiPRO Fioriture
 
 **Segnala e prevedi le fioriture di interesse apistico in Veneto.**
 WebApp di *citizen science* del progetto **ApiPRO** (PEI-AGRI, CSR Veneto 2023–2027): apicoltori e cittadini segnalano le fasi di fioritura delle principali piante mellifere; le segnalazioni alimentano un modello che prevede inizio, piena fioritura e fine nelle diverse zone della regione e si ricalibra con i dati raccolti.
@@ -149,7 +151,7 @@ Per collegarsi a un database copiare `app/.env.example` in `app/.env.local` e in
 
 ## Crediti, fonti e licenza
 
-**Progetto ApiPRO** – Gruppo Operativo PEI-AGRI, CSR Veneto 2023–2027.
+**Gruppo Operativo ApiPRO** – Apicoltura e Innovazione per la Produzione Regionale Ottimizzata (PEI-AGRI, CSR Veneto 2023–2027, Intervento SRG01). Capofila: Moretto Farm Società Agricola s.s.
 Coordinamento tecnico e sviluppo: Dott. For. Johnny Moretto, Ph.D. (ATEA Group / Moretto Farm). Partner scientifico: Università di Padova.
 
 Fonti e software di terzi:
@@ -160,4 +162,6 @@ Fonti e software di terzi:
 
 Codice distribuito con **licenza MIT** (vedi [`LICENSE`](LICENSE)).
 
-<sub>Iniziativa realizzata nell'ambito del CSR Veneto 2023–2027. [Diciture e loghi istituzionali obbligatori da inserire secondo le regole di comunicazione del bando – DA VERIFICARE]</sub>
+<p align="center"><img src="docs/img/loghi-istituzionali.jpg" width="620" alt="Cofinanziato dall'Unione europea – Repubblica Italiana – Regione del Veneto – Sviluppo Rurale Veneto 2023-2027"></p>
+
+<p align="center"><sub><i>Intervento cofinanziato dal Fondo europeo agricolo per lo sviluppo rurale (FEASR) – CSR Veneto 2023-2027, Intervento SRG01 – DGR 1132/2025 – Gruppo Operativo ApiPRO – Apicoltura e Innovazione per la Produzione Regionale Ottimizzata – Capofila: Moretto Farm Società Agricola s.s. – CUP B69H26001250009</i></sub></p>
