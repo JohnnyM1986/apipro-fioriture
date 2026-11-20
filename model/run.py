@@ -190,17 +190,16 @@ def season_for(today: date) -> int:
 
 
 def current_year_temps(points, today: date) -> pd.DataFrame:
-    frames = []
-    for p in points:
-        rec = openmeteo.fetch_recent_and_forecast(p)
-        try:
-            arch, _ = openmeteo.fetch_archive(p, date(today.year, 1, 1), today - timedelta(days=1))
-        except Exception as exc:  # archivio non ancora disponibile: uso solo la parte recente
-            print(f"archivio {p['id']}: {exc}")
-            arch = rec.iloc[0:0]
-        merged = pd.concat([arch, rec[~rec.date.isin(set(arch.date))]], ignore_index=True)
-        frames.append(merged)
-    return pd.concat(frames, ignore_index=True)
+    """Anno in corso: archivio ERA5-Land (con qualche giorno di ritardo) + ultimi 92 giorni e previsione a 16 giorni."""
+    rec = openmeteo.fetch_recent_and_forecast_multi(points)
+    try:
+        arch = openmeteo.fetch_archive_multi(points, date(today.year, 1, 1), today - timedelta(days=1))
+    except Exception as exc:  # archivio non disponibile: uso solo la parte recente
+        print(f"archivio anno in corso non disponibile: {exc}")
+        arch = rec.iloc[0:0]
+    key = set(zip(arch.point_id, arch.date))
+    extra = rec[[k not in key for k in zip(rec.point_id, rec.date)]]
+    return pd.concat([arch, extra], ignore_index=True)
 
 
 def cmd_forecast(args) -> None:

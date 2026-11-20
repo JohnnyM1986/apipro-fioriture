@@ -82,3 +82,29 @@ def fetch_recent_and_forecast(point: dict, past_days: int = 92, forecast_days: i
     }
     df, _ = _to_frame(point["id"], _get(FORECAST_URL, params))
     return df
+
+
+def _multi(url: str, points: list[dict], extra: dict) -> tuple[pd.DataFrame, dict]:
+    """Una sola richiesta per più punti (coordinate separate da virgola)."""
+    params = {"latitude": ",".join(str(p["lat"]) for p in points),
+              "longitude": ",".join(str(p["lon"]) for p in points),
+              "daily": DAILY, "timezone": TIMEZONE, **extra}
+    payload = _get(url, params)
+    if isinstance(payload, dict):
+        payload = [payload]
+    frames, elev = [], {}
+    for p, item in zip(points, payload):
+        df, e = _to_frame(p["id"], item)
+        frames.append(df)
+        elev[p["id"]] = e
+    return pd.concat(frames, ignore_index=True), elev
+
+
+def fetch_recent_and_forecast_multi(points: list[dict], past_days: int = 92, forecast_days: int = 16) -> pd.DataFrame:
+    df, _ = _multi(FORECAST_URL, points, {"past_days": past_days, "forecast_days": forecast_days})
+    return df
+
+
+def fetch_archive_multi(points: list[dict], start: date, end: date) -> pd.DataFrame:
+    df, _ = _multi(ARCHIVE_URL, points, {"start_date": start.isoformat(), "end_date": end.isoformat(), "models": "era5_land"})
+    return df
