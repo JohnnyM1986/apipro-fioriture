@@ -1,0 +1,28 @@
+# Scala fenologica unica ApiPRO (testi identici al protocollo utenti e alla specifica WebApp).
+# In interfaccia: etichette e immagini, senza percentuali. Nessuna sequenza obbligatoria.
+# bbch_indicativo: corrispondenza proposta con il documento Att. 8 v2 [DA VERIFICARE con il partner scientifico].
+phases:
+  - code: F0
+    label: Non ancora in fiore
+    definition: Non si vedono fiori aperti
+    bbch_indicativo: "< 60"
+  - code: F1
+    label: Primi fiori aperti
+    definition: Sono comparsi i primi fiori, ancora pochi
+    bbch_indicativo: 61
+  - code: F2
+    label: Fioritura in aumento
+    definition: I fiori aperti diventano più numerosi
+    bbch_indicativo: 62-64
+  - code: F3
+    label: Piena fioritura
+    definition: La fioritura è molto evidente, vicina al massimo
+    bbch_indicativo: 65
+  - code: F4
+    label: Fioritura in diminuzione
+    definition: I fiori aperti diminuiscono e molti stanno appassendo
+    bbch_indicativo: 67
+  - code: F5
+    label: Fioritura terminata
+    definition: La fioritura è sostanzialmente conclusa
+    bbch_indicativo: 69

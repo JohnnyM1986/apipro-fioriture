@@ -1,0 +1,120 @@
+# Catalogo specie ApiPRO – release iniziale (11 voci, specifica WebApp Birolo).
+# id: identificativo suggerito dalla specifica. label: etichetta utente. scientific: dal protocollo utenti.
+# literature_window: finestra di fioritura da fonte (documento Att. 8 v2, §2 e §9). Mesi 1-12.
+#   null = finestra non ancora documentata con fonte [DA VERIFICARE]: la specie si raccoglie ma non si prevede.
+# model: tipo di modello iniziale
+#   thermal_time = gradi giorno (soglia F ricavata per calibrazione inversa dalla finestra di letteratura)
+#   calendar     = solo calendario finché non ci sono dati sufficienti (dipendenza da semina/gestione o fioritura autunnale)
+# base_temp_c: temperatura base GDD; 5 °C come nello script GEE V1 [DA VERIFICARE per specie].
+# elevation_covariate: la quota entra come covariata del modello.
+
+species:
+  - id: robinia
+    label: Acacia (robinia)
+    scientific: Robinia pseudoacacia
+    habitat: Boschi e gruppi di alberi
+    literature_window: {start_month: 4, end_month: 5, source: "Att.8 v2 [2] Accorti et al., scheda miele di robinia"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: true
+    notes: "Fioritura breve e precoce; variabile chiave anticipo/ritardo."
+
+  - id: castagno
+    label: Castagno
+    scientific: Castanea sativa
+    habitat: Castagneti e gruppi di alberi
+    literature_window: {start_month: 6, end_month: 6, source: "Att.8 v2 [6] scheda castagno"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: true
+    notes: "Inizio fioritura circa +1 giorno ogni 40 m di quota (Att.8 v2 [7], Waldwissen, Ticino)."
+
+  - id: tiglio
+    label: Tiglio
+    scientific: Tilia spp.
+    habitat: Filari e gruppi di alberi
+    literature_window: {start_month: 5, end_month: 7, source: "Att.8 v2 [8] Accorti et al., scheda miele di tiglio"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: true
+    notes: "Specie spontanee e ornamentali con fioriture sfasate: modellizzato a livello di genere [DA VERIFICARE]."
+
+  - id: colza
+    label: Colza
+    scientific: Brassica napus
+    habitat: Campi coltivati
+    literature_window: {start_month: 4, end_month: 5, source: "CARI asbl – Fayet A., La pollinisation du colza (fiche 177): fioritura aprile-maggio. Fonte provvisoria in attesa di Birolo [DA VERIFICARE per il Veneto]"}
+    model: calendar
+    base_temp_c: 5
+    elevation_covariate: false
+    notes: "Dipende da epoca di semina e gestione colturale."
+
+  - id: girasole
+    label: Girasole
+    scientific: Helianthus annuus
+    habitat: Campi coltivati
+    literature_window: {start_month: 6, end_month: 8, source: "Accorti M. et al. – I mieli uniflorali italiani, scheda Miele di girasole (profilomieli.albomiele.it): fioritura giugno-agosto. Fonte provvisoria in attesa di Birolo"}
+    model: calendar
+    base_temp_c: 5
+    elevation_covariate: false
+    notes: "Dipende dalla data di semina; il modello a gradi giorno dovrà partire dalla semina."
+
+  - id: tarassaco
+    label: Tarassaco
+    scientific: Taraxacum officinale agg.
+    habitat: Prati e superfici erbose
+    literature_window: {start_month: 2, end_month: 5, source: "Att.8 v2 [1] Accorti et al., scheda miele di tarassaco"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: true
+    notes: "Possibile fioritura tutto l'anno; influenza degli sfalci (segnalare nelle note)."
+
+  - id: amorfa
+    label: Amorfa
+    scientific: Amorpha fruticosa
+    habitat: Siepi e popolamenti spontanei
+    literature_window: {start_month: 5, end_month: 6, source: "Att.8 v2 [4] PMC5462938; [3] fiorisce subito dopo l'acacia"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: false
+    notes: "Fioritura di circa 25 giorni (Att.8 v2 [5])."
+
+  - id: edera
+    label: Edera
+    scientific: Hedera helix
+    habitat: Su alberi, siepi e muri
+    literature_window: {start_month: 9, end_month: 10, source: "Waldwissen – Edera sugli alberi nei boschi: fioritura settembre-ottobre. Fonte provvisoria in attesa di Birolo"}
+    model: calendar
+    base_temp_c: 5
+    elevation_covariate: false
+    notes: "Fioritura autunnale: l'accumulo termico da gennaio non è adatto."
+
+  - id: rododendro
+    label: Rododendro
+    scientific: Rhododendron spp.
+    habitat: Aree montane e popolamenti di quota
+    literature_window: {start_month: 6, end_month: 7, source: "Att.8 v2 [13] UNAAPI, miele di rododendro (metà giugno – fine luglio)"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: true
+    notes: "Immagini di riferimento da definire (specifica Birolo)."
+
+  - id: limonio
+    label: Limonio / fiorella di barena
+    scientific: Limonium narbonense
+    habitat: Barena
+    literature_window: {start_month: 6, end_month: 9, source: "Att.8 v2 [14] Città metropolitana di Venezia, miele di barena (fine giugno – metà settembre)"}
+    model: thermal_time
+    base_temp_c: 5
+    elevation_covariate: false
+    notes: "Nome scientifico puntuale da validare con referente botanico (specifica Birolo)."
+
+  - id: astro_marino
+    label: Astro marino
+    scientific: Tripolium pannonicum
+    habitat: Barena
+    literature_window: {start_month: 7, end_month: 9, source: "Tripolium pannonicum, fioritura luglio-settembre (Wikipedia, da Euro+Med Plantbase). Fonte provvisoria in attesa di Birolo [DA VERIFICARE per la Laguna di Venezia]"}
+    model: calendar
+    base_temp_c: 5
+    elevation_covariate: false
+    notes: "Validare nomenclatura e immagini (specifica Birolo)."

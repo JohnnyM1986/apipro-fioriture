@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+supabase/.temp/
+app/node_modules/
+app/dist/
+app/tsconfig.tsbuildinfo
