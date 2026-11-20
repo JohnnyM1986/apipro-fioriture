@@ -6,10 +6,11 @@ import { MyObservations } from './screens/MyObservations'
 import { Sites } from './screens/Sites'
 import { Info } from './screens/Info'
 import { Export } from './screens/Export'
+import { Forecast } from './screens/Forecast'
 import { speciesById } from './data/catalog'
 import { Istituzionale } from './components/Istituzionale'
 
-type View = 'home' | 'new' | 'mine' | 'sites' | 'info' | 'export'
+type View = 'home' | 'new' | 'mine' | 'sites' | 'info' | 'export' | 'forecast'
 
 export default function App() {
   const store = useMemo(() => createStore(), [])
@@ -76,10 +77,10 @@ export default function App() {
               <button onClick={() => go('sites')}><b>{sites.length}</b><span>I miei luoghi</span></button>
               <button onClick={() => go('info')}><b>?</b><span>Come partecipare</span></button>
             </div>
-            <div className="card muted">
-              <b>Previsioni delle fioriture</b>
-              <p>In arrivo: con le vostre segnalazioni e i dati meteo la WebApp indicherà quando sono attese le fioriture nella vostra zona.</p>
-            </div>
+            <button className="card fc-teaser" onClick={() => go('forecast')}>
+              <b>Previsioni delle fioriture ›</b>
+              <span>Quando fioriscono acacia, castagno, tiglio e le altre specie nella tua zona (versione sperimentale).</span>
+            </button>
             {admin && store.mode === 'supabase' && <button className="btn link" onClick={() => go('export')}>Esportazione dati (responsabili)</button>}
             {store.mode === 'demo' && <button className="btn link" onClick={() => go('export')}>Prova l'esportazione CSV</button>}
             <Istituzionale />
@@ -115,13 +116,14 @@ export default function App() {
         {view === 'sites' && <Sites store={store} sites={sites} onChanged={refresh} />}
         {view === 'info' && <Info participantId={pid} mode={store.mode} />}
         {view === 'export' && <Export store={store} />}
+        {view === 'forecast' && <Forecast sites={sites} />}
       </main>
 
       <nav className="bottom">
         <button className={view === 'home' ? 'on' : ''} onClick={() => go('home')}>🏠<span>Inizio</span></button>
+        <button className={view === 'forecast' ? 'on' : ''} onClick={() => go('forecast')}>🌸<span>Previsioni</span></button>
         <button className={view === 'new' ? 'on' : ''} onClick={() => go('new')}>➕<span>Segnala</span></button>
         <button className={view === 'mine' ? 'on' : ''} onClick={() => go('mine')}>📋<span>Mie</span></button>
-        <button className={view === 'sites' ? 'on' : ''} onClick={() => go('sites')}>📌<span>Luoghi</span></button>
         <button className={view === 'info' ? 'on' : ''} onClick={() => go('info')}>ℹ️<span>Info</span></button>
       </nav>
     </>

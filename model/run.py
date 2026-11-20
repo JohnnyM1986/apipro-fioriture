@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -72,13 +73,17 @@ def cmd_fetch_history(_args) -> None:
         except openmeteo.RateLimited as exc:
             print(f"Limite Open-Meteo raggiunto dopo {done} punti: riprendo alla prossima esecuzione. {exc}")
             break
+        except Exception as exc:  # rete instabile: salvo quanto scaricato e riprendo alla prossima esecuzione
+            print(f"Errore di rete su {p['id']} dopo {done} punti: {exc}")
+            break
         hist = pd.concat([hist[hist.point_id != p["id"]], df], ignore_index=True)
         elev[p["id"]] = e
         HISTORY.parent.mkdir(parents=True, exist_ok=True)
         hist.to_csv(HISTORY, index=False, float_format="%.1f", compression="gzip")
         ELEVATIONS.write_text(json.dumps(elev, indent=1))
         done += 1
-        print(f"{p['id']}: {len(df)} giorni, quota {e} m")
+        print(f"{p['id']}: {len(df)} giorni, quota {e} m", flush=True)
+        time.sleep(3)
     missing = [p["id"] for p in points if p["id"] not in set(hist.point_id)]
     print(f"Storico: {hist.point_id.nunique()} punti su {len(points)}; mancano: {missing or 'nessuno'}")
 

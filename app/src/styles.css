@@ -122,3 +122,35 @@ h1, h2 { color: var(--green); }
 .istituzionale img { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
 .istituzionale p { font-size: 0.72rem; font-style: italic; color: var(--muted); margin: 0.3rem 0 0; line-height: 1.35; }
 .bottom button.on { color: var(--honey); }
+
+/* ---- Previsioni (release 0.2) ---- */
+.serif { font-family: Georgia, 'Bitter', serif; }
+.sp-art { display: grid; place-items: center; }
+.sp-badge { border-radius: 14px; }
+.fc-teaser { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; border: 1px solid var(--line); background: #fff; border-radius: 18px; padding: 0.9rem 1rem; margin: 0.6rem 0; }
+.fc-teaser b { color: var(--green-d); display: block; margin-bottom: 0.2rem; }
+.fc-teaser span { color: var(--muted); font-size: 0.95rem; }
+.forecast h1 { margin-bottom: 0.4rem; }
+.fc-place { display: flex; gap: 0.6rem; align-items: flex-end; }
+.fc-place label { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.fc-place select { font: inherit; font-size: 1rem; color: var(--text); border: 1.5px solid var(--line); border-radius: 12px; padding: 0.65rem; background: #fff; }
+.fc-note { font-size: 0.82rem; color: var(--muted); margin: 0.6rem 0 0.8rem; }
+.fc-card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 0.85rem 0.9rem 0.7rem; margin-bottom: 0.65rem; }
+.fc-card.none, .fc-card.after { opacity: 0.75; }
+.fc-row { display: flex; gap: 0.75rem; align-items: center; }
+.fc-t { flex: 1; min-width: 0; }
+.fc-t b { display: block; font-size: 1.05rem; }
+.fc-t span { font-size: 0.92rem; color: #4e4a40; }
+.fc-pill { border-radius: 999px; padding: 0.22rem 0.65rem; font-size: 0.8rem; font-weight: 700; white-space: nowrap; background: #e3ead3; color: #55663a; }
+.fc-pill.now { background: #f6ddbe; color: #9a5a17; }
+.fc-pill.after, .fc-pill.none { background: #ede6d8; color: #7a6650; }
+.fc-bar { position: relative; height: 26px; margin-top: 0.55rem; }
+.fc-bar > div { position: absolute; top: 8px; height: 11px; border-radius: 6px; }
+.fc-bar .track { left: 0; right: 0; background: #efe8da; }
+.fc-bar .band { background: #ebc79c; }
+.fc-bar .core { background: var(--honey); }
+.fc-bar .today { top: 3px; width: 3px; height: 21px; background: var(--green); border-radius: 2px; }
+.fc-months { display: flex; justify-content: space-between; font-size: 0.7rem; color: #9a9282; font-weight: 600; }
+.fc-small { font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0 0; }
+.fc-how { margin-top: 1rem; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 0.7rem 0.9rem; }
+.fc-how summary { font-weight: 700; color: var(--green-d); cursor: pointer; }

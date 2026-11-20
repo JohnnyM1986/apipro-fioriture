@@ -25,7 +25,11 @@ class RateLimited(RuntimeError):
 
 def _get(url: str, params: dict, retries: int = 4) -> dict:
     for attempt in range(retries):
-        r = requests.get(url, params=params, timeout=120)
+        try:
+            r = requests.get(url, params=params, timeout=180)
+        except (requests.Timeout, requests.ConnectionError):
+            time.sleep(20 * (attempt + 1))
+            continue
         if r.status_code == 429:
             text = r.text.lower()
             if "daily" in text or "hourly" in text:
