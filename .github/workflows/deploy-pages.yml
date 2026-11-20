@@ -35,6 +35,7 @@ jobs:
       - name: Previsioni di fioritura (Open-Meteo + soglie in gradi giorno)
         working-directory: .
         continue-on-error: true   # se il servizio meteo non risponde, l'app si pubblica comunque
+        timeout-minutes: 20
         run: |
           pip install -r model/requirements.txt
           python -m pytest -q model/tests

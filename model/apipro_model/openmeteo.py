@@ -26,7 +26,7 @@ class RateLimited(RuntimeError):
 def _get(url: str, params: dict, retries: int = 4) -> dict:
     for attempt in range(retries):
         try:
-            r = requests.get(url, params=params, timeout=180)
+            r = requests.get(url, params=params, timeout=90)
         except (requests.Timeout, requests.ConnectionError):
             time.sleep(20 * (attempt + 1))
             continue
@@ -55,14 +55,22 @@ def _to_frame(point_id: str, payload: dict) -> tuple[pd.DataFrame, float | None]
     return df.dropna(subset=["tmax", "tmin"]), payload.get("elevation")
 
 
-def fetch_archive(point: dict, start: date, end: date) -> tuple[pd.DataFrame, float | None]:
-    """Storico giornaliero ERA5-Land per un punto."""
-    params = {
-        "latitude": point["lat"], "longitude": point["lon"],
-        "start_date": start.isoformat(), "end_date": end.isoformat(),
-        "daily": DAILY, "timezone": TIMEZONE, "models": "era5_land",
-    }
-    return _to_frame(point["id"], _get(ARCHIVE_URL, params))
+def fetch_archive(point: dict, start: date, end: date, chunk_years: int = 5) -> tuple[pd.DataFrame, float | None]:
+    """Storico giornaliero ERA5-Land per un punto (scaricato a blocchi di qualche anno, più leggeri)."""
+    frames, elev = [], None
+    y = start.year
+    while y <= end.year:
+        a = max(start, date(y, 1, 1))
+        b = min(end, date(y + chunk_years - 1, 12, 31))
+        params = {
+            "latitude": point["lat"], "longitude": point["lon"],
+            "start_date": a.isoformat(), "end_date": b.isoformat(),
+            "daily": DAILY, "timezone": TIMEZONE, "models": "era5_land",
+        }
+        df, elev = _to_frame(point["id"], _get(ARCHIVE_URL, params))
+        frames.append(df)
+        y += chunk_years
+    return pd.concat(frames, ignore_index=True), elev
 
 
 def fetch_recent_and_forecast(point: dict, past_days: int = 92, forecast_days: int = 16) -> pd.DataFrame:

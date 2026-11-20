@@ -32,6 +32,7 @@ jobs:
       - run: pip install -r model/requirements.txt
       - run: python -m pytest -q model/tests
       - run: python model/run.py fetch-history
+        timeout-minutes: 150
       - run: python model/run.py calibrate
       - run: python model/run.py hindcast
       - name: Salva dati e risultati nel repository
