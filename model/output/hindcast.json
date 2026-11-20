@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T13:48:42+00:00",
+ "generated_at": "2026-11-20T13:52:54+00:00",
  "model_version": "0.2.0",
  "issue_dates": [
   "01-15",
@@ -7,31 +7,32 @@
   "04-01",
   "05-01"
  ],
+ "analog_years": 20,
  "summary": [
   {
    "species": "amorfa",
    "phase": "F1",
    "issue": "01-15",
-   "mae_giorni": 12.5,
-   "bias_giorni": 12.5,
-   "entro_margine": 0.46,
+   "mae_giorni": 10.79,
+   "bias_giorni": 10.79,
+   "entro_margine": 0.62,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F1",
    "issue": "03-01",
-   "mae_giorni": 8.19,
-   "bias_giorni": 8.19,
-   "entro_margine": 0.67,
+   "mae_giorni": 7.08,
+   "bias_giorni": 7.08,
+   "entro_margine": 0.71,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F1",
    "issue": "04-01",
-   "mae_giorni": 4.61,
-   "bias_giorni": 4.61,
+   "mae_giorni": 3.53,
+   "bias_giorni": 3.49,
    "entro_margine": 0.88,
    "n": 49
   },
@@ -39,8 +40,8 @@
    "species": "amorfa",
    "phase": "F1",
    "issue": "05-01",
-   "mae_giorni": 2.83,
-   "bias_giorni": 1.17,
+   "mae_giorni": 2.5,
+   "bias_giorni": 1.33,
    "entro_margine": 0.92,
    "n": 12
   },
@@ -48,35 +49,35 @@
    "species": "amorfa",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 10.04,
-   "bias_giorni": 10.04,
-   "entro_margine": 0.33,
+   "mae_giorni": 7.98,
+   "bias_giorni": 7.98,
+   "entro_margine": 0.56,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 7.17,
-   "bias_giorni": 7.17,
-   "entro_margine": 0.67,
+   "mae_giorni": 5.42,
+   "bias_giorni": 5.42,
+   "entro_margine": 0.87,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F3",
    "issue": "04-01",
-   "mae_giorni": 5.25,
-   "bias_giorni": 5.25,
-   "entro_margine": 0.88,
+   "mae_giorni": 3.88,
+   "bias_giorni": 3.88,
+   "entro_margine": 0.92,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F3",
    "issue": "05-01",
-   "mae_giorni": 1.83,
-   "bias_giorni": 1.44,
+   "mae_giorni": 1.48,
+   "bias_giorni": 1.33,
    "entro_margine": 0.88,
    "n": 52
   },
@@ -84,71 +85,71 @@
    "species": "amorfa",
    "phase": "F5",
    "issue": "01-15",
-   "mae_giorni": 10.92,
-   "bias_giorni": 10.92,
-   "entro_margine": 0.27,
+   "mae_giorni": 7.94,
+   "bias_giorni": 7.94,
+   "entro_margine": 0.77,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F5",
    "issue": "03-01",
-   "mae_giorni": 8.65,
-   "bias_giorni": 8.65,
-   "entro_margine": 0.75,
+   "mae_giorni": 6.44,
+   "bias_giorni": 6.44,
+   "entro_margine": 0.9,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F5",
    "issue": "04-01",
-   "mae_giorni": 7.33,
-   "bias_giorni": 7.33,
-   "entro_margine": 0.81,
+   "mae_giorni": 5.54,
+   "bias_giorni": 5.54,
+   "entro_margine": 0.88,
    "n": 52
   },
   {
    "species": "amorfa",
    "phase": "F5",
    "issue": "05-01",
-   "mae_giorni": 4.79,
-   "bias_giorni": 4.52,
-   "entro_margine": 0.83,
+   "mae_giorni": 3.81,
+   "bias_giorni": 3.69,
+   "entro_margine": 0.94,
    "n": 52
   },
   {
    "species": "castagno",
    "phase": "F1",
    "issue": "01-15",
-   "mae_giorni": 10.1,
-   "bias_giorni": 10.1,
-   "entro_margine": 0.33,
+   "mae_giorni": 7.9,
+   "bias_giorni": 7.9,
+   "entro_margine": 0.58,
    "n": 52
   },
   {
    "species": "castagno",
    "phase": "F1",
    "issue": "03-01",
-   "mae_giorni": 7.1,
-   "bias_giorni": 7.1,
-   "entro_margine": 0.62,
-   "n": 52
-  },
-  {
-   "species": "castagno",
-   "phase": "F1",
-   "issue": "04-01",
-   "mae_giorni": 5.25,
-   "bias_giorni": 5.25,
+   "mae_giorni": 5.46,
+   "bias_giorni": 5.46,
    "entro_margine": 0.88,
    "n": 52
   },
   {
    "species": "castagno",
    "phase": "F1",
+   "issue": "04-01",
+   "mae_giorni": 3.96,
+   "bias_giorni": 3.96,
+   "entro_margine": 0.92,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F1",
    "issue": "05-01",
-   "mae_giorni": 1.96,
-   "bias_giorni": 1.46,
+   "mae_giorni": 1.6,
+   "bias_giorni": 1.29,
    "entro_margine": 0.9,
    "n": 52
   },
@@ -156,98 +157,98 @@
    "species": "castagno",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 9.6,
-   "bias_giorni": 9.6,
-   "entro_margine": 0.48,
+   "mae_giorni": 6.96,
+   "bias_giorni": 6.96,
+   "entro_margine": 0.69,
    "n": 52
   },
   {
    "species": "castagno",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 7.12,
-   "bias_giorni": 7.12,
+   "mae_giorni": 5.15,
+   "bias_giorni": 5.15,
+   "entro_margine": 0.9,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F3",
+   "issue": "04-01",
+   "mae_giorni": 4.23,
+   "bias_giorni": 4.23,
+   "entro_margine": 0.9,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F3",
+   "issue": "05-01",
+   "mae_giorni": 2.35,
+   "bias_giorni": 1.81,
+   "entro_margine": 0.94,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F5",
+   "issue": "01-15",
+   "mae_giorni": 7.94,
+   "bias_giorni": 7.94,
+   "entro_margine": 0.77,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F5",
+   "issue": "03-01",
+   "mae_giorni": 6.44,
+   "bias_giorni": 6.44,
+   "entro_margine": 0.9,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F5",
+   "issue": "04-01",
+   "mae_giorni": 5.54,
+   "bias_giorni": 5.54,
+   "entro_margine": 0.88,
+   "n": 52
+  },
+  {
+   "species": "castagno",
+   "phase": "F5",
+   "issue": "05-01",
+   "mae_giorni": 3.81,
+   "bias_giorni": 3.69,
+   "entro_margine": 0.94,
+   "n": 52
+  },
+  {
+   "species": "limonio",
+   "phase": "F1",
+   "issue": "01-15",
+   "mae_giorni": 7.04,
+   "bias_giorni": 7.04,
+   "entro_margine": 0.67,
+   "n": 52
+  },
+  {
+   "species": "limonio",
+   "phase": "F1",
+   "issue": "03-01",
+   "mae_giorni": 5.23,
+   "bias_giorni": 5.23,
    "entro_margine": 0.85,
    "n": 52
   },
   {
-   "species": "castagno",
-   "phase": "F3",
-   "issue": "04-01",
-   "mae_giorni": 5.6,
-   "bias_giorni": 5.6,
-   "entro_margine": 0.92,
-   "n": 52
-  },
-  {
-   "species": "castagno",
-   "phase": "F3",
-   "issue": "05-01",
-   "mae_giorni": 2.73,
-   "bias_giorni": 2.12,
-   "entro_margine": 0.92,
-   "n": 52
-  },
-  {
-   "species": "castagno",
-   "phase": "F5",
-   "issue": "01-15",
-   "mae_giorni": 10.92,
-   "bias_giorni": 10.92,
-   "entro_margine": 0.27,
-   "n": 52
-  },
-  {
-   "species": "castagno",
-   "phase": "F5",
-   "issue": "03-01",
-   "mae_giorni": 8.65,
-   "bias_giorni": 8.65,
-   "entro_margine": 0.75,
-   "n": 52
-  },
-  {
-   "species": "castagno",
-   "phase": "F5",
-   "issue": "04-01",
-   "mae_giorni": 7.33,
-   "bias_giorni": 7.33,
-   "entro_margine": 0.81,
-   "n": 52
-  },
-  {
-   "species": "castagno",
-   "phase": "F5",
-   "issue": "05-01",
-   "mae_giorni": 4.79,
-   "bias_giorni": 4.52,
-   "entro_margine": 0.83,
-   "n": 52
-  },
-  {
-   "species": "limonio",
-   "phase": "F1",
-   "issue": "01-15",
-   "mae_giorni": 9.6,
-   "bias_giorni": 9.6,
-   "entro_margine": 0.42,
-   "n": 52
-  },
-  {
-   "species": "limonio",
-   "phase": "F1",
-   "issue": "03-01",
-   "mae_giorni": 6.85,
-   "bias_giorni": 6.85,
-   "entro_margine": 0.81,
-   "n": 52
-  },
-  {
    "species": "limonio",
    "phase": "F1",
    "issue": "04-01",
-   "mae_giorni": 5.37,
-   "bias_giorni": 5.33,
+   "mae_giorni": 3.87,
+   "bias_giorni": 3.87,
    "entro_margine": 0.94,
    "n": 52
   },
@@ -255,107 +256,107 @@
    "species": "limonio",
    "phase": "F1",
    "issue": "05-01",
-   "mae_giorni": 2.37,
-   "bias_giorni": 1.94,
-   "entro_margine": 0.92,
+   "mae_giorni": 2.06,
+   "bias_giorni": 1.63,
+   "entro_margine": 0.94,
    "n": 52
   },
   {
    "species": "limonio",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 11.05,
-   "bias_giorni": 11.05,
-   "entro_margine": 0.14,
+   "mae_giorni": 8.02,
+   "bias_giorni": 8.02,
+   "entro_margine": 0.48,
    "n": 42
   },
   {
    "species": "limonio",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 9.17,
-   "bias_giorni": 9.17,
-   "entro_margine": 0.6,
+   "mae_giorni": 6.43,
+   "bias_giorni": 6.43,
+   "entro_margine": 0.88,
    "n": 42
   },
   {
    "species": "limonio",
    "phase": "F3",
    "issue": "04-01",
-   "mae_giorni": 7.21,
-   "bias_giorni": 7.21,
-   "entro_margine": 0.74,
-   "n": 42
+   "mae_giorni": 4.81,
+   "bias_giorni": 4.81,
+   "entro_margine": 0.93,
+   "n": 43
   },
   {
    "species": "limonio",
    "phase": "F3",
    "issue": "05-01",
-   "mae_giorni": 5.07,
-   "bias_giorni": 5.02,
-   "entro_margine": 0.95,
-   "n": 42
+   "mae_giorni": 3.57,
+   "bias_giorni": 3.43,
+   "entro_margine": 1.0,
+   "n": 44
   },
   {
    "species": "limonio",
    "phase": "F5",
    "issue": "01-15",
-   "mae_giorni": 20.12,
-   "bias_giorni": 20.12,
-   "entro_margine": 0.12,
-   "n": 24
-  },
-  {
-   "species": "limonio",
-   "phase": "F5",
-   "issue": "03-01",
-   "mae_giorni": 18.36,
-   "bias_giorni": 18.36,
-   "entro_margine": 0.36,
-   "n": 28
-  },
-  {
-   "species": "limonio",
-   "phase": "F5",
-   "issue": "04-01",
-   "mae_giorni": 14.57,
-   "bias_giorni": 14.57,
+   "mae_giorni": 12.13,
+   "bias_giorni": 11.67,
    "entro_margine": 0.47,
    "n": 30
   },
   {
    "species": "limonio",
    "phase": "F5",
+   "issue": "03-01",
+   "mae_giorni": 9.73,
+   "bias_giorni": 9.33,
+   "entro_margine": 0.7,
+   "n": 30
+  },
+  {
+   "species": "limonio",
+   "phase": "F5",
+   "issue": "04-01",
+   "mae_giorni": 8.74,
+   "bias_giorni": 8.16,
+   "entro_margine": 0.71,
+   "n": 31
+  },
+  {
+   "species": "limonio",
+   "phase": "F5",
    "issue": "05-01",
-   "mae_giorni": 11.97,
-   "bias_giorni": 11.97,
-   "entro_margine": 0.67,
+   "mae_giorni": 7.33,
+   "bias_giorni": 6.67,
+   "entro_margine": 0.7,
    "n": 30
   },
   {
    "species": "robinia",
    "phase": "F1",
    "issue": "01-15",
-   "mae_giorni": 14.29,
-   "bias_giorni": 14.25,
-   "entro_margine": 0.58,
+   "mae_giorni": 12.31,
+   "bias_giorni": 12.31,
+   "entro_margine": 0.65,
    "n": 52
   },
   {
    "species": "robinia",
    "phase": "F1",
    "issue": "03-01",
-   "mae_giorni": 5.23,
-   "bias_giorni": 5.15,
-   "entro_margine": 0.94,
+   "mae_giorni": 5.38,
+   "bias_giorni": 5.34,
+   "entro_margine": 0.87,
    "n": 47
   },
   {
    "species": "robinia",
    "phase": "F1",
    "issue": "04-01",
-   "mae_giorni": 6.17,
-   "bias_giorni": 5.83,
+   "mae_giorni": 5.83,
+   "bias_giorni": 5.67,
    "entro_margine": 0.92,
    "n": 12
   },
@@ -363,8 +364,8 @@
    "species": "robinia",
    "phase": "F1",
    "issue": "05-01",
-   "mae_giorni": 2.67,
-   "bias_giorni": -1.33,
+   "mae_giorni": 2.5,
+   "bias_giorni": -0.17,
    "entro_margine": 1.0,
    "n": 6
   },
@@ -372,26 +373,26 @@
    "species": "robinia",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 12.5,
-   "bias_giorni": 12.5,
-   "entro_margine": 0.46,
+   "mae_giorni": 10.79,
+   "bias_giorni": 10.79,
+   "entro_margine": 0.62,
    "n": 52
   },
   {
    "species": "robinia",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 8.19,
-   "bias_giorni": 8.19,
-   "entro_margine": 0.67,
+   "mae_giorni": 7.08,
+   "bias_giorni": 7.08,
+   "entro_margine": 0.71,
    "n": 52
   },
   {
    "species": "robinia",
    "phase": "F3",
    "issue": "04-01",
-   "mae_giorni": 4.61,
-   "bias_giorni": 4.61,
+   "mae_giorni": 3.53,
+   "bias_giorni": 3.49,
    "entro_margine": 0.88,
    "n": 49
   },
@@ -399,8 +400,8 @@
    "species": "robinia",
    "phase": "F3",
    "issue": "05-01",
-   "mae_giorni": 2.83,
-   "bias_giorni": 1.17,
+   "mae_giorni": 2.5,
+   "bias_giorni": 1.33,
    "entro_margine": 0.92,
    "n": 12
   },
@@ -408,35 +409,35 @@
    "species": "robinia",
    "phase": "F5",
    "issue": "01-15",
-   "mae_giorni": 10.04,
-   "bias_giorni": 10.04,
-   "entro_margine": 0.33,
+   "mae_giorni": 7.98,
+   "bias_giorni": 7.98,
+   "entro_margine": 0.56,
    "n": 52
   },
   {
    "species": "robinia",
    "phase": "F5",
    "issue": "03-01",
-   "mae_giorni": 7.17,
-   "bias_giorni": 7.17,
-   "entro_margine": 0.67,
+   "mae_giorni": 5.42,
+   "bias_giorni": 5.42,
+   "entro_margine": 0.87,
    "n": 52
   },
   {
    "species": "robinia",
    "phase": "F5",
    "issue": "04-01",
-   "mae_giorni": 5.25,
-   "bias_giorni": 5.25,
-   "entro_margine": 0.88,
+   "mae_giorni": 3.88,
+   "bias_giorni": 3.88,
+   "entro_margine": 0.92,
    "n": 52
   },
   {
    "species": "robinia",
    "phase": "F5",
    "issue": "05-01",
-   "mae_giorni": 1.83,
-   "bias_giorni": 1.44,
+   "mae_giorni": 1.48,
+   "bias_giorni": 1.33,
    "entro_margine": 0.88,
    "n": 52
   },
@@ -444,26 +445,26 @@
    "species": "rododendro",
    "phase": "F1",
    "issue": "01-15",
-   "mae_giorni": 12.96,
-   "bias_giorni": 12.96,
-   "entro_margine": 0.58,
+   "mae_giorni": 11.54,
+   "bias_giorni": 11.54,
+   "entro_margine": 0.63,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F1",
    "issue": "03-01",
-   "mae_giorni": 7.0,
-   "bias_giorni": 7.0,
-   "entro_margine": 0.94,
+   "mae_giorni": 6.75,
+   "bias_giorni": 6.75,
+   "entro_margine": 0.83,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F1",
    "issue": "04-01",
-   "mae_giorni": 4.14,
-   "bias_giorni": 4.14,
+   "mae_giorni": 3.57,
+   "bias_giorni": 3.57,
    "entro_margine": 1.0,
    "n": 21
   },
@@ -471,8 +472,8 @@
    "species": "rododendro",
    "phase": "F1",
    "issue": "05-01",
-   "mae_giorni": 2.0,
-   "bias_giorni": -0.6,
+   "mae_giorni": 1.8,
+   "bias_giorni": 0.0,
    "entro_margine": 1.0,
    "n": 10
   },
@@ -480,35 +481,35 @@
    "species": "rododendro",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 11.62,
-   "bias_giorni": 11.62,
-   "entro_margine": 0.23,
+   "mae_giorni": 9.58,
+   "bias_giorni": 9.58,
+   "entro_margine": 0.56,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 8.08,
-   "bias_giorni": 8.08,
-   "entro_margine": 0.42,
+   "mae_giorni": 6.58,
+   "bias_giorni": 6.58,
+   "entro_margine": 0.75,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F3",
    "issue": "04-01",
-   "mae_giorni": 5.6,
-   "bias_giorni": 5.6,
-   "entro_margine": 0.77,
+   "mae_giorni": 4.19,
+   "bias_giorni": 4.19,
+   "entro_margine": 0.88,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F3",
    "issue": "05-01",
-   "mae_giorni": 2.07,
-   "bias_giorni": 1.6,
+   "mae_giorni": 1.9,
+   "bias_giorni": 1.57,
    "entro_margine": 0.9,
    "n": 30
   },
@@ -516,53 +517,53 @@
    "species": "rododendro",
    "phase": "F5",
    "issue": "01-15",
-   "mae_giorni": 9.65,
-   "bias_giorni": 9.65,
-   "entro_margine": 0.38,
+   "mae_giorni": 7.08,
+   "bias_giorni": 7.08,
+   "entro_margine": 0.65,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F5",
    "issue": "03-01",
-   "mae_giorni": 6.73,
-   "bias_giorni": 6.73,
-   "entro_margine": 0.81,
+   "mae_giorni": 5.12,
+   "bias_giorni": 5.12,
+   "entro_margine": 0.87,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F5",
    "issue": "04-01",
-   "mae_giorni": 5.31,
-   "bias_giorni": 5.31,
-   "entro_margine": 0.9,
+   "mae_giorni": 3.81,
+   "bias_giorni": 3.81,
+   "entro_margine": 0.92,
    "n": 52
   },
   {
    "species": "rododendro",
    "phase": "F5",
    "issue": "05-01",
-   "mae_giorni": 2.27,
-   "bias_giorni": 1.69,
-   "entro_margine": 0.9,
+   "mae_giorni": 1.92,
+   "bias_giorni": 1.5,
+   "entro_margine": 0.94,
    "n": 52
   },
   {
    "species": "tarassaco",
    "phase": "F1",
    "issue": "01-15",
-   "mae_giorni": 16.31,
-   "bias_giorni": 14.62,
-   "entro_margine": 0.85,
+   "mae_giorni": 13.85,
+   "bias_giorni": 12.08,
+   "entro_margine": 0.88,
    "n": 26
   },
   {
    "species": "tarassaco",
    "phase": "F1",
    "issue": "03-01",
-   "mae_giorni": 11.0,
-   "bias_giorni": 6.43,
+   "mae_giorni": 8.71,
+   "bias_giorni": 4.43,
    "entro_margine": 1.0,
    "n": 7
   },
@@ -570,35 +571,35 @@
    "species": "tarassaco",
    "phase": "F1",
    "issue": "04-01",
-   "mae_giorni": 13.0,
-   "bias_giorni": 13.0,
-   "entro_margine": 0.6,
+   "mae_giorni": 12.4,
+   "bias_giorni": 12.4,
+   "entro_margine": 1.0,
    "n": 5
   },
   {
    "species": "tarassaco",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 14.42,
-   "bias_giorni": 14.42,
-   "entro_margine": 0.58,
+   "mae_giorni": 12.4,
+   "bias_giorni": 12.4,
+   "entro_margine": 0.63,
    "n": 52
   },
   {
    "species": "tarassaco",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 5.38,
-   "bias_giorni": 5.38,
-   "entro_margine": 0.94,
+   "mae_giorni": 5.45,
+   "bias_giorni": 5.4,
+   "entro_margine": 0.83,
    "n": 47
   },
   {
    "species": "tarassaco",
    "phase": "F3",
    "issue": "04-01",
-   "mae_giorni": 6.58,
-   "bias_giorni": 6.42,
+   "mae_giorni": 5.83,
+   "bias_giorni": 5.83,
    "entro_margine": 0.92,
    "n": 12
   },
@@ -606,8 +607,8 @@
    "species": "tarassaco",
    "phase": "F3",
    "issue": "05-01",
-   "mae_giorni": 2.0,
-   "bias_giorni": -0.86,
+   "mae_giorni": 2.57,
+   "bias_giorni": 0.0,
    "entro_margine": 1.0,
    "n": 7
   },
@@ -615,35 +616,35 @@
    "species": "tarassaco",
    "phase": "F5",
    "issue": "01-15",
-   "mae_giorni": 10.04,
-   "bias_giorni": 10.04,
-   "entro_margine": 0.33,
+   "mae_giorni": 7.98,
+   "bias_giorni": 7.98,
+   "entro_margine": 0.56,
    "n": 52
   },
   {
    "species": "tarassaco",
    "phase": "F5",
    "issue": "03-01",
-   "mae_giorni": 7.17,
-   "bias_giorni": 7.17,
-   "entro_margine": 0.67,
+   "mae_giorni": 5.42,
+   "bias_giorni": 5.42,
+   "entro_margine": 0.87,
    "n": 52
   },
   {
    "species": "tarassaco",
    "phase": "F5",
    "issue": "04-01",
-   "mae_giorni": 5.25,
-   "bias_giorni": 5.25,
-   "entro_margine": 0.88,
+   "mae_giorni": 3.88,
+   "bias_giorni": 3.88,
+   "entro_margine": 0.92,
    "n": 52
   },
   {
    "species": "tarassaco",
    "phase": "F5",
    "issue": "05-01",
-   "mae_giorni": 1.83,
-   "bias_giorni": 1.44,
+   "mae_giorni": 1.48,
+   "bias_giorni": 1.33,
    "entro_margine": 0.88,
    "n": 52
   },
@@ -651,26 +652,26 @@
    "species": "tiglio",
    "phase": "F1",
    "issue": "01-15",
-   "mae_giorni": 12.5,
-   "bias_giorni": 12.5,
-   "entro_margine": 0.46,
+   "mae_giorni": 10.79,
+   "bias_giorni": 10.79,
+   "entro_margine": 0.62,
    "n": 52
   },
   {
    "species": "tiglio",
    "phase": "F1",
    "issue": "03-01",
-   "mae_giorni": 8.19,
-   "bias_giorni": 8.19,
-   "entro_margine": 0.67,
+   "mae_giorni": 7.08,
+   "bias_giorni": 7.08,
+   "entro_margine": 0.71,
    "n": 52
   },
   {
    "species": "tiglio",
    "phase": "F1",
    "issue": "04-01",
-   "mae_giorni": 4.61,
-   "bias_giorni": 4.61,
+   "mae_giorni": 3.53,
+   "bias_giorni": 3.49,
    "entro_margine": 0.88,
    "n": 49
   },
@@ -678,8 +679,8 @@
    "species": "tiglio",
    "phase": "F1",
    "issue": "05-01",
-   "mae_giorni": 2.83,
-   "bias_giorni": 1.17,
+   "mae_giorni": 2.5,
+   "bias_giorni": 1.33,
    "entro_margine": 0.92,
    "n": 12
   },
@@ -687,72 +688,72 @@
    "species": "tiglio",
    "phase": "F3",
    "issue": "01-15",
-   "mae_giorni": 9.6,
-   "bias_giorni": 9.6,
-   "entro_margine": 0.48,
+   "mae_giorni": 6.96,
+   "bias_giorni": 6.96,
+   "entro_margine": 0.69,
    "n": 52
   },
   {
    "species": "tiglio",
    "phase": "F3",
    "issue": "03-01",
-   "mae_giorni": 7.12,
-   "bias_giorni": 7.12,
-   "entro_margine": 0.85,
+   "mae_giorni": 5.15,
+   "bias_giorni": 5.15,
+   "entro_margine": 0.9,
    "n": 52
   },
   {
    "species": "tiglio",
    "phase": "F3",
    "issue": "04-01",
-   "mae_giorni": 5.6,
-   "bias_giorni": 5.6,
-   "entro_margine": 0.92,
+   "mae_giorni": 4.23,
+   "bias_giorni": 4.23,
+   "entro_margine": 0.9,
    "n": 52
   },
   {
    "species": "tiglio",
    "phase": "F3",
    "issue": "05-01",
-   "mae_giorni": 2.73,
-   "bias_giorni": 2.12,
-   "entro_margine": 0.92,
+   "mae_giorni": 2.35,
+   "bias_giorni": 1.81,
+   "entro_margine": 0.94,
    "n": 52
   },
   {
    "species": "tiglio",
    "phase": "F5",
    "issue": "01-15",
-   "mae_giorni": 11.04,
-   "bias_giorni": 11.04,
-   "entro_margine": 0.13,
+   "mae_giorni": 8.41,
+   "bias_giorni": 8.41,
+   "entro_margine": 0.37,
    "n": 46
   },
   {
    "species": "tiglio",
    "phase": "F5",
    "issue": "03-01",
-   "mae_giorni": 9.43,
-   "bias_giorni": 9.43,
-   "entro_margine": 0.54,
+   "mae_giorni": 6.57,
+   "bias_giorni": 6.57,
+   "entro_margine": 0.67,
    "n": 46
   },
   {
    "species": "tiglio",
    "phase": "F5",
    "issue": "04-01",
-   "mae_giorni": 7.65,
-   "bias_giorni": 7.61,
-   "entro_margine": 0.63,
+   "mae_giorni": 5.52,
+   "bias_giorni": 5.43,
+   "entro_margine": 0.8,
    "n": 46
   },
   {
    "species": "tiglio",
    "phase": "F5",
    "issue": "05-01",
-   "mae_giorni": 5.63,
-   "bias_giorni": 5.5,
-   "entro_margine": 0.76,
+   "mae_giorni": 3.93,
+   "bias_giorni": 3.72,
+   "entro_margine": 0.89,
    "n": 46
   }
  ],
@@ -808,8 +809,8 @@
   {
    "species": "limonio",
    "phase": "F5",
-   "2024": 259.0,
-   "2025": 265.0
+   "2024": 266.0,
+   "2025": 279.0
   },
   {
    "species": "robinia",
@@ -888,86 +889,86 @@
   {
    "species": "amorfa",
    "year": 2024,
-   "giorni_per_100m": 5.73,
-   "n_punti": 26
+   "giorni_per_100m": 5.5,
+   "n_punti": 23
   },
   {
    "species": "amorfa",
    "year": 2025,
-   "giorni_per_100m": 4.68,
-   "n_punti": 26
+   "giorni_per_100m": 4.84,
+   "n_punti": 23
   },
   {
    "species": "castagno",
    "year": 2024,
-   "giorni_per_100m": 5.18,
-   "n_punti": 26
+   "giorni_per_100m": 5.16,
+   "n_punti": 23
   },
   {
    "species": "castagno",
    "year": 2025,
    "giorni_per_100m": 4.32,
-   "n_punti": 26
+   "n_punti": 23
   },
   {
    "species": "limonio",
    "year": 2024,
-   "giorni_per_100m": 5.16,
-   "n_punti": 26
+   "giorni_per_100m": 5.17,
+   "n_punti": 23
   },
   {
    "species": "limonio",
    "year": 2025,
-   "giorni_per_100m": 4.48,
-   "n_punti": 26
+   "giorni_per_100m": 3.99,
+   "n_punti": 23
   },
   {
    "species": "robinia",
    "year": 2024,
-   "giorni_per_100m": 5.84,
-   "n_punti": 26
+   "giorni_per_100m": 4.96,
+   "n_punti": 23
   },
   {
    "species": "robinia",
    "year": 2025,
-   "giorni_per_100m": 5.19,
-   "n_punti": 26
+   "giorni_per_100m": 4.9,
+   "n_punti": 23
   },
   {
    "species": "rododendro",
    "year": 2024,
-   "giorni_per_100m": 5.86,
-   "n_punti": 26
+   "giorni_per_100m": 5.4,
+   "n_punti": 23
   },
   {
    "species": "rododendro",
    "year": 2025,
-   "giorni_per_100m": 5.0,
-   "n_punti": 26
+   "giorni_per_100m": 4.72,
+   "n_punti": 23
   },
   {
    "species": "tarassaco",
    "year": 2024,
-   "giorni_per_100m": 5.02,
-   "n_punti": 8
+   "giorni_per_100m": 1.97,
+   "n_punti": 5
   },
   {
    "species": "tarassaco",
    "year": 2025,
-   "giorni_per_100m": 6.09,
-   "n_punti": 18
+   "giorni_per_100m": 5.51,
+   "n_punti": 15
   },
   {
    "species": "tiglio",
    "year": 2024,
-   "giorni_per_100m": 5.73,
-   "n_punti": 26
+   "giorni_per_100m": 5.5,
+   "n_punti": 23
   },
   {
    "species": "tiglio",
    "year": 2025,
-   "giorni_per_100m": 4.68,
-   "n_punti": 26
+   "giorni_per_100m": 4.84,
+   "n_punti": 23
   }
  ]
 }

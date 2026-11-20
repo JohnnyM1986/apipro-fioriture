@@ -77,7 +77,7 @@ export function describe(season: number, f: SpeciesForecast, todayDoy: number | 
   if (todayDoy < f.F1.p50) {
     const days = f.F1.p50 - todayDoy
     const label = days <= 13 ? `Tra ${days} giorni` : days < 60 ? `Tra ${Math.round(days / 7)} sett.` : `Tra ${Math.round(days / 30)} mesi`
-    return { key: 'before', label, detail: `Inizio atteso ${formatRange(season, f.F1.p10, f.F1.p90)}` }
+    return { key: 'before', label, detail: days > 45 ? full : `Inizio atteso ${formatRange(season, f.F1.p10, f.F1.p90)}` }
   }
   if (todayDoy <= f.F5.p50) {
     const ph = f.phase_today

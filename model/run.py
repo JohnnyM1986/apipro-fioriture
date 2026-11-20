@@ -33,6 +33,11 @@ APP_DATA = ROOT / "app" / "public" / "data"
 HIST_START, HIST_END = date(1991, 1, 1), date(2025, 12, 31)
 HINDCAST_YEARS = (2024, 2025)
 ISSUE_DATES = ("01-15", "03-01", "04-01", "05-01")
+ANALOG_YEARS = 20  # anni analoghi: i 20 anni precedenti la stagione (clima recente) [DA VERIFICARE con UNIPD]
+
+
+def analogs(season: int) -> list[int]:
+    return list(range(season - ANALOG_YEARS, season))  # gli anni incompleti vengono scartati dal modello
 
 
 def load_config():
@@ -137,7 +142,7 @@ def cmd_hindcast(_args) -> None:
                         issue = date(y, m, d)
                         if thermal.doy(issue) >= f["p50"]:
                             continue
-                        fc = thermal.forecast_point(t, y, issue, cal)
+                        fc = thermal.forecast_point(t, y, issue, cal, analog_years=analogs(y))
                         if not fc.get(ph):
                             continue
                         rows.append({"species": sid, "point": p["id"], "zone": p["zone"],
@@ -160,12 +165,14 @@ def cmd_hindcast(_args) -> None:
     years = (pc.groupby(["species", "phase", "year"]).final_doy.median().unstack("year").reset_index())
     # gradiente di quota (giorni ogni 100 m) sulla data finale di F1
     grad = []
-    for (sid, y), g in df[(df.phase == "F1") & (df.issue == ISSUE_DATES[0])].dropna(subset=["elevation"]).groupby(["species", "year"]):
+    sub = df[(df.phase == "F1") & (df.issue == ISSUE_DATES[0])].dropna(subset=["elevation"])
+    sub = sub[sub.elevation.astype(float) <= 1100]
+    for (sid, y), g in sub.groupby(["species", "year"]):
         if g.elevation.nunique() > 3:
             slope = np.polyfit(g.elevation.astype(float), g.final_doy.astype(float), 1)[0] * 100
             grad.append({"species": sid, "year": int(y), "giorni_per_100m": round(float(slope), 2), "n_punti": len(g)})
     out = {"generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-           "model_version": MODEL_VERSION, "issue_dates": ISSUE_DATES,
+           "model_version": MODEL_VERSION, "issue_dates": ISSUE_DATES, "analog_years": ANALOG_YEARS,
            "summary": summary.round(2).to_dict(orient="records"),
            "season_medians": years.round(0).to_dict(orient="records"),
            "elevation_gradient_F1": grad}
@@ -173,7 +180,8 @@ def cmd_hindcast(_args) -> None:
     df.to_csv(OUT / "hindcast_rows.csv", index=False)
     md = ["# Verifica a ritroso 2024-2025", "",
           f"Modello {MODEL_VERSION}. Errore = data prevista alla data di emissione − data calcolata a fine stagione "
-          "con il meteo reale (giorni). Margine = 10°-90° percentile degli anni analoghi.", "",
+          f"con il meteo reale (giorni). Margine = 10°-90° percentile degli anni analoghi ({ANALOG_YEARS} anni precedenti). "
+          "Il gradiente di quota è calcolato sui punti fino a 1100 m.", "",
           "| Specie | Fase | Emissione | Errore medio (gg) | Scostamento medio (gg) | Entro il margine | N |",
           "|---|---|---|---|---|---|---|"]
     for r in summary.itertuples():
@@ -229,7 +237,7 @@ def cmd_forecast(args) -> None:
             if zones and p["zone"] not in zones:
                 continue
             if s["id"] in cals:
-                pr = thermal.forecast_point(t, season, known_until, cals[s["id"]])
+                pr = thermal.forecast_point(t, season, known_until, cals[s["id"]], analog_years=analogs(season))
             elif s.get("model") == "calendar":
                 pr = thermal.calendar_dates(s, season)
             else:

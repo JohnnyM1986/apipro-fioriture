@@ -46,7 +46,13 @@ export function Forecast({ sites }: { sites: Site[] }) {
 
   const point = data?.points.find((p) => p.id === pointId)
   const today = new Date()
-  const todayDoy = data && data.season === today.getFullYear() ? dateToDoy(today) : null
+  // giorno della stagione (negativo se la stagione inizia il prossimo anno)
+  const todayDoy = data
+    ? data.season === today.getFullYear()
+      ? dateToDoy(today)
+      : Math.round((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(data.season, 0, 1)) / 86400000) + 1
+    : null
+  const seasonStarted = !!data && data.season === today.getFullYear()
 
   const cards = useMemo(() => {
     if (!data || !point) return []
@@ -85,12 +91,12 @@ export function Forecast({ sites }: { sites: Site[] }) {
             ))}
           </select>
         </label>
-        <button className="btn secondary small" onClick={useGps}>📍 Vicino a me</button>
       </div>
+      <button className="btn secondary small fc-gps" onClick={useGps}>📍 Usa la mia posizione</button>
       {gpsMsg && <p className="hint">{gpsMsg}</p>}
       <p className="fc-note">
         Aggiornate il {upd} · versione sperimentale {data.model_version}
-        {todayDoy == null && ` · stagione ${data.season} non ancora iniziata: date dalla media degli ultimi 30 anni`}
+        {!seasonStarted && ` · stagione ${data.season} non ancora iniziata: date calcolate con il meteo degli ultimi 20 anni`}
       </p>
 
       {cards.map(({ s, f, st, model }) => (

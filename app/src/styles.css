@@ -154,3 +154,5 @@ h1, h2 { color: var(--green); }
 .fc-small { font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0 0; }
 .fc-how { margin-top: 1rem; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 0.7rem 0.9rem; }
 .fc-how summary { font-weight: 700; color: var(--green-d); cursor: pointer; }
+.fc-gps { margin-top: 0.5rem; }
+.fc-place select { width: 100%; min-width: 0; }

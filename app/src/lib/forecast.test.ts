@@ -22,6 +22,7 @@ d('previsioni', () => {
   })
   it('descrive lo stato rispetto a oggi', () => {
     expect(describe(2027, robinia, 100).label).toBe('Tra 2 sett.')
+    expect(describe(2027, robinia, -40).detail).toContain('Piena fioritura')
     expect(describe(2027, { ...robinia, phase_today: 'F3' }, 126).key).toBe('now')
     expect(describe(2027, robinia, 200).key).toBe('after')
     expect(describe(2027, robinia, null).detail).toContain('Piena fioritura')

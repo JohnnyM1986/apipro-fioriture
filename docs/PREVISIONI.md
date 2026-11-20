@@ -23,8 +23,10 @@ pubblicato insieme alla WebApp.
    `reference_dates` in `config/species.yaml`) e si calcolano i gradi giorno accumulati a quelle date in ogni anno
    1991–2020 e in ogni punto della zona di calibrazione. La **soglia** di ogni fase è la mediana di questi valori.
 4. **Previsione**: si accumulano i gradi giorno osservati e previsti (16 giorni) e si prosegue con il meteo di ciascuno
-   degli anni 1991–2020 ("anni analoghi"). Si ottengono 30 date possibili: la **mediana** è la data attesa, il
-   **10°–90° percentile** il margine mostrato nella barra.
+   dei **20 anni precedenti** la stagione ("anni analoghi"). Si ottengono fino a 20 date possibili: la **mediana** è la
+   data attesa, il **10°–90° percentile** il margine mostrato nella barra. Con gli anni 1991–2020 la verifica a ritroso
+   mostrava previsioni di gennaio in ritardo di circa 10 giorni sul 2024–2025 (clima più caldo): con gli ultimi 20 anni
+   il ritardo scende a circa 7 giorni [DA VERIFICARE con UNIPD la scelta del periodo].
 5. **Specie "solo calendario"** (colza, girasole, edera, astro marino): dipendono da semina, gestione o hanno fioritura
    autunnale; per ora si mostra la finestra di letteratura senza margine statistico.
 
@@ -53,6 +55,16 @@ confrontato con il valore di letteratura (+1 giorno ogni 40 m, Att. 8 v2 [7]).
 
 In locale: `pip install -r model/requirements.txt`, poi `python model/run.py fetch-history | calibrate | hindcast | forecast`.
 Test: `python -m pytest model/tests`.
+
+## Primi risultati (20/11/2026)
+
+- Previsione emessa il 15 gennaio: errore medio sulla piena fioritura di circa 7 giorni (castagno, tiglio) e 8–12 giorni
+  (robinia, tarassaco, rododendro), sempre in ritardo rispetto alla data finale (2024 e 2025 più caldi della media).
+- Previsione emessa il 1° aprile: errore medio 3,5–6 giorni; la data finale cade nel margine nell'88–93% dei casi.
+- Quota: il modello ritarda l'inizio fioritura di 4–5 giorni ogni 100 m (punti fino a 1100 m), circa il doppio del valore
+  di letteratura per il castagno (2,5 giorni ogni 100 m): le soglie andranno fatte variare con la quota (fase 3).
+- Le finestre di letteratura ampie producono fasi lunghe (es. robinia: fine fioritura a inizio giugno in collina):
+  servono le date medie per il Veneto.
 
 ## Limiti noti e punti da validare con UNIPD
 
