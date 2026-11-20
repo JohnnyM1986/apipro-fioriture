@@ -11,3 +11,9 @@ supabase/.temp/
 app/node_modules/
 app/dist/
 app/tsconfig.tsbuildinfo
+
+# previsioni generate dal workflow (non versionate)
+app/public/data/predictions.json
+model/output/hindcast_rows.csv
+__pycache__/
+.pytest_cache/

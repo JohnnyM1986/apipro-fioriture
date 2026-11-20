@@ -1,0 +1,34 @@
+# Punti di riferimento della previsione (release 0.2).
+# Prima rete: capoluoghi, fascia pedemontana, colli, montagna, laguna e delta, più le postazioni
+# di campionamento ApiPRO già note. Coordinate indicative del centro abitato; la quota la restituisce
+# Open-Meteo (modello del terreno a circa 90 m) ed è quella usata nel calcolo.
+# zone: pianura | collina | montagna | laguna  (usata per scegliere dove calibrare ogni specie)
+# [DA VERIFICARE] Rete da infittire (griglia regolare) dopo la validazione con UNIPD.
+
+points:
+  - {id: venezia,        name: "Venezia (Mestre)",          lat: 45.4908, lon: 12.2420, zone: pianura}
+  - {id: padova,         name: "Padova",                    lat: 45.4064, lon: 11.8768, zone: pianura}
+  - {id: treviso,        name: "Treviso",                   lat: 45.6669, lon: 12.2430, zone: pianura}
+  - {id: vicenza,        name: "Vicenza",                   lat: 45.5455, lon: 11.5354, zone: pianura}
+  - {id: verona,         name: "Verona",                    lat: 45.4384, lon: 10.9916, zone: pianura}
+  - {id: rovigo,         name: "Rovigo",                    lat: 45.0698, lon: 11.7902, zone: pianura}
+  - {id: portegrandi,    name: "Portegrandi (Quarto d'Altino)", lat: 45.5560, lon: 12.4170, zone: pianura}
+  - {id: santa_giustina, name: "Santa Giustina in Colle",   lat: 45.5760, lon: 11.9030, zone: pianura}
+  - {id: crocetta,       name: "Crocetta del Montello",     lat: 45.8260, lon: 12.0350, zone: collina}
+  - {id: susegana,       name: "Susegana",                  lat: 45.8540, lon: 12.2560, zone: collina}
+  - {id: pederobba,      name: "Pederobba",                 lat: 45.8760, lon: 11.9590, zone: collina}
+  - {id: bassano,        name: "Bassano del Grappa",        lat: 45.7667, lon: 11.7340, zone: collina}
+  - {id: valdobbiadene,  name: "Valdobbiadene",             lat: 45.9000, lon: 11.9970, zone: collina}
+  - {id: schio,          name: "Schio",                     lat: 45.7130, lon: 11.3560, zone: collina}
+  - {id: teolo,          name: "Teolo (Colli Euganei)",     lat: 45.3500, lon: 11.6700, zone: collina}
+  - {id: belluno,        name: "Belluno",                   lat: 46.1400, lon: 12.2170, zone: collina}
+  - {id: feltre,         name: "Feltre",                    lat: 46.0180, lon: 11.9100, zone: collina}
+  - {id: asiago,         name: "Asiago",                    lat: 45.8750, lon: 11.5090, zone: montagna}
+  - {id: bosco_chiesanuova, name: "Bosco Chiesanuova (Lessinia)", lat: 45.6200, lon: 11.0300, zone: montagna}
+  - {id: cortina,        name: "Cortina d'Ampezzo",         lat: 46.5370, lon: 12.1350, zone: montagna}
+  - {id: arabba,         name: "Arabba",                    lat: 46.4970, lon: 11.8750, zone: montagna}
+  - {id: sappada,        name: "Sappada",                   lat: 46.5670, lon: 12.6880, zone: montagna}
+  - {id: chioggia,       name: "Chioggia",                  lat: 45.2190, lon: 12.2790, zone: laguna}
+  - {id: burano,         name: "Burano (Laguna nord)",      lat: 45.4850, lon: 12.4170, zone: laguna}
+  - {id: caorle,         name: "Caorle",                    lat: 45.6000, lon: 12.8870, zone: laguna}
+  - {id: porto_tolle,    name: "Porto Tolle (Delta del Po)", lat: 44.9480, lon: 12.3250, zone: laguna}

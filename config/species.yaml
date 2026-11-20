@@ -7,6 +7,8 @@
 #   calendar     = solo calendario finché non ci sono dati sufficienti (dipendenza da semina/gestione o fioritura autunnale)
 # base_temp_c: temperatura base GDD; 5 °C come nello script GEE V1 [DA VERIFICARE per specie].
 # elevation_covariate: la quota entra come covariata del modello.
+# calibration_zones: zone dei punti di riferimento (config/points.yaml) dove la finestra di letteratura
+#   si considera valida per la calibrazione; se assente: pianura e collina [DA VERIFICARE con UNIPD].
 
 species:
   - id: robinia
@@ -97,6 +99,7 @@ species:
     model: thermal_time
     base_temp_c: 5
     elevation_covariate: true
+    calibration_zones: [montagna]
     notes: "Immagini di riferimento da definire (specifica Birolo)."
 
   - id: limonio
@@ -107,6 +110,7 @@ species:
     model: thermal_time
     base_temp_c: 5
     elevation_covariate: false
+    calibration_zones: [laguna]
     notes: "Nome scientifico puntuale da validare con referente botanico (specifica Birolo)."
 
   - id: astro_marino
@@ -117,4 +121,5 @@ species:
     model: calendar
     base_temp_c: 5
     elevation_covariate: false
+    calibration_zones: [laguna]
     notes: "Validare nomenclatura e immagini (specifica Birolo)."

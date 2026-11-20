@@ -1,10 +1,13 @@
-# Pubblica la versione di prova della WebApp su GitHub Pages a ogni modifica del ramo main.
+# Pubblica la versione di prova della WebApp su GitHub Pages a ogni modifica del ramo main
+# e ogni notte, dopo aver ricalcolato le previsioni di fioritura (app/public/data/predictions.json).
 name: Pubblica WebApp (test)
 
 on:
   push:
     branches: [main]
-    paths: ['app/**', '.github/workflows/deploy-pages.yml']
+    paths: ['app/**', 'model/**', 'config/**', '.github/workflows/deploy-pages.yml']
+  schedule:
+    - cron: '30 2 * * *'   # ogni notte alle 03:30 ora italiana (inverno)
   workflow_dispatch:
 
 permissions:
@@ -24,6 +27,18 @@ jobs:
         working-directory: app
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: model/requirements.txt
+      - name: Previsioni di fioritura (Open-Meteo + soglie in gradi giorno)
+        working-directory: .
+        continue-on-error: true   # se il servizio meteo non risponde, l'app si pubblica comunque
+        run: |
+          pip install -r model/requirements.txt
+          python -m pytest -q model/tests
+          python model/run.py forecast
       - uses: actions/setup-node@v4
         with:
           node-version: 22
