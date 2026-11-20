@@ -1,0 +1,271 @@
+{
+ "robinia": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 124.7,
+   "F3": 323.2,
+   "F5": 664.2
+  },
+  "spread_p10_p90": {
+   "F1": [
+    62.0,
+    212.9
+   ],
+   "F3": [
+    227.3,
+    445.0
+   ],
+   "F5": [
+    514.3,
+    826.2
+   ]
+  },
+  "n_samples": 510,
+  "calibration_points": [
+   "venezia",
+   "padova",
+   "treviso",
+   "vicenza",
+   "verona",
+   "rovigo",
+   "portegrandi",
+   "santa_giustina",
+   "crocetta",
+   "susegana",
+   "pederobba",
+   "bassano",
+   "valdobbiadene",
+   "schio",
+   "teolo",
+   "belluno",
+   "feltre"
+  ]
+ },
+ "castagno": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 678.2,
+   "F3": 880.9,
+   "F5": 1117.6
+  },
+  "spread_p10_p90": {
+   "F1": [
+    524.8,
+    841.3
+   ],
+   "F3": [
+    691.5,
+    1070.0
+   ],
+   "F5": [
+    905.5,
+    1322.2
+   ]
+  },
+  "n_samples": 510,
+  "calibration_points": [
+   "venezia",
+   "padova",
+   "treviso",
+   "vicenza",
+   "verona",
+   "rovigo",
+   "portegrandi",
+   "santa_giustina",
+   "crocetta",
+   "susegana",
+   "pederobba",
+   "bassano",
+   "valdobbiadene",
+   "schio",
+   "teolo",
+   "belluno",
+   "feltre"
+  ]
+ },
+ "tiglio": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 323.2,
+   "F3": 880.9,
+   "F5": 1654.5
+  },
+  "spread_p10_p90": {
+   "F1": [
+    227.3,
+    445.0
+   ],
+   "F3": [
+    691.5,
+    1070.0
+   ],
+   "F5": [
+    1389.6,
+    1912.0
+   ]
+  },
+  "n_samples": 510,
+  "calibration_points": [
+   "venezia",
+   "padova",
+   "treviso",
+   "vicenza",
+   "verona",
+   "rovigo",
+   "portegrandi",
+   "santa_giustina",
+   "crocetta",
+   "susegana",
+   "pederobba",
+   "bassano",
+   "valdobbiadene",
+   "schio",
+   "teolo",
+   "belluno",
+   "feltre"
+  ]
+ },
+ "tarassaco": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 4.3,
+   "F3": 127.8,
+   "F5": 664.2
+  },
+  "spread_p10_p90": {
+   "F1": [
+    0.0,
+    23.2
+   ],
+   "F3": [
+    63.3,
+    217.9
+   ],
+   "F5": [
+    514.3,
+    826.2
+   ]
+  },
+  "n_samples": 510,
+  "calibration_points": [
+   "venezia",
+   "padova",
+   "treviso",
+   "vicenza",
+   "verona",
+   "rovigo",
+   "portegrandi",
+   "santa_giustina",
+   "crocetta",
+   "susegana",
+   "pederobba",
+   "bassano",
+   "valdobbiadene",
+   "schio",
+   "teolo",
+   "belluno",
+   "feltre"
+  ]
+ },
+ "amorfa": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 323.2,
+   "F3": 664.2,
+   "F5": 1117.6
+  },
+  "spread_p10_p90": {
+   "F1": [
+    227.3,
+    445.0
+   ],
+   "F3": [
+    514.3,
+    826.2
+   ],
+   "F5": [
+    905.5,
+    1322.2
+   ]
+  },
+  "n_samples": 510,
+  "calibration_points": [
+   "venezia",
+   "padova",
+   "treviso",
+   "vicenza",
+   "verona",
+   "rovigo",
+   "portegrandi",
+   "santa_giustina",
+   "crocetta",
+   "susegana",
+   "pederobba",
+   "bassano",
+   "valdobbiadene",
+   "schio",
+   "teolo",
+   "belluno",
+   "feltre"
+  ]
+ },
+ "rododendro": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 193.7,
+   "F3": 468.5,
+   "F5": 788.2
+  },
+  "spread_p10_p90": {
+   "F1": [
+    85.4,
+    322.9
+   ],
+   "F3": [
+    294.7,
+    653.3
+   ],
+   "F5": [
+    564.0,
+    1010.8
+   ]
+  },
+  "n_samples": 150,
+  "calibration_points": [
+   "asiago",
+   "bosco_chiesanuova",
+   "cortina",
+   "arabba",
+   "sappada"
+  ]
+ },
+ "limonio": {
+  "base_temp_c": 5.0,
+  "thresholds_gdd": {
+   "F1": 817.8,
+   "F3": 1888.3,
+   "F5": 2939.4
+  },
+  "spread_p10_p90": {
+   "F1": [
+    698.0,
+    959.0
+   ],
+   "F3": [
+    1725.0,
+    2069.3
+   ],
+   "F5": [
+    2725.5,
+    3153.8
+   ]
+  },
+  "n_samples": 120,
+  "calibration_points": [
+   "chioggia",
+   "burano",
+   "caorle",
+   "porto_tolle"
+  ]
+ }
+}
