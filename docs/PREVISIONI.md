@@ -107,6 +107,19 @@ Test: `python -m pytest model/tests`.
   (F0 = 0, F1 = 1, F2 = 3, F3 = 4, F4 = 2, F5 = 0). Il modello non distingue F1 e F2: la divisione serve solo al
   misuratore. Dettagli in [GRAFICA.md](GRAFICA.md).
 
+## Scelta del punto e avviso di quota (release 0.3.2)
+
+- In Previsioni si può scegliere il punto con **Usa la mia posizione** (GPS), **Scegli sulla mappa** oppure toccando
+  uno dei **luoghi salvati**. Le date restano quelle della **postazione più vicina**: il modello non calcola il punto scelto.
+- L'app mostra quale postazione usa, a quanti km e a che quota rispetto al punto scelto. La quota del punto viene chiesta
+  a Open-Meteo (`/v1/elevation`, modello del terreno di circa 90 m): si inviano solo le coordinate, nulla viene salvato
+  sui server del progetto. Senza rete resta solo l'indicazione della distanza.
+- Avviso se la differenza di quota è almeno **150 m** («qui la fioritura può arrivare più tardi / prima») oppure se il
+  punto è a più di **15 km** dalla postazione («date solo indicative»). Soglie provvisorie [DA VERIFICARE con UNIPD].
+- Scegliendo una postazione dall'elenco, il punto scelto e l'avviso spariscono.
+- Prossimi passi (con UNIPD e con le segnalazioni): correzione delle date per la quota e previsioni calcolate sui luoghi
+  salvati, senza rendere pubbliche le posizioni degli apiari.
+
 ## Limiti noti e punti da validare con UNIPD
 
 - Le finestre di letteratura sono ampie e riferite in parte all'Italia intera: le soglie vanno affinate con le

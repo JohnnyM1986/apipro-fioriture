@@ -99,6 +99,16 @@ try {
     await p.getByRole('button', { name: 'Avanti' }).click(); await shot('passo_foto')
     await p.getByRole('button', { name: 'Avanti' }).click(); await shot('passo_conferma')
     await p.locator('.icon-btn').click(); await nav(p, 'Previsioni'); await p.waitForSelector('.fc-card'); await shot('previsioni_intera')
+    // scelta del punto sulla mappa: un tocco verso nord (Prealpi) e avviso di quota
+    await p.getByRole('button', { name: 'Scegli sulla mappa' }).click()
+    await p.waitForSelector('.fc-picker .leaflet-container'); await p.waitForTimeout(800); await shot('previsioni_mappa')
+    const box = await p.locator('.fc-picker .leaflet-container').boundingBox()
+    await p.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.08)
+    await p.getByRole('button', { name: 'Usa questo punto' }).click()
+    await p.waitForSelector('.fc-place-note'); await p.waitForTimeout(2500)
+    console.log('Avviso:', await p.locator('.fc-place-note').innerText())
+    await p.screenshot({ path: dir + 'previsioni_punto.png' })
+    console.log('Scorrimento a 390 px con avviso:', await overflow(p))
   }
   console.log(shots ? `Schermate salvate in docs/img: ${results.join(', ')}` : 'Solo controllo (nessuna schermata)')
   console.log('Scorrimento orizzontale a 360 px (0 = nessuno):', JSON.stringify(report))

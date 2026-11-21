@@ -49,7 +49,8 @@ nella cache dell'app installata: funzionano anche senza rete.
 - **Inizio:** card verde scura con i petali del logo, «+ Segnala una fioritura»; «In fiore vicino a te» con 3 card
   (specie in fioritura ora, poi le più vicine, dal punto scelto) e il misuratore; «Il tuo contributo» con segnalazioni
   inviate e luoghi salvati; loghi istituzionali e dicitura FEASR in fondo.
-- **Previsioni:** titolo, etichetta del punto con quota e menu a tendina, «Usa la mia posizione», filtro
+- **Previsioni:** titolo, etichetta del punto con quota e menu a tendina, «Usa la mia posizione» e «Scegli sulla mappa»
+  (dalla 0.3.2: mappa e luoghi salvati, riquadro con postazione usata e avviso di quota su fondo ocra chiaro), filtro
   «Tutte / Alberi / Prati e campi», card per specie con date in grassetto, pillola di stato, barra della stagione
   marzo–settembre (fascia chiara = margine, nucleo ocra = piena fioritura, trattino «oggi») e misuratore.
 - **Segnala:** barra di avanzamento a segmenti, «PASSO X DI 6», domanda in Bitter, etichetta della specie scelta,

@@ -2,8 +2,10 @@ import { useState, type ReactNode } from 'react'
 import { GROUPS, type SpeciesGroup } from '../data/catalog'
 import { SpeciesBadge } from '../components/SpeciesBadge'
 import { Meter } from '../components/Meter'
-import { IconClock, IconLocate, IconPin } from '../components/Icons'
-import { doyToDate, nearestPoint, placeWord, updatedLabel } from '../lib/forecast'
+import { IconClock, IconLocate, IconMap, IconPin } from '../components/Icons'
+import { MapPicker } from '../components/MapPicker'
+import type { Site } from '../lib/types'
+import { doyToDate, placeNote, placeWord, updatedLabel } from '../lib/forecast'
 import type { ForecastState } from '../lib/useForecast'
 
 function fmtStart(mmdd: string | null | undefined): string {
@@ -25,8 +27,11 @@ const BAR_END = 273 // 30 settembre
 const pct = (doy: number) => `${Math.min(100, Math.max(0, ((doy - BAR_START) / (BAR_END - BAR_START)) * 100))}%`
 const width = (a: number, b: number) => `calc(${pct(b)} - ${pct(a)})`
 
-export function Forecast({ fc, badge }: { fc: ForecastState; badge?: ReactNode }) {
-  const { data, point, choose, todayDoy, seasonStarted, cards } = fc
+export function Forecast({ fc, badge, sites }: { fc: ForecastState; badge?: ReactNode; sites: Site[] }) {
+  const { data, point, choose, pickPlace, place, todayDoy, seasonStarted, cards } = fc
+  const [picking, setPicking] = useState(false)
+  const [draft, setDraft] = useState<{ lat: number; lon: number } | null>(null)
+  const closePicker = () => { setPicking(false); setDraft(null) }
   const [gpsMsg, setGpsMsg] = useState('')
   const [group, setGroup] = useState<SpeciesGroup | 'all'>('all')
 
@@ -34,10 +39,7 @@ export function Forecast({ fc, badge }: { fc: ForecastState; badge?: ReactNode }
     if (!data || !navigator.geolocation) return setGpsMsg('Posizione non disponibile su questo dispositivo.')
     setGpsMsg('Cerco la tua posizione…')
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const n = nearestPoint(data.points, pos.coords.latitude, pos.coords.longitude)
-        if (n) { choose(n.point.id); setGpsMsg(`Punto di riferimento più vicino: ${n.point.name} (${n.km.toFixed(0)} km).`) }
-      },
+      (pos) => { pickPlace(pos.coords.latitude, pos.coords.longitude, 'te'); setGpsMsg(''); closePicker() },
       () => setGpsMsg('Non riesco a leggere la posizione: scegli il punto dall\'elenco.'),
       { enableHighAccuracy: false, timeout: 10000 }
     )
@@ -72,9 +74,43 @@ export function Forecast({ fc, badge }: { fc: ForecastState; badge?: ReactNode }
       </div>
       <div className="fc-tools">
         <button className="btn quiet" onClick={useGps}><IconLocate /> Usa la mia posizione</button>
-        {badge}
+        <button className="btn quiet" onClick={() => (picking ? closePicker() : setPicking(true))} aria-expanded={picking}><IconMap /> Scegli sulla mappa</button>
       </div>
       {gpsMsg && <p className="hint">{gpsMsg}</p>}
+
+      {picking && (
+        <div className="fc-picker">
+          <b>Per quale punto vuoi le previsioni?</b>
+          {sites.length > 0 && (
+            <div className="site-chips" aria-label="I tuoi luoghi salvati">
+              {sites.map((s) => (
+                <button key={s.id} className="chip" onClick={() => { pickPlace(s.lat, s.lon, s.name); closePicker() }}><IconPin />{s.name}</button>
+              ))}
+            </div>
+          )}
+          <MapPicker
+            lat={draft?.lat ?? null}
+            lon={draft?.lon ?? null}
+            onChange={(a, b) => setDraft({ lat: a, lon: b })}
+            height={260}
+            hint="Tocca la mappa nel punto che ti interessa, per esempio il tuo apiario. Le date saranno quelle della postazione più vicina."
+          />
+          <div className="fc-picker-actions">
+            <button className="btn secondary small" onClick={closePicker}>Annulla</button>
+            <button className="btn small" disabled={!draft} onClick={() => { if (draft) { pickPlace(draft.lat, draft.lon, 'il punto scelto'); closePicker() } }}>Usa questo punto</button>
+          </div>
+        </div>
+      )}
+
+      {place && point && !picking && (() => {
+        const n = placeNote(place, point)
+        return (
+          <div className={'fc-place-note' + (n.warn ? ' warn' : '')} role="status">
+            <p>{n.text}</p>
+            {n.warn && <p className="w">{n.warn}</p>}
+          </div>
+        )
+      })()}
 
       <div className="seg" role="tablist" aria-label="Gruppo di piante">
         {[{ id: 'all' as const, label: 'Tutte' }, ...GROUPS].map((g) => (
@@ -82,7 +118,7 @@ export function Forecast({ fc, badge }: { fc: ForecastState; badge?: ReactNode }
         ))}
       </div>
 
-      <p className="fc-note"><IconClock /> {updatedLabel(data.generated_at, new Date())} · versione sperimentale</p>
+      <p className="fc-note"><IconClock /> {updatedLabel(data.generated_at, new Date())} · versione sperimentale{badge}</p>
       {!seasonStarted && <p className="fc-small">La stagione {data.season} non è ancora iniziata: date calcolate con il meteo degli ultimi 20 anni.</p>}
 
       {shown.map(({ s, f, st, phase }) => {

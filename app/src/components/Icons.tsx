@@ -32,6 +32,10 @@ export const IconLocate = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle {...P} cx="12" cy="12" r="6.5" /><circle cx="12" cy="12" r="2" fill="currentColor" /><path {...P} d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" /></svg>
 )
 
+export const IconMap = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path {...P} d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z M9 4.5v13 M15 6.5v13" /></svg>
+)
+
 /** Petali del logo ApiPro, usati come decorazione semitrasparente. */
 export const Petals = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 120 120" aria-hidden="true">

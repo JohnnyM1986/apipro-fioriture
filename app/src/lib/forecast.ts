@@ -64,6 +64,50 @@ function distKm(aLat: number, aLon: number, bLat: number, bLon: number): number 
   return Math.sqrt(x * x + y * y) * 6371
 }
 
+/** Distanza in km tra due coordinate (approssimazione valida per il Veneto). */
+export const distanceKm = distKm
+
+/**
+ * Punto scelto dall'utente (GPS, mappa o luogo salvato): le previsioni restano quelle della postazione più vicina,
+ * ma si avvisa se il punto è lontano o a quota diversa.
+ */
+export interface MyPlace { lat: number; lon: number; label: string; elevation: number | null }
+
+/** Soglie dell'avviso [DA VERIFICARE con UNIPD]. */
+export const FAR_KM = 15
+export const ELEV_DIFF_M = 150
+
+export interface PlaceNote { text: string; warn: string | null }
+
+/** Frase su quale postazione si usa e, se serve, l'avviso di distanza o di quota. */
+export function placeNote(place: MyPlace, station: ForecastPoint): PlaceNote {
+  const km = distKm(place.lat, place.lon, station.lat, station.lon)
+  const kmTxt = km < 1 ? 'a meno di 1 km' : `a ${Math.round(km)} km`
+  const se = station.elevation != null ? Math.round(station.elevation) : null
+  const pe = place.elevation != null ? Math.round(place.elevation) : null
+  const from = place.label.startsWith('il ') ? 'dal ' + place.label.slice(3) : 'da ' + place.label
+  const text = `Date della postazione ${station.name}${se != null ? ` (${se} m)` : ''}, ${kmTxt} ${from}${pe != null ? ` (${pe} m)` : ''}.`
+  if (pe != null && se != null && Math.abs(pe - se) >= ELEV_DIFF_M) {
+    const later = pe > se
+    return { text, warn: `Il tuo punto è a ${pe} m, la postazione a ${se} m: qui la fioritura può arrivare ${later ? 'più tardi' : 'prima'} delle date indicate.` }
+  }
+  if (km > FAR_KM) return { text, warn: 'Il tuo punto è lontano dalla postazione: considera le date solo indicative.' }
+  return { text, warn: null }
+}
+
+/** Quota del punto (modello del terreno di Open-Meteo, circa 90 m). null se non disponibile. */
+export async function fetchElevation(lat: number, lon: number): Promise<number | null> {
+  try {
+    const r = await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}`)
+    if (!r.ok) return null
+    const j = (await r.json()) as { elevation?: number[] }
+    const e = j.elevation?.[0]
+    return typeof e === 'number' && Number.isFinite(e) ? e : null
+  } catch {
+    return null
+  }
+}
+
 export function nearestPoint(points: ForecastPoint[], lat: number, lon: number): { point: ForecastPoint; km: number } | null {
   let best: { point: ForecastPoint; km: number } | null = null
   for (const p of points) {

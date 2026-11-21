@@ -1,5 +1,5 @@
 import { describe as d, expect, it } from 'vitest'
-import { METER_LEVEL, dateToDoy, describe, doyToDate, formatRange, nearestPoint, phaseOn, placeWord, seasonDoy, shortPlace, shortSpecies } from './forecast'
+import { METER_LEVEL, dateToDoy, describe, doyToDate, formatRange, nearestPoint, phaseOn, placeNote, placeWord, seasonDoy, shortPlace, shortSpecies } from './forecast'
 
 const f = (a: number, b: number, c: number) => ({ p10: a, p50: b, p90: c, n: 30, fixed: false })
 const robinia = { F1: f(110, 115, 120), F3: f(122, 126, 130), F5: f(138, 142, 147), phase_today: 'F0' }
@@ -40,6 +40,16 @@ d('previsioni', () => {
     expect(phaseOn(robinia, 150)).toBe('F5')
     expect(phaseOn({ ...robinia, F5: null }, 120)).toBeNull()
     expect([phaseOn(robinia, 100), phaseOn(robinia, 116), phaseOn(robinia, 121), phaseOn(robinia, 126), phaseOn(robinia, 135), phaseOn(robinia, 150)].map((p) => METER_LEVEL[p!])).toEqual([0, 1, 3, 4, 2, 0])
+  })
+  it('avvisa se il punto scelto è lontano o a quota diversa', () => {
+    const bassano = { id: 'bassano', name: 'Bassano del Grappa', zone: 'collina', lat: 45.7667, lon: 11.734, elevation: 130 }
+    const vicino = placeNote({ lat: 45.77, lon: 11.74, label: 'Apiario', elevation: 160 }, bassano)
+    expect(vicino.warn).toBeNull()
+    expect(vicino.text).toBe('Date della postazione Bassano del Grappa (130 m), a meno di 1 km da Apiario (160 m).')
+    expect(placeNote({ lat: 45.8, lon: 11.75, label: 'Grappa', elevation: 600 }, bassano).warn).toContain('più tardi')
+    expect(placeNote({ lat: 45.8, lon: 11.75, label: 'Pianura', elevation: -30 }, bassano).warn).toContain('prima')
+    expect(placeNote({ lat: 45.95, lon: 11.75, label: 'Lontano', elevation: null }, bassano).warn).toContain('lontano')
+    expect(placeNote({ lat: 45.77, lon: 11.74, label: 'il punto scelto', elevation: null }, bassano).text).toContain('dal punto scelto.')
   })
   it('accorcia i nomi', () => {
     expect(shortPlace('Crocetta del Montello')).toBe('Crocetta d. M.')

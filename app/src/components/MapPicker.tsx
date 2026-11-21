@@ -12,6 +12,8 @@ interface Props {
   onChange: (lat: number, lon: number, source: LocationSource) => void
   readOnly?: boolean
   height?: number
+  /** testo sotto la mappa (predefinito: posizione delle piante osservate) */
+  hint?: string
 }
 
 function ClickHandler({ onPick }: { onPick: (lat: number, lon: number) => void }) {
@@ -34,7 +36,7 @@ interface SearchResult {
 }
 
 /** Mappa per indicare la posizione delle PIANTE osservate: tocco sulla mappa, GPS (dopo autorizzazione) o ricerca località. */
-export function MapPicker({ lat, lon, onChange, readOnly, height = 300 }: Props) {
+export function MapPicker({ lat, lon, onChange, readOnly, height = 300, hint }: Props) {
   const [q, setQ] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const [msg, setMsg] = useState('')
@@ -111,7 +113,7 @@ export function MapPicker({ lat, lon, onChange, readOnly, height = 300 }: Props)
         <Recenter lat={lat} lon={lon} />
         {lat != null && lon != null && <CircleMarker center={[lat, lon]} radius={10} pathOptions={{ color: '#7a4a12', fillColor: '#f2b632', fillOpacity: 0.9 }} />}
       </MapContainer>
-      {!readOnly && <p className="hint">Tocca la mappa nel punto in cui si trovano le piante (non serve essere lì ora).</p>}
+      {!readOnly && <p className="hint">{hint ?? 'Tocca la mappa nel punto in cui si trovano le piante (non serve essere lì ora).'}</p>}
     </div>
   )
 }

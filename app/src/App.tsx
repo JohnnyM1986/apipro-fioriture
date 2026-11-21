@@ -120,7 +120,7 @@ export default function App() {
         {view === 'sites' && <Sites store={store} sites={sites} onChanged={refresh} />}
         {view === 'info' && <Info participantId={pid} mode={store.mode} />}
         {view === 'export' && <Export store={store} />}
-        {view === 'forecast' && <Forecast fc={fc} badge={badge} />}
+        {view === 'forecast' && <Forecast fc={fc} badge={badge} sites={sites} />}
       </main>
 
       {view !== 'new' && (
