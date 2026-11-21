@@ -82,6 +82,15 @@ responsabili**, una volta per dispositivo. Contiene:
 
 La chiave non va mai scritta nel codice, nei documenti o in chat.
 
+Accorgimenti verificati il 21/11/2026 (configurazione completata, prima mail con il codice inviata):
+- **Copiare la chiave con il pulsante «Copia» di Brevo**: copiandola a mano si rischia di prendere i puntini di
+  mascheramento. La funzione toglie comunque spazi e caratteri invisibili.
+- **Brevo → Impostazioni → Sicurezza → IP autorizzati → «Chiavi API»: blocco disattivato.** Le funzioni di Supabase
+  escono da indirizzi IP che cambiano: con il blocco attivo Brevo rifiuta l'invio («unrecognised IP address»).
+- **Scadenza**: Brevo disattiva le chiavi dopo **90 giorni senza invii** (e comunque alla scadenza scelta, 1 anno).
+  Se le mail smettono di partire, generare una nuova chiave e sostituire il segreto `BREVO_API_KEY`.
+- Diagnosi: Supabase → Edge Functions → apipro-mail → Logs (la risposta di Brevo è riportata per intero).
+
 ### Codice responsabili
 
 Supabase → **SQL Editor** → eseguire (con un codice scelto da voi, almeno 10 caratteri):
