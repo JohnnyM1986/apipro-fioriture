@@ -136,19 +136,19 @@ export function StrengthHome({ store, onNew, flash }: { store: DataStore; onNew:
 }
 
 function AccessRequestForm({ store, onDone }: { store: DataStore; onDone: (notified: boolean) => void }) {
-  const [f, setF] = useState({ full_name: '', email: '', phone: '', farm: '', municipality: '' })
+  const [f, setF] = useState({ full_name: '', email: '', phone: '', farm: '' })
   const [privacy, setPrivacy] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.trim())
-  const ok = f.full_name.trim().length >= 2 && emailOk && f.municipality.trim().length >= 2 && privacy
+  const ok = f.full_name.trim().length >= 2 && emailOk && privacy
 
   const send = async () => {
     setBusy(true); setErr('')
     try {
       const r = await store.requestStrengthAccess({
-        full_name: f.full_name.trim(), email: f.email.trim(), phone: f.phone.trim() || null, farm: f.farm.trim() || null, municipality: f.municipality.trim()
+        full_name: f.full_name.trim(), email: f.email.trim(), phone: f.phone.trim() || null, farm: f.farm.trim() || null, municipality: null
       })
       onDone(r.notified)
     } catch (e) {
@@ -165,7 +165,7 @@ function AccessRequestForm({ store, onDone }: { store: DataStore; onDone: (notif
       <label className="field"><span>Email * <small>(qui riceverai il codice)</small></span><input type="email" value={f.email} onChange={set('email')} maxLength={200} autoComplete="email" /></label>
       <label className="field"><span>Telefono</span><input type="tel" value={f.phone} onChange={set('phone')} maxLength={40} autoComplete="tel" /></label>
       <label className="field"><span>Azienda apistica</span><input value={f.farm} onChange={set('farm')} maxLength={120} autoComplete="organization" /></label>
-      <label className="field"><span>Comune degli apiari *</span><input value={f.municipality} onChange={set('municipality')} maxLength={120} /></label>
+      <p className="hint">La posizione degli apiari si indica a ogni stima, sulla mappa o scegliendo un luogo salvato.</p>
       <label className="check">
         <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} />
         <span>Accetto che nome e contatti siano usati dal Gruppo Operativo ApiPRO solo per gestire la mia partecipazione alla stima della forza degli alveari. [Informativa completa: DA VERIFICARE]</span>

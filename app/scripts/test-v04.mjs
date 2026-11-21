@@ -54,7 +54,6 @@ async function run(width, height, tag) {
   await p.getByRole('button', { name: 'Chiedi di partecipare' }).click()
   await p.getByLabel('Nome e cognome *').fill('Mario Rossi')
   await p.getByLabel(/^Email/).fill('mario.rossi@example.com')
-  await p.getByLabel('Comune degli apiari *').fill('Crocetta del Montello')
   await p.locator('.form-card .check input').check()
   await shot('3_richiesta')
   await p.getByRole('button', { name: 'Invia la richiesta' }).click()

@@ -249,7 +249,7 @@ function strengthRows(v: StrengthVisit, b?: Beekeeper): Record<string, unknown>[
     (['a', 'b'] as const).filter((k) => c[k]).map((k) => {
       const sc = c[k]!
       return {
-        id_stima: v.id, data_visita: v.visited_on, apicoltore: b?.full_name ?? '', azienda: b?.farm ?? '', comune: b?.municipality ?? '',
+        id_stima: v.id, data_visita: v.visited_on, apicoltore: b?.full_name ?? '', azienda: b?.farm ?? '',
         apiario: v.site_name, latitudine: v.lat.toFixed(6), longitudine: v.lon.toFixed(6), arnia: v.hive_label, favo: c.n, lato: k.toUpperCase(),
         sesto_1: sc[0], sesto_2: sc[1], sesto_3: sc[2], sesto_4: sc[3], sesto_5: sc[4], sesto_6: sc[5],
         totale_lato: sc.reduce((a, x) => a + x, 0), note: v.note, data_inserimento: v.created_at

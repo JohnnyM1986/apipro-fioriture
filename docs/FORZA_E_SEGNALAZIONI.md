@@ -43,7 +43,7 @@ La stima in corso è salvata sul telefono (solo i numeri) e si riprende se la pa
 
 | Passo | Chi | Cosa succede |
 |---|---|---|
-| 1 | Apicoltore | In «Forza degli alveari» sceglie **Chiedi di partecipare**: nome e cognome, email, telefono (facoltativo), azienda, comune degli apiari, consenso privacy |
+| 1 | Apicoltore | In «Forza degli alveari» sceglie **Chiedi di partecipare**: nome e cognome, email, telefono (facoltativo), azienda, consenso privacy (dalla 0.4.2 non si chiede più il comune: la posizione degli apiari si registra a ogni stima) |
 | 2 | App | Salva la richiesta (`strength_requests`) e manda una mail a **info@morettofarm.it** |
 | 3 | Responsabile | In **Area responsabili → Richieste** sceglie **Approva e invia il codice** |
 | 4 | App | Crea l'apicoltore (`beekeepers`) con il codice personale `APR-XXXX-XXXX`, attiva subito il telefono da cui è partita la richiesta e manda il codice per email all'apicoltore (mittente info@aquanatura.it, nome «ApiPRO – Progetto fioriture») |
@@ -68,7 +68,7 @@ responsabili**, una volta per dispositivo. Contiene:
 - **Richieste**: da approvare o rifiutare;
 - **Apicoltori**: elenco con codici e azioni;
 - **Esportazioni** CSV (separatore «;», apribili con Excel): fioriture, forza degli alveari (una riga per lato di
-  favo: data, apicoltore, azienda, comune, apiario, coordinate, arnia, favo, lato, sesti 1–6, totale, note), altre segnalazioni.
+  favo: data, apicoltore, azienda, apiario, coordinate, arnia, favo, lato, sesti 1–6, totale, note), altre segnalazioni.
 
 ## 4. Configurazione (una volta sola, a mano)
 

@@ -62,7 +62,7 @@ export function downloadCsv(content: string, filename: string) {
 
 /** Colonne delle altre esportazioni (release 0.4), come le viste export_strength ed export_events del database. */
 export const STRENGTH_COLUMNS = [
-  'id_stima', 'data_visita', 'apicoltore', 'azienda', 'comune', 'apiario', 'latitudine', 'longitudine', 'arnia', 'favo', 'lato',
+  'id_stima', 'data_visita', 'apicoltore', 'azienda', 'apiario', 'latitudine', 'longitudine', 'arnia', 'favo', 'lato',
   'sesto_1', 'sesto_2', 'sesto_3', 'sesto_4', 'sesto_5', 'sesto_6', 'totale_lato', 'note', 'data_inserimento'
 ] as const
 export const EVENT_COLUMNS = ['id_segnalazione', 'id_partecipante', 'tipo', 'data_evento', 'data_inserimento', 'latitudine', 'longitudine', 'note'] as const

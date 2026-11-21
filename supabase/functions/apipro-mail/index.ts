@@ -8,7 +8,8 @@
 //   APP_URL        facoltativo, predefinito https://johnnym1986.github.io/apipro-fioriture/
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-const BREVO_API_KEY = Deno.env.get('BREVO_API_KEY') ?? ''
+// la chiave contiene solo caratteri ASCII visibili: si tolgono spazi, a capo e caratteri invisibili del copia-incolla
+const BREVO_API_KEY = (Deno.env.get('BREVO_API_KEY') ?? '').replace(/[^!-~]/g, '')
 const NOTIFY_EMAIL = Deno.env.get('NOTIFY_EMAIL') ?? 'info@morettofarm.it'
 const SENDER = { name: 'ApiPRO – Progetto fioriture', email: Deno.env.get('SENDER_EMAIL') ?? 'info@aquanatura.it' }
 const APP_URL = Deno.env.get('APP_URL') ?? 'https://johnnym1986.github.io/apipro-fioriture/'
@@ -54,10 +55,10 @@ Deno.serve(async (req) => {
       // solo richieste recenti e non ancora notificate: evita invii ripetuti o abusi
       const since = new Date(Date.now() - 60 * 60 * 1000).toISOString()
       const { data: r } = await admin.from('strength_requests')
-        .select('id, full_name, email, phone, farm, municipality, created_at')
+        .select('id, full_name, email, phone, farm, created_at')
         .eq('id', body.id).eq('status', 'in_attesa').is('notified_at', null).gte('created_at', since).maybeSingle()
       if (!r) return json(404, { error: 'richiesta_non_trovata' })
-      const rows: [string, unknown][] = [['Nome', r.full_name], ['Email', r.email], ['Telefono', r.phone], ['Azienda', r.farm], ['Comune degli apiari', r.municipality]]
+      const rows: [string, unknown][] = [['Nome', r.full_name], ['Email', r.email], ['Telefono', r.phone], ['Azienda', r.farm]]
       await sendMail(
         { email: NOTIFY_EMAIL },
         `ApiPRO – nuova richiesta per la forza degli alveari: ${r.full_name}`,

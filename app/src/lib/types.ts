@@ -77,7 +77,8 @@ export interface AccessRequestInput {
   email: string
   phone: string | null
   farm: string | null
-  municipality: string
+  /** non più chiesto dalla 0.4.2: la posizione si registra a ogni stima */
+  municipality: string | null
 }
 export interface AccessRequest extends AccessRequestInput {
   id: string
