@@ -63,7 +63,7 @@ export default function App() {
       {/* su telefono la testata manca in Segnala e Previsioni; su PC c'è sempre, con il menu */}
       <header className={'top' + (showHeader ? '' : ' desk-only')}>
         <button className="brand" onClick={() => go('home')} aria-label="ApiPro Fioriture – Inizio">
-          <img src="./img/brand/apipro-logo.png" alt="ApiPro" height={44} />
+          <img src="./img/brand/apipro-logo.png" alt="ApiPro" height={52} />
         </button>
         {badge}
         <nav className="top-nav" aria-label="Menu principale">

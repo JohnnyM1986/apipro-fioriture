@@ -35,13 +35,3 @@ export const IconLocate = () => (
 export const IconMap = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path {...P} d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z M9 4.5v13 M15 6.5v13" /></svg>
 )
-
-/** Petali del logo ApiPro, usati come decorazione semitrasparente. */
-export const Petals = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 120 120" aria-hidden="true">
-    <ellipse cx="78" cy="38" rx="17" ry="38" transform="rotate(28 78 38)" fill="#9c8a6a" opacity="0.55" />
-    <ellipse cx="40" cy="52" rx="15" ry="32" transform="rotate(-62 40 52)" fill="#8a7a5c" opacity="0.5" />
-    <ellipse cx="58" cy="86" rx="17" ry="30" transform="rotate(22 58 86)" fill="#d2893c" opacity="0.85" />
-    <circle cx="86" cy="72" r="11" fill="#d2893c" />
-  </svg>
-)

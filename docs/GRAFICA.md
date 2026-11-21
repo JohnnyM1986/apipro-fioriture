@@ -14,6 +14,18 @@
 La grafica cambia solo l'aspetto: funzionamento, modello di previsione, dati salvati e testi del protocollo
 (etichette e definizioni delle fasi F0–F5, specie, avvertenze) restano quelli di prima.
 
+## Logo (release 0.3.4)
+
+Il logo **non va ridisegnato né ricomposto**: si usano solo i file ufficiali.
+
+- Fonte: Canva, design **«logo.ai»** (4 varianti: verticale, solo petali, solo scritta, orizzontale) e brand kit
+  Canva **«Api Pro»**. Notion: il brand kit ApiPRO è su Canva (la cartella Drive «0_BRAND_KIT» è di Quercon).
+- Nell'app: `app/public/img/brand/apipro-logo.png` = variante **orizzontale** (scritta «Api» sottile, «Pro» con
+  grazie, puntino della i esagonale); `apipro-logo-bianco.png` = stessa variante con la scritta bianca;
+  `apipro-petali.png` = solo petali, usati come decorazione della card verde di Inizio. Icone dell'app
+  (`icon-192.png`, `icon-512.png`) = petali su fondo verde.
+- Fino alla 0.3.3 l'app usava una versione deformata (scritta ingrossata e allineata, puntino spostato): sostituita.
+
 ## Colori
 
 | Ruolo | Colore | Uso |

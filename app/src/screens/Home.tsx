@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { SpeciesBadge } from '../components/SpeciesBadge'
 import { Meter } from '../components/Meter'
-import { IconPlus, Petals } from '../components/Icons'
+import { IconPlus } from '../components/Icons'
 import { Istituzionale } from '../components/Istituzionale'
 import { shortSpecies } from '../lib/forecast'
 import type { ForecastState } from '../lib/useForecast'
@@ -23,7 +23,7 @@ export function Home({ fc, nObs, nSites, onNew, onForecast, onMine, onSites, foo
   return (
     <section className="home">
       <div className="hero">
-        <Petals className="hero-petals" />
+        <img className="hero-petals" src="./img/brand/apipro-petali.png" alt="" aria-hidden="true" />
         <h1>Cosa fiorisce intorno a te?</h1>
         <p>Una segnalazione in meno di un minuto aiuta a prevedere le fioriture in Veneto.</p>
         <button className="btn ocra big" onClick={onNew}><IconPlus size={22} /> Segnala una fioritura</button>
