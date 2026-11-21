@@ -41,8 +41,8 @@ def analogs(season: int) -> list[int]:
 
 
 def load_config():
-    species = yaml.safe_load((ROOT / "config" / "species.yaml").read_text())["species"]
-    points = yaml.safe_load((ROOT / "config" / "points.yaml").read_text())["points"]
+    species = yaml.safe_load((ROOT / "config" / "species.yaml").read_text(encoding="utf-8"))["species"]
+    points = yaml.safe_load((ROOT / "config" / "points.yaml").read_text(encoding="utf-8"))["points"]
     return species, points
 
 
@@ -55,7 +55,7 @@ def load_history() -> pd.DataFrame:
 
 
 def load_elevations() -> dict:
-    return json.loads(ELEVATIONS.read_text()) if ELEVATIONS.exists() else {}
+    return json.loads(ELEVATIONS.read_text(encoding="utf-8")) if ELEVATIONS.exists() else {}
 
 
 def temps_by_point(df: pd.DataFrame) -> dict[str, pd.Series]:
@@ -85,7 +85,7 @@ def cmd_fetch_history(_args) -> None:
         elev[p["id"]] = e
         HISTORY.parent.mkdir(parents=True, exist_ok=True)
         hist.to_csv(HISTORY, index=False, float_format="%.1f", compression="gzip")
-        ELEVATIONS.write_text(json.dumps(elev, indent=1))
+        ELEVATIONS.write_text(json.dumps(elev, indent=1), encoding="utf-8")
         done += 1
         print(f"{p['id']}: {len(df)} giorni, quota {e} m", flush=True)
         time.sleep(3)
@@ -156,7 +156,7 @@ def cmd_calibrate(_args) -> None:
                   "spread_p10_p90": {k: [round(a, 1), round(b, 1)] for k, (a, b) in c.spread.items()},
                   "n_samples": c.n_samples, "calibration_points": c.points}
             for sid, c in cals.items()}
-    (OUT / "calibration.json").write_text(json.dumps(data, indent=1, ensure_ascii=False))
+    (OUT / "calibration.json").write_text(json.dumps(data, indent=1, ensure_ascii=False), encoding="utf-8")
     for sid, d in data.items():
         print(sid, d["thresholds_gdd"], "campioni", d["n_samples"])
 
@@ -220,7 +220,7 @@ def cmd_hindcast(_args) -> None:
            "elevation_gradient_F1": grad,
            "threshold_sources": {sid: c.source for sid, c in cals.items()},
            "partner_vs_literature": compare_sources(species, points, temps)}
-    (OUT / "hindcast.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, default=float))
+    (OUT / "hindcast.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, default=float), encoding="utf-8")
     df.to_csv(OUT / "hindcast_rows.csv", index=False)
     md = ["# Verifica a ritroso 2024-2025", "",
           f"Modello {MODEL_VERSION}. Errore = data prevista alla data di emissione − data calcolata a fine stagione "
@@ -241,7 +241,7 @@ def cmd_hindcast(_args) -> None:
         g, dd = r["gdd"], r["doy_mediana"]
         md.append(f"| {r['species']} | {r['soglie']} | {g['F1']}/{g['F3']}/{g['F5']} | {r['inizio_accumulo']} | "
                   f"{_mmdd(dd['F1'])} | {_mmdd(dd['F3'])} | {_mmdd(dd['F5'])} | {r['finestra_letteratura'][0]}–{r['finestra_letteratura'][1]} |")
-    (OUT / "hindcast.md").write_text("\n".join(md) + "\n")
+    (OUT / "hindcast.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print("\n".join(md))
 
 
@@ -318,7 +318,7 @@ def cmd_forecast(args) -> None:
         "predictions": preds,
     }
     APP_DATA.mkdir(parents=True, exist_ok=True)
-    (APP_DATA / "predictions.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+    (APP_DATA / "predictions.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"Previsioni stagione {season}: {len(preds)} punti, dati noti fino al {known_until}")
 
 
