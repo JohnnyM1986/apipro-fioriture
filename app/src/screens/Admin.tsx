@@ -39,16 +39,16 @@ function AdminLogin({ store, onOk }: { store: DataStore; onOk: () => void }) {
   const [err, setErr] = useState('')
   const go = async () => {
     setBusy(true); setErr('')
-    try { if (await store.claimAdmin(code)) onOk(); else setErr('Codice non valido.') } catch (e) { setErr((e as Error).message) } finally { setBusy(false) }
+    try { if (await store.claimAdmin(code.trim())) onOk(); else setErr('Codice non valido: controlla maiuscole, minuscole e spazi.') } catch (e) { setErr((e as Error).message) } finally { setBusy(false) }
   }
   return (
     <section className="admin">
       <h2>Area responsabili</h2>
       <div className="card form-card">
         <p>Riservata ai responsabili del progetto ApiPRO. Inserisci il <b>codice responsabili</b>: basta farlo una volta su questo dispositivo.</p>
-        <input className="full" type="password" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Codice responsabili" autoComplete="off" />
+        <input className="full" type="password" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Codice responsabili" autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} />
         {err && <p className="error">{err}</p>}
-        <button className="btn" disabled={code.length < 10 || busy} onClick={go}>{busy ? 'Verifico…' : 'Entra'}</button>
+        <button className="btn" disabled={code.trim().length < 10 || busy} onClick={go}>{busy ? 'Verifico…' : 'Entra'}</button>
       </div>
     </section>
   )
