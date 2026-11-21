@@ -48,7 +48,7 @@ button { font-family: inherit; }
 .wrap.wizard-wrap { padding-top: 14px; padding-bottom: 7rem; }
 .top { max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 8px; padding: 14px 16px 8px; }
 .brand { background: none; border: 0; padding: 0; cursor: pointer; display: block; }
-.brand img { display: block; height: 52px; width: auto; }
+.brand img { display: block; height: 64px; width: auto; }
 .env { background: var(--ocra-btn); color: #fff; font-weight: 700; font-size: 0.62rem; letter-spacing: 0.06em; padding: 2px 6px; border-radius: 6px; line-height: 1.3; }
 .place-chip { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; max-width: 62%; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font: 600 0.92rem var(--sans); color: var(--text); cursor: pointer; box-shadow: 0 1px 2px rgba(54, 61, 45, 0.05); }
 .place-chip svg { color: var(--ocra); flex: none; }
@@ -208,7 +208,7 @@ code { background: var(--tile); padding: 0.1rem 0.35rem; border-radius: 6px; }
 .info .phase-legend small { display: block; color: var(--muted); }
 .plain { padding-left: 1.1rem; line-height: 1.6; }
 .istituzionale { margin: 2rem 0 0.5rem; text-align: center; }
-.istituzionale img { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; border-radius: 12px; }
+.istituzionale img { width: 100%; max-width: 420px; height: auto; display: block; margin: 0 auto; border-radius: 12px; }
 .istituzionale p { font-size: 0.74rem; font-style: italic; color: var(--muted); margin: 0.4rem 0 0; line-height: 1.35; }
 
 /* ---- barra in basso ---- */
@@ -362,4 +362,10 @@ code { background: var(--tile); padding: 0.1rem 0.35rem; border-radius: 6px; }
 }
 
 /* logo ufficiale (release 0.3.4): un po' più grande su PC */
-@media (min-width: 1024px) { .brand img { height: 60px; } }
+@media (min-width: 1024px) { .brand img { height: 76px; } }
+
+/* loghi istituzionali: contenuti su tablet e PC (release 0.3.5) */
+@media (min-width: 700px) {
+  .istituzionale img { max-width: 380px; }
+  .istituzionale p { max-width: 620px; margin-left: auto; margin-right: auto; }
+}

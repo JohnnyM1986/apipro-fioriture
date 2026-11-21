@@ -14,17 +14,21 @@
 La grafica cambia solo l'aspetto: funzionamento, modello di previsione, dati salvati e testi del protocollo
 (etichette e definizioni delle fasi F0–F5, specie, avvertenze) restano quelli di prima.
 
-## Logo (release 0.3.4)
+## Logo (release 0.3.5)
 
-Il logo **non va ridisegnato né ricomposto**: si usano solo i file ufficiali.
+Il logo **non va ridisegnato né ricomposto**: si usa solo il file ufficiale del brand kit.
 
-- Fonte: Canva, design **«logo.ai»** (4 varianti: verticale, solo petali, solo scritta, orizzontale) e brand kit
-  Canva **«Api Pro»**. Notion: il brand kit ApiPRO è su Canva (la cartella Drive «0_BRAND_KIT» è di Quercon).
-- Nell'app: `app/public/img/brand/apipro-logo.png` = variante **orizzontale** (scritta «Api» sottile, «Pro» con
-  grazie, puntino della i esagonale); `apipro-logo-bianco.png` = stessa variante con la scritta bianca;
-  `apipro-petali.png` = solo petali, usati come decorazione della card verde di Inizio. Icone dell'app
-  (`icon-192.png`, `icon-512.png`) = petali su fondo verde.
-- Fino alla 0.3.3 l'app usava una versione deformata (scritta ingrossata e allineata, puntino spostato): sostituita.
+- Versione corretta: **petali sopra, scritta «ApiPro» sotto, lettere di spessore uniforme** (brand kit Canva
+  «Api Pro»; file fornito da Johnny il 21/11/2026). Le varianti del design Canva «logo.ai», con «Api» sottile e
+  «Pro» più grande, **non sono quelle corrette**.
+- Nell'app: `app/public/img/brand/apipro-logo.png` = logo ufficiale intero (reso trasparente, forme e colori
+  invariati), mostrato così com'è nella testata (64 px su telefono, 76 px su PC); `apipro-logo-bianco.png` = stesso
+  logo con la scritta bianca per i fondi scuri; `apipro-petali.png` = solo i petali dello stesso file, usati come
+  decorazione della card verde di Inizio. Icone dell'app (`icon-192.png`, `icon-512.png`) = petali su fondo verde.
+- Colori del logo: scritta `#383E2E`, petali `#94806A` e `#D68B3C`.
+- Fino alla 0.3.3 l'app usava una versione ricomposta e deformata; nella 0.3.4 una variante non corretta: sostituite.
+- Loghi istituzionali (UE, Repubblica Italiana, Regione del Veneto, Sviluppo Rurale Veneto) in fondo a Inizio e Info:
+  larghi al massimo 420 px su telefono e 380 px su tablet e PC, per non farli diventare troppo grandi.
 
 ## Colori
 
