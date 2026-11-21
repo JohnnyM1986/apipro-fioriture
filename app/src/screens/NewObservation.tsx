@@ -112,8 +112,9 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
       {step === 0 && (
         <section>
           <h2>Dove si trovano le piante?</h2>
+          <div className={'luogo' + (newPlace ? ' with-map' : '')}>
           {sites.length > 0 && (
-            <div className="choice-list">
+            <div className="choice-list luogo-choices">
               {sites.map((s) => (
                 <button key={s.id} type="button" className={'choice' + (siteId === s.id && !newPlace ? ' sel' : '')} onClick={() => pickSite(s)}>
                   <span className="ico-tile"><IconPin /></span>
@@ -128,7 +129,10 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
           )}
           {newPlace && (
             <>
-              <MapPicker lat={lat} lon={lon} onChange={(a, b, src) => { setLat(a); setLon(b); setLocSrc(src) }} />
+              <div className="luogo-map">
+                <MapPicker lat={lat} lon={lon} onChange={(a, b, src) => { setLat(a); setLon(b); setLocSrc(src) }} />
+              </div>
+              <div className="luogo-extra">
               <label className="check">
                 <input type="checkbox" checked={saveAsSite} onChange={(e) => setSaveAsSite(e.target.checked)} />
                 Salva come luogo abituale (ci tornerò)
@@ -136,8 +140,10 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
               {saveAsSite && (
                 <input className="full" maxLength={80} value={siteName} onChange={(e) => setSiteName(e.target.value)} placeholder="Nome del luogo (es. Apiario Montello, prato dietro casa)" />
               )}
+              </div>
             </>
           )}
+          </div>
         </section>
       )}
 

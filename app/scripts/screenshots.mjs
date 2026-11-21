@@ -29,8 +29,8 @@ await server.listen()
 const url = 'http://localhost:5199/'
 const browser = await chromium.launch()
 
-async function open(width) {
-  const ctx = await browser.newContext({ viewport: { width, height: 844 }, deviceScaleFactor: 2, locale: 'it-IT', timezoneId: 'Europe/Rome' })
+async function open(width, height = 844) {
+  const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 2, locale: 'it-IT', timezoneId: 'Europe/Rome' })
   await ctx.addInitScript(([s, o]) => {
     if (localStorage.getItem('apipro.seeded')) return
     localStorage.setItem('apipro.seeded', '1')
@@ -60,7 +60,38 @@ async function toPhaseStep(page) {
   await page.waitForSelector('.phase-card.sel')
 }
 
+// telefono, tablet e PC: node scripts/screenshots.mjs --sizes <cartella>
+const SIZES = [[360, 780], [390, 844], [768, 1024], [1024, 768], [1366, 768], [1920, 1080]]
+async function sizes(dir) {
+  dir = dir.replace(/[\/]?$/, '/')
+  const report = {}
+  for (const [w, h] of SIZES) {
+    const p = await open(w, h)
+    const r = (report[w] = {})
+    const shot = async (n) => { await p.waitForTimeout(300); r[n] = await overflow(p); await p.screenshot({ path: `${dir}${w}_${n}.png` }) }
+    const go = async (label) => {
+      const top = p.locator('.top-nav button', { hasText: label })
+      if (await top.isVisible()) await top.click(); else await nav(p, label)
+    }
+    await shot('inizio')
+    await go('Previsioni'); await p.waitForSelector('.fc-card'); await shot('previsioni')
+    await p.getByRole('button', { name: 'Scegli sulla mappa' }).click(); await p.waitForSelector('.fc-picker .leaflet-container'); await shot('previsioni_mappa')
+    await go('Le mie'); await shot('le_mie')
+    await go('Info'); await shot('info')
+    await p.locator('.bottom .fab:visible, .top-new:visible').first().click()
+    await p.locator('.choice', { hasText: 'Nuovo luogo' }).click(); await p.waitForSelector('.leaflet-container'); await shot('luogo_mappa')
+    await p.locator('.icon-btn').click()
+    await toPhaseStep(p); await shot('fase')
+    await p.context().close()
+  }
+  console.log('Scorrimento orizzontale per larghezza (0 = nessuno):', JSON.stringify(report))
+}
+
 try {
+  if (process.argv.includes('--sizes')) {
+    await sizes(process.argv[process.argv.indexOf('--sizes') + 1])
+    process.exit(0)
+  }
   mkdirSync(outDir, { recursive: true })
   const shots = process.argv.includes('--check') ? null : outDir
   const page = await open(390)
@@ -73,6 +104,15 @@ try {
   await snap('grafica_A_inizio.png')
   await nav(page, 'Previsioni'); await page.waitForSelector('.fc-card'); await snap('grafica_A_previsioni.png')
   await toPhaseStep(page); await snap('grafica_A_fase.png')
+
+  // PC (1366 × 768): Inizio e Previsioni
+  if (shots) {
+    const pc = await open(1366, 768)
+    await pc.waitForTimeout(250); await pc.screenshot({ path: shots + 'grafica_A_pc_inizio.png' })
+    await pc.locator('.top-nav button', { hasText: 'Previsioni' }).click(); await pc.waitForSelector('.fc-card')
+    await pc.waitForTimeout(250); await pc.screenshot({ path: shots + 'grafica_A_pc_previsioni.png' })
+    results.push('grafica_A_pc_inizio.png', 'grafica_A_pc_previsioni.png')
+  }
 
   // 360 px: nessuno scorrimento orizzontale in tutte le schermate
   const small = await open(360)

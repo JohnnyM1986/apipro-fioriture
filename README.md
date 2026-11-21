@@ -56,7 +56,12 @@ Partecipare è semplice e non richiede registrazione:
   <img src="docs/img/grafica_A_fase.png" width="220" alt="Segnala: scelta della fase">
 </p>
 
-Veste «Prato» (proposta A) con il misuratore a tacchette della proposta B: fondo color carta, card bianche,
+<p align="center">
+  <img src="docs/img/grafica_A_pc_inizio.png" width="440" alt="Inizio su PC">
+  <img src="docs/img/grafica_A_pc_previsioni.png" width="440" alt="Previsioni su PC">
+</p>
+
+Veste «Prato» (proposta A) con il misuratore a tacchette della proposta B, adatta a telefono, tablet e PC (su PC menu in alto e mappe grandi): fondo color carta, card bianche,
 titoli in Bitter, pulsante «+» ocra al centro della barra in basso. Colori, font e componenti in
 [docs/GRAFICA.md](docs/GRAFICA.md). *Schermate con data simulata 12/05/2027.*
 

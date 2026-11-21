@@ -60,19 +60,24 @@ export default function App() {
 
   return (
     <>
-      {showHeader && (
-        <header className="top">
-          <button className="brand" onClick={() => go('home')} aria-label="ApiPro Fioriture – Inizio">
-            <img src="./img/brand/apipro-logo.png" alt="ApiPro" height={44} />
+      {/* su telefono la testata manca in Segnala e Previsioni; su PC c'è sempre, con il menu */}
+      <header className={'top' + (showHeader ? '' : ' desk-only')}>
+        <button className="brand" onClick={() => go('home')} aria-label="ApiPro Fioriture – Inizio">
+          <img src="./img/brand/apipro-logo.png" alt="ApiPro" height={44} />
+        </button>
+        {badge}
+        <nav className="top-nav" aria-label="Menu principale">
+          {([['home', 'Inizio'], ['forecast', 'Previsioni'], ['mine', 'Le mie'], ['info', 'Info']] as const).map(([v, label]) => (
+            <button key={v} className={view === v || (v === 'mine' && view === 'sites') ? 'on' : ''} aria-current={view === v ? 'page' : undefined} onClick={() => go(v)}>{label}</button>
+          ))}
+        </nav>
+        {fc.point && view !== 'forecast' && (
+          <button className="place-chip" onClick={() => go('forecast')} aria-label={`Punto delle previsioni: ${fc.point.name}`}>
+            <IconPin /><span>{shortPlace(fc.point.name)}</span>
           </button>
-          {badge}
-          {fc.point && (
-            <button className="place-chip" onClick={() => go('forecast')} aria-label={`Punto delle previsioni: ${fc.point.name}`}>
-              <IconPin /><span>{shortPlace(fc.point.name)}</span>
-            </button>
-          )}
-        </header>
-      )}
+        )}
+        <button className="btn ocra small top-new" onClick={() => go('new')}><IconPlus size={18} /> Segnala</button>
+      </header>
 
       <main className={'wrap' + (view === 'new' ? ' wizard-wrap' : '')}>
         {toast && <div className="toast" role="status">{toast}</div>}

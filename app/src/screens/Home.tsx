@@ -29,6 +29,7 @@ export function Home({ fc, nObs, nSites, onNew, onForecast, onMine, onSites, foo
         <button className="btn ocra big" onClick={onNew}><IconPlus size={22} /> Segnala una fioritura</button>
       </div>
 
+      <div className="home-side">
       {near.length > 0 && (
         <>
           <div className="sec-head">
@@ -52,6 +53,7 @@ export function Home({ fc, nObs, nSites, onNew, onForecast, onMine, onSites, foo
       <div className="contrib">
         <button className="stat" onClick={onMine}><b>{nObs}</b><span>{nObs === 1 ? 'segnalazione inviata' : 'segnalazioni inviate'}</span></button>
         <button className="stat" onClick={onSites}><b>{nSites}</b><span>{nSites === 1 ? 'luogo salvato' : 'luoghi salvati'}</span></button>
+      </div>
       </div>
 
       {footer}

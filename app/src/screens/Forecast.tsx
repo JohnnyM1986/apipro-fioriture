@@ -80,14 +80,16 @@ export function Forecast({ fc, badge, sites }: { fc: ForecastState; badge?: Reac
 
       {picking && (
         <div className="fc-picker">
-          <b>Per quale punto vuoi le previsioni?</b>
-          {sites.length > 0 && (
-            <div className="site-chips" aria-label="I tuoi luoghi salvati">
-              {sites.map((s) => (
-                <button key={s.id} className="chip" onClick={() => { pickPlace(s.lat, s.lon, s.name); closePicker() }}><IconPin />{s.name}</button>
-              ))}
-            </div>
-          )}
+          <div className="fc-picker-top">
+            <b>Per quale punto vuoi le previsioni?</b>
+            {sites.length > 0 && (
+              <div className="site-chips" aria-label="I tuoi luoghi salvati">
+                {sites.map((s) => (
+                  <button key={s.id} className="chip" onClick={() => { pickPlace(s.lat, s.lon, s.name); closePicker() }}><IconPin />{s.name}</button>
+                ))}
+              </div>
+            )}
+          </div>
           <MapPicker
             lat={draft?.lat ?? null}
             lon={draft?.lon ?? null}
@@ -121,6 +123,7 @@ export function Forecast({ fc, badge, sites }: { fc: ForecastState; badge?: Reac
       <p className="fc-note"><IconClock /> {updatedLabel(data.generated_at, new Date())} · versione sperimentale{badge}</p>
       {!seasonStarted && <p className="fc-small">La stagione {data.season} non è ancora iniziata: date calcolate con il meteo degli ultimi 20 anni.</p>}
 
+      <div className="fc-list">
       {shown.map(({ s, f, st, phase }) => {
         const info = data.species[s.id]
         return (
@@ -154,6 +157,7 @@ export function Forecast({ fc, badge, sites }: { fc: ForecastState; badge?: Reac
           </article>
         )
       })}
+      </div>
       {shown.length === 0 && <p className="card muted">Nessuna specie di questo gruppo ha una previsione per questa zona.</p>}
 
       <details className="fc-how">

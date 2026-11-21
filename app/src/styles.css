@@ -250,3 +250,113 @@ code { background: var(--tile); padding: 0.1rem 0.35rem; border-radius: 6px; }
 .fc-place-note p { margin: 0; line-height: 1.4; color: var(--muted); }
 .fc-place-note.warn { border-color: #e9c48f; background: #fff6e8; }
 .fc-place-note .w { margin-top: 6px; color: #7a4a10; font-weight: 600; }
+
+/* ======================================================================
+   Tablet e PC (release 0.3.3). Su telefono non cambia nulla.
+   - da 700 px: contenuto più largo, mappe più alte, fasi su 3 colonne
+   - da 1024 px: menu in alto (niente barra in basso), pagine su più colonne,
+     mappe grandi accanto alle scelte
+   ====================================================================== */
+.map-picker .leaflet-container { height: var(--map-h, 300px); }
+.top-nav, .top-new { display: none; }
+.top.desk-only { display: none; }
+
+@media (min-width: 700px) {
+  .wrap, .top { max-width: 760px; }
+  .wrap { padding-left: 24px; padding-right: 24px; }
+  .top { padding-left: 24px; padding-right: 24px; }
+  .map-picker:not(.ro) .leaflet-container { height: 420px; }
+  .map-picker.ro .leaflet-container { height: 260px; }
+  .phase-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .near-card { padding: 14px 14px 16px; }
+  .wizard-nav { padding-left: max(24px, calc((100% - 760px) / 2 + 24px)); padding-right: max(24px, calc((100% - 760px) / 2 + 24px)); }
+  .wizard-nav .btn.secondary { flex: 0 0 auto; min-width: 180px; }
+  .fc-picker .map-picker .leaflet-container { height: 380px; }
+}
+
+@media (min-width: 1024px) {
+  :root { --nav-h: 0px; }
+  .bottom { display: none; }
+  .wrap { max-width: 1180px; padding: 8px 40px 64px; }
+  .wrap.wizard-wrap { max-width: 1080px; padding-bottom: 8rem; }
+
+  /* testata con menu */
+  .top, .top.desk-only { display: flex; max-width: 1180px; padding: 18px 40px 10px; gap: 14px; }
+  .top-nav { display: flex; gap: 4px; margin-left: 28px; }
+  .top-nav button { background: none; border: 0; border-radius: 12px; padding: 9px 14px; font: 600 1rem var(--sans); color: var(--muted); cursor: pointer; }
+  .top-nav button:hover { background: var(--tile); color: var(--text); }
+  .top-nav button.on { color: var(--ocra-text); background: var(--card); box-shadow: inset 0 -3px 0 var(--ocra); }
+  .top .place-chip { margin-left: auto; max-width: 260px; }
+  .top-new { display: inline-flex; padding: 0.6rem 1rem; }
+  .top-nav + .top-new { margin-left: auto; }
+
+  /* Inizio: card verde a sinistra, specie e contributo a destra */
+  .home { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 36px; align-items: start; }
+  .home > .hero { grid-row: span 1; padding: 40px 36px 34px; margin-top: 14px; min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .home > .hero h1 { font-size: 2.7rem; max-width: 80%; }
+  .home > .hero p { font-size: 1.15rem; max-width: 80%; }
+  .home > .hero .btn.big { max-width: 420px; }
+  .hero-petals { width: 230px; height: 230px; top: -40px; right: -36px; }
+  .home-side .sec-head h2 { margin-top: 14px; }
+  .home > .btn.link, .home > .istituzionale { grid-column: 1 / -1; }
+  .near { gap: 14px; }
+  .near-card { padding: 16px 16px 18px; gap: 9px; }
+  .stat { padding: 18px; }
+  .stat b { font-size: 2.6rem; }
+
+  /* Previsioni: schede su 2 colonne, scelta del punto con mappa grande */
+  .forecast .page-head h1 { font-size: 2.3rem; }
+  .forecast .page-head .place-chip { margin-left: 18px; }
+  .seg { max-width: 520px; }
+  .fc-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .fc-list .fc-card { margin-bottom: 0; }
+  .fc-how { max-width: 820px; }
+  .fc-place-note { max-width: 820px; }
+  .fc-picker { display: grid; grid-template-columns: 300px minmax(0, 1fr); grid-template-areas: 'top map' 'actions map'; grid-template-rows: auto 1fr; column-gap: 24px; padding: 20px; }
+  .fc-picker-top { grid-area: top; display: flex; flex-direction: column; gap: 12px; }
+  .fc-picker .map-picker { grid-area: map; }
+  .fc-picker-actions { grid-area: actions; align-self: end; justify-content: flex-start; }
+  .fc-picker .map-picker .leaflet-container { height: min(58vh, 520px); }
+
+  /* Segnala: contenuto più largo, luogo con mappa a destra */
+  .wizard-nav { padding-left: max(40px, calc((100% - 1080px) / 2 + 40px)); padding-right: max(40px, calc((100% - 1080px) / 2 + 40px)); }
+  .wizard h2 { font-size: 2rem; }
+  .luogo.with-map { display: grid; grid-template-columns: 340px minmax(0, 1fr); grid-template-areas: 'choices map' 'extra map'; grid-template-rows: auto 1fr; column-gap: 28px; }
+  .luogo-choices { grid-area: choices; margin-top: 0; }
+  .luogo-map { grid-area: map; }
+  .luogo-extra { grid-area: extra; }
+  .luogo-map .leaflet-container { height: min(62vh, 600px); }
+  .map-picker:not(.ro) .leaflet-container { height: min(62vh, 600px); }
+  .fc-picker .map-picker .leaflet-container { height: min(58vh, 520px); }
+  .map-picker.ro .leaflet-container { height: 320px; }
+  .wizard .choice-list:not(.luogo-choices) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .phase-tile { height: 130px; }
+  .summary { max-width: 820px; }
+
+  /* Le mie, luoghi, info */
+  .obs-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .info { max-width: 860px; }
+  .info .phase-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wrap > section > h2:first-child { font-size: 2.3rem; }
+  .toast { top: 84px; }
+}
+
+/* PC: la mappa si adatta all'altezza dello schermo e non finisce sotto i pulsanti */
+@media (min-width: 1024px) {
+  .luogo-map .leaflet-container, .wizard .map-picker:not(.ro) .leaflet-container { height: clamp(320px, calc(100vh - 400px), 640px); }
+  .fc-picker .map-picker .leaflet-container { height: clamp(320px, calc(100vh - 300px), 560px); }
+  .wrap > section > .map-picker:not(.ro) .leaflet-container { height: clamp(320px, calc(100vh - 360px), 640px); }
+  .wizard-nav { justify-content: space-between; }
+  .wizard-nav .btn, .wizard-nav .btn.secondary { flex: 0 0 auto; min-width: 220px; }
+  .step-head .env, .fc-note .env { display: none; }
+}
+
+@media (min-width: 1280px) {
+  .phase-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .phase-tile { height: 120px; }
+}
+
+@media (min-width: 1500px) {
+  .wrap, .top, .top.desk-only { max-width: 1360px; }
+  .fc-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

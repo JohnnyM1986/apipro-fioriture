@@ -67,6 +67,24 @@ nella cache dell'app installata: funzionano anche senza rete.
   le tacche sono vuote con la scritta «Attesa tra …». Per i lettori di schermo il misuratore ha un testo
   alternativo, es. «Fase attesa oggi: piena fioritura».
 
+## Telefono, tablet e PC (release 0.3.3)
+
+L'app si adatta alla larghezza dello schermo; su telefono resta come nelle schermate sopra.
+
+| Larghezza | Disposizione |
+|---|---|
+| fino a 699 px (telefono) | una colonna, barra in basso con «+» ocra, pulsanti «Indietro/Avanti» fissi |
+| 700–1023 px (tablet) | contenuto fino a 760 px, mappe alte 420 px, fasi su 3 colonne |
+| da 1024 px (PC) | menu in alto (Inizio, Previsioni, Le mie, Info e pulsante «+ Segnala»), niente barra in basso; Inizio su due colonne; previsioni su 2 colonne (3 da 1500 px); luogo della segnalazione con la mappa grande a destra; scelta del punto con mappa grande; fasi su 3 colonne (6 da 1280 px); Le mie e la legenda delle fasi su 2 colonne |
+
+Su PC l'altezza delle mappe segue quella dello schermo (fino a 640 px), così mappa e pulsanti restano visibili
+anche su un portatile 1366 × 768.
+
+<p align="center">
+  <img src="img/grafica_A_pc_inizio.png" width="420" alt="Inizio su PC">
+  <img src="img/grafica_A_pc_previsioni.png" width="420" alt="Previsioni su PC">
+</p>
+
 ## Gruppi di specie nel filtro delle Previsioni [DA VERIFICARE con UNIPD]
 
 - **Alberi:** robinia (acacia), castagno, tiglio, amorfa, rododendro, edera.
@@ -78,5 +96,8 @@ Il gruppo è un campo `group` del catalogo (`app/src/data/catalog.ts`) e serve s
 
 - Larghezza minima 360 px senza scorrimento orizzontale (controllata da `npm run screenshots` su Inizio,
   Previsioni, Le mie, Info, passo Fase e Conferma).
+- Telefono, tablet e PC: `node scripts/screenshots.mjs --sizes <cartella>` fotografa Inizio, Previsioni (anche con la
+  mappa), Le mie, Info, luogo con mappa e passo Fase a 360, 390, 768, 1024, 1366 e 1920 px e segnala ogni
+  scorrimento orizzontale.
 - Schermate rigenerabili: dalla cartella `app`, con le previsioni in `public/data/predictions.json`
   (`python model/run.py forecast`), `npx playwright install chromium` una volta e poi `npm run screenshots`.

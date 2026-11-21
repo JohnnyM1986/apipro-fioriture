@@ -69,7 +69,7 @@ export function MapPicker({ lat, lon, onChange, readOnly, height = 300, hint }: 
   }
 
   return (
-    <div className="map-picker">
+    <div className={'map-picker' + (readOnly ? ' ro' : '')} style={{ ['--map-h' as string]: `${height}px` }}>
       {!readOnly && (
         <div className="map-tools">
           <button type="button" className="btn secondary" onClick={useGps}><IconLocate /> Usa la mia posizione</button>
@@ -89,7 +89,7 @@ export function MapPicker({ lat, lon, onChange, readOnly, height = 300, hint }: 
           {msg && <p className="hint">{msg}</p>}
         </div>
       )}
-      <MapContainer center={lat != null && lon != null ? [lat, lon] : VENETO} zoom={lat != null ? 15 : 8} style={{ height }} scrollWheelZoom={!readOnly} dragging={!readOnly || true}>
+      <MapContainer center={lat != null && lon != null ? [lat, lon] : VENETO} zoom={lat != null ? 15 : 8} scrollWheelZoom={!readOnly} dragging={!readOnly || true}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="Satellite">
             <TileLayer
