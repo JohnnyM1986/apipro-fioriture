@@ -9,6 +9,10 @@
 # elevation_covariate: la quota entra come covariata del modello.
 # calibration_zones: zone dei punti di riferimento (config/points.yaml) dove la finestra di letteratura
 #   si considera valida per la calibrazione; se assente: pianura e collina [DA VERIFICARE con UNIPD].
+# partner_thresholds: soglie in gradi giorno fornite da UNIPD (M. Birolo, file ApiPRO_GDD_5specie.xlsx, mail 20/11/2026),
+#   adattate alle fasi F1/F3/F5 del protocollo. Stime di letteratura "per test preliminare" (validazione: TEST SOLTANTO
+#   o PARZIALE). start = inizio accumulo MM-GG (nel file "01-03" = 1° marzo); start_type: date | sowing | emergence.
+#   threshold_source: partner = il modello usa queste soglie; inverse = calibrazione inversa dalla finestra (release 0.2).
 
 species:
   - id: robinia
@@ -20,6 +24,9 @@ species:
     base_temp_c: 5
     elevation_covariate: true
     notes: "Fioritura breve e precoce; variabile chiave anticipo/ritardo."
+    threshold_source: partner
+    partner_thresholds: {base_temp_c: 5, start: "03-01", start_type: date, F1: 350, F3: 450, F5: 550, validation: "TEST SOLTANTO",
+      note: "Il modello pubblicato usa NHH, non GDD", source: "https://doi.org/10.3390/agronomy12071623", source_label: "UNIPD (Birolo) 20/11/2026"}
 
   - id: castagno
     label: Castagno
@@ -30,6 +37,9 @@ species:
     base_temp_c: 5
     elevation_covariate: true
     notes: "Inizio fioritura circa +1 giorno ogni 40 m di quota (Att.8 v2 [7], Waldwissen, Ticino)."
+    threshold_source: partner
+    partner_thresholds: {base_temp_c: 5, start: "03-01", start_type: date, F1: 950, F3: 1100, F5: 1250, validation: "TEST SOLTANTO",
+      note: "Soglie esplorative senza calibrazione", source: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10457223/", source_label: "UNIPD (Birolo) 20/11/2026"}
 
   - id: tiglio
     label: Tiglio
@@ -40,6 +50,9 @@ species:
     base_temp_c: 5
     elevation_covariate: true
     notes: "Specie spontanee e ornamentali con fioriture sfasate: modellizzato a livello di genere [DA VERIFICARE]."
+    threshold_source: partner
+    partner_thresholds: {base_temp_c: 5, start: "03-01", start_type: date, F1: 800, F3: 950, F5: 1100, validation: "TEST SOLTANTO",
+      note: "Comprende specie con fioriture differenti", source: "https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A24544/datastream/PDF2/Geng-2020-Climate_warming_increases_spring_phenological-%28accepted_version%29.pdf", source_label: "UNIPD (Birolo) 20/11/2026"}
 
   - id: colza
     label: Colza
@@ -50,6 +63,8 @@ species:
     base_temp_c: 5
     elevation_covariate: false
     notes: "Dipende da epoca di semina e gestione colturale."
+    partner_thresholds: {base_temp_c: 4, start: null, start_type: sowing, F1: 1050, F3: 1188, F5: 1350, validation: "PARZIALE",
+      note: "1188 GDD per la fase di fioritura dalla semina in una cultivar specifica", source: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10907774/", source_label: "UNIPD (Birolo) 20/11/2026"}
 
   - id: girasole
     label: Girasole
@@ -60,6 +75,8 @@ species:
     base_temp_c: 5
     elevation_covariate: false
     notes: "Dipende dalla data di semina; il modello a gradi giorno dovrà partire dalla semina."
+    partner_thresholds: {base_temp_c: 6, start: null, start_type: emergence, F1: 720, F3: 817, F5: 930, validation: "PARZIALE",
+      note: "817 GDD per l'antesi dall'emergenza in una cultivar specifica", source: "https://doi.org/10.1016/j.indcrop.2024.119383", source_label: "UNIPD (Birolo) 20/11/2026"}
 
   - id: tarassaco
     label: Tarassaco

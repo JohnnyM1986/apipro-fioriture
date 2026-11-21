@@ -112,7 +112,7 @@ Dettagli in [`docs/ARCHITETTURA.md`](docs/ARCHITETTURA.md).
 ## Piano di sviluppo
 
 - [x] **Fase 1 – Raccolta**: WebApp di segnalazione secondo protocollo, database, esportazione CSV *(release 0.1, in prova con l'Università di Padova)*
-- [~] **Fase 2 – Previsioni** (in corso, versione sperimentale 0.2): modello a gradi giorno con dati Open-Meteo ERA5-Land e previsioni a 16 giorni, calcolo notturno, schermata Previsioni – vedi [docs/PREVISIONI.md](docs/PREVISIONI.md)
+- [~] **Fase 2 – Previsioni** (in corso, versione sperimentale 0.3): modello a gradi giorno (soglie UNIPD per robinia, castagno e tiglio) con dati Open-Meteo ERA5-Land e previsioni a 16 giorni, calcolo notturno, schermata Previsioni – vedi [docs/PREVISIONI.md](docs/PREVISIONI.md)
 - [ ] **Fase 3 – Calibrazione**: ricalibrazione automatica con le segnalazioni, registro delle versioni del modello ed errore medio in giorni
 - [ ] **Fase 4 – Mappe**: livelli di potenzialità mellifera da Earth Engine e indice millefiori
 

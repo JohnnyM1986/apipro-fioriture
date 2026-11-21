@@ -68,3 +68,21 @@ def test_dati_osservati_fissano_la_data():
 def test_fase_di_oggi():
     pred = {"F1": {"p50": 100}, "F3": {"p50": 115}, "F5": {"p50": 130}}
     assert [thermal.phase_today(pred, d) for d in (90, 105, 115, 125, 140)] == ["F0", "F1", "F3", "F4", "F5"]
+
+
+def test_soglie_partner_con_inizio_accumulo():
+    sp = {"id": "robinia", "partner_thresholds": {"base_temp_c": 5, "start": "03-01", "start_type": "date",
+                                                 "F1": 350, "F3": 450, "F5": 550}}
+    cal = thermal.partner_calibration(sp)
+    assert cal.thresholds == {"F1": 350.0, "F3": 450.0, "F5": 550.0} and cal.start == "03-01"
+    t = thermal.tmean(synthetic())
+    g = thermal.season_gdd(t, 2025, cal)
+    assert g[: thermal.doy(date(2025, 3, 1)) - 1].sum() == 0 and g.sum() > 0
+    da_gennaio = thermal.Calibration("x", 5.0, cal.thresholds, {}, 0, [])
+    assert thermal.observed_dates(t, 2025, cal)["F1"] > thermal.observed_dates(t, 2025, da_gennaio)["F1"]
+
+
+def test_soglie_da_semina_non_usate_senza_data():
+    sp = {"id": "colza", "partner_thresholds": {"base_temp_c": 4, "start": None, "start_type": "sowing",
+                                               "F1": 1050, "F3": 1188, "F5": 1350}}
+    assert thermal.partner_calibration(sp) is None

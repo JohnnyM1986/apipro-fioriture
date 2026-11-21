@@ -3,7 +3,9 @@
   --green-d: #262c1f;
   --honey: #d2893c;
   --brown: #5e4a33;
-  --bg: #faf7f1;
+  --bg: #f6f4ea;
+  --meadow: #7d9a4b;
+  --meadow-l: #e6edd5;
   --card: #ffffff;
   --text: #1f2a1c;
   --muted: #5f6b5a;
@@ -156,3 +158,21 @@ h1, h2 { color: var(--green); }
 .fc-how summary { font-weight: 700; color: var(--green-d); cursor: pointer; }
 .fc-gps { margin-top: 0.5rem; }
 .fc-place select { width: 100%; min-width: 0; }
+
+/* ---- Veste A «Prato» + tacche di avanzamento dalla proposta B (release 0.3, 21/11/2026) ---- */
+body { background: linear-gradient(180deg, #f6f4ea 0%, #f1f3e4 60%, #e9efd8 100%) fixed; }
+.top { box-shadow: 0 2px 0 var(--honey); }
+.fc-card, .fc-teaser, .fc-how, .choice { border-color: #dfe3cc; box-shadow: 0 1px 2px rgba(54, 61, 45, 0.06); }
+.fc-card.now { border-color: var(--honey); box-shadow: inset 4px 0 0 var(--honey), 0 1px 2px rgba(54, 61, 45, 0.08); }
+.fc-pill { background: var(--meadow-l); color: #4b5f2a; }
+.fc-bar .track { background: var(--meadow-l); }
+.fc-bar .mark { top: 5px; width: 2px; height: 17px; background: var(--green); opacity: 0.35; border-radius: 1px; transform: translateX(-1px); }
+.fc-bar .mark.F3 { opacity: 0.7; }
+.fc-ticks { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-top: 0.55rem; }
+.fc-ticks .tick { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
+.fc-ticks .tick span { width: 100%; height: 7px; border-radius: 4px; background: #e7e2d4; }
+.fc-ticks .tick.past span { background: var(--meadow); }
+.fc-ticks .tick.cur span { background: var(--honey); height: 9px; box-shadow: 0 0 0 2px #fbe9d2; }
+.fc-ticks .tick small { font-size: 0.66rem; color: #9a9282; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.fc-ticks .tick.cur small { color: #9a5a17; font-weight: 700; }
+.steps .done span { background: var(--meadow); }

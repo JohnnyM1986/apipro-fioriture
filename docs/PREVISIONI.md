@@ -1,4 +1,4 @@
-# Previsioni di fioritura – fase 2 (release 0.2, versione sperimentale)
+# Previsioni di fioritura – fase 2 (release 0.3, versione sperimentale)
 
 Questo documento descrive il modello che calcola, ogni notte, quando sono attese le fioriture delle specie
 di interesse apistico nei punti di riferimento del Veneto. È la base della schermata **Previsioni** della WebApp.
@@ -17,7 +17,8 @@ pubblicato insieme alla WebApp.
 
 1. **Temperatura media giornaliera**: `Tmedia = (Tmax + Tmin) / 2` per ogni punto, dati ERA5-Land tramite Open-Meteo.
    La quota è già considerata: Open-Meteo riporta la temperatura alla quota del punto con un modello del terreno a 90 m.
-2. **Gradi giorno**: `GDD = max(Tmedia − Tbase, 0)`, con `Tbase = 5 °C` (come lo script GEE V1), accumulati dal 1° gennaio.
+2. **Gradi giorno**: `GDD = max(Tmedia − Tbase, 0)`, con `Tbase = 5 °C` (come lo script GEE V1), accumulati dal 1° gennaio
+   (dal 1° marzo per le specie con soglie UNIPD, vedi sotto).
 3. **Calibrazione inversa** (dalla letteratura): per ogni specie si prendono le date indicate dalla letteratura
    (F1 = inizio della finestra, F5 = fine, F3 = metà; oppure le date medie fornite dal partner scientifico, campo
    `reference_dates` in `config/species.yaml`) e si calcolano i gradi giorno accumulati a quelle date in ogni anno
@@ -29,6 +30,38 @@ pubblicato insieme alla WebApp.
    il ritardo scende a circa 7 giorni [DA VERIFICARE con UNIPD la scelta del periodo].
 5. **Specie "solo calendario"** (colza, girasole, edera, astro marino): dipendono da semina, gestione o hanno fioritura
    autunnale; per ora si mostra la finestra di letteratura senza margine statistico.
+
+## Soglie UNIPD (release 0.3, 21/11/2026)
+
+Il 20/11/2026 UNIPD (M. Birolo, cc L. Marini) ha fornito il file `ApiPRO_GDD_5specie.xlsx` con le soglie in gradi giorno
+per F1/F3/F5 di 5 specie, adattate alle fasi del protocollo. Sono **stime di letteratura per un test preliminare**
+(validazione "TEST SOLTANTO" o "PARZIALE"), salvate in `config/species.yaml` (campo `partner_thresholds`, con fonte).
+
+| Specie | T base | Accumulo dal | GDD F1 / F3 / F5 | Uso nel modello |
+|---|---|---|---|---|
+| Robinia | 5 °C | 1° marzo | 350 / 450 / 550 | **attivo** (`threshold_source: partner`) |
+| Castagno | 5 °C | 1° marzo | 950 / 1100 / 1250 | **attivo** |
+| Tiglio | 5 °C | 1° marzo | 800 / 950 / 1100 | **attivo** |
+| Colza | 4 °C | semina | 1050 / 1188 / 1350 | salvato, non usato: serve la data di semina reale |
+| Girasole | 6 °C | emergenza | 720 / 817 / 930 | salvato, non usato: serve la data di emergenza reale |
+
+Per robinia, castagno e tiglio la previsione usa ora le soglie UNIPD al posto della calibrazione inversa; per le altre specie
+resta la calibrazione inversa dalla finestra di letteratura. Colza e girasole restano "solo calendario" finché l'app non
+raccoglie semina/emergenza (proposta: campo facoltativo nella segnalazione, fase 3 [DA VERIFICARE con UNIPD]).
+La verifica a ritroso (`model/output/hindcast.md`) contiene il confronto tra le due serie di soglie:
+
+| Specie | Soglie | F1 | F3 | F5 |
+|---|---|---|---|---|
+| Robinia | UNIPD | 05/05 | 14/05 | 23/05 |
+| Robinia | letteratura (0.2) | 30/03 | 28/04 | 29/05 |
+| Castagno | UNIPD | 20/06 | 29/06 | 07/07 |
+| Castagno | letteratura (0.2) | 30/05 | 13/06 | 28/06 |
+| Tiglio | UNIPD | 10/06 | 20/06 | 29/06 |
+| Tiglio | letteratura (0.2) | 28/04 | 13/06 | 28/07 |
+
+Date mediane nei punti di pianura e collina, anni 2006–2025, meteo reale ERA5-Land. Con le soglie UNIPD le fasi sono più
+brevi e realistiche; l'inizio fioritura della robinia (inizio maggio) e del castagno (20 giugno) in pianura e collina risulta
+però più tardivo delle date abituali in Veneto [DA VERIFICARE con UNIPD: soglie F1 o data di inizio accumulo].
 
 ## Punti di riferimento
 

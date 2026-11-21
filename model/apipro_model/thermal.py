@@ -70,9 +70,40 @@ class Calibration:
     species_id: str
     base: float
     thresholds: dict[str, float]          # gradi giorno per F1/F3/F5
-    spread: dict[str, tuple[float, float]]  # 10°-90° percentile dei valori usati
+    spread: dict[str, tuple[float, float]]  # 10°-90° percentile dei valori usati (vuoto per le soglie del partner)
     n_samples: int
     points: list[str]
+    start: str | None = None              # inizio accumulo "MM-GG" come reference_dates (None = 1° gennaio)
+    source: str = "calibrazione inversa dalla finestra di letteratura"
+
+
+def start_index(start: str | None, year: int) -> int:
+    """Indice (0 = 1° gennaio) da cui si accumulano i gradi giorno."""
+    if not start:
+        return 0
+    m, d = (int(x) for x in start.split("-"))  # "03-01" = 1° marzo
+    return doy(date(year, m, d)) - 1
+
+
+def season_gdd(t: pd.Series, year: int, cal: "Calibration") -> np.ndarray:
+    """Gradi giorno dell'anno con l'accumulo che parte dalla data di inizio della specie."""
+    g = year_gdd(t, year, cal.base)
+    g[: start_index(cal.start, year)] = 0.0
+    return g
+
+
+def partner_calibration(species: dict) -> Calibration | None:
+    """Soglie fornite dal partner scientifico (es. UNIPD, file ApiPRO_GDD_5specie.xlsx).
+
+    Valide solo con inizio accumulo a data fissa; quelle che partono da semina/emergenza
+    richiedono la data reale e restano informative finché l'app non la raccoglie.
+    """
+    pt = species.get("partner_thresholds")
+    if not pt or pt.get("start_type", "date") != "date":
+        return None
+    return Calibration(species["id"], float(pt["base_temp_c"]),
+                       {ph: float(pt[ph]) for ph in PHASES}, {}, 0, [],
+                       start=pt.get("start"), source=pt.get("source_label", "soglie del partner scientifico"))
 
 
 def calibrate(species: dict, temps: dict[str, pd.Series], points: list[dict]) -> Calibration | None:
@@ -104,14 +135,14 @@ def forecast_point(t: pd.Series, season: int, known_until: date, cal: Calibratio
     """
     days = pd.date_range(f"{season}-01-01", f"{season}-12-31", freq="D")
     n = len(days)
-    obs = year_gdd(t[t.index <= pd.Timestamp(known_until)], season, cal.base)
+    obs = season_gdd(t[t.index <= pd.Timestamp(known_until)], season, cal)
     k = 0 if known_until < date(season, 1, 1) else min(n, doy(known_until) if known_until.year == season else n)
     head = np.nan_to_num(obs[:k], nan=0.0)
     results: dict[str, list[int | None]] = {ph: [] for ph in PHASES}
     for a in analog_years:
         if a == season:
             continue
-        ga = year_gdd(t, a, cal.base)
+        ga = season_gdd(t, a, cal)
         if np.isnan(ga).sum() > 5:
             continue
         ga = np.nan_to_num(ga, nan=0.0)
@@ -137,7 +168,7 @@ def forecast_point(t: pd.Series, season: int, known_until: date, cal: Calibratio
 
 def observed_dates(t: pd.Series, year: int, cal: Calibration) -> dict[str, int | None]:
     """Date raggiunte con il meteo reale dell'intero anno (riferimento della verifica a ritroso)."""
-    g = year_gdd(t, year, cal.base)
+    g = season_gdd(t, year, cal)
     if np.isnan(g).sum() > 5:
         return {ph: None for ph in PHASES}
     cum = np.nancumsum(g)

@@ -16,7 +16,14 @@ export interface ForecastFile {
   issued: string
   known_until: string
   sources: string[]
-  species: Record<string, { model: 'thermal_time' | 'calendar'; window: unknown; thresholds_gdd: Record<string, number> | null }>
+  species: Record<string, {
+    model: 'thermal_time' | 'calendar'
+    window: unknown
+    thresholds_gdd: Record<string, number> | null
+    threshold_source?: string | null
+    accumulation_start?: string | null
+    validation?: string | null
+  }>
   points: ForecastPoint[]
   predictions: Record<string, Record<string, SpeciesForecast>>
 }

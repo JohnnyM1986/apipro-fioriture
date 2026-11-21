@@ -4,6 +4,13 @@ import { SpeciesBadge } from '../components/SpeciesBadge'
 import type { Site } from '../lib/types'
 import { dateToDoy, describe, doyToDate, loadForecast, nearestPoint, type ForecastFile } from '../lib/forecast'
 
+function fmtStart(mmdd: string | null | undefined): string {
+  if (!mmdd || mmdd === '01-01') return '1° gennaio'
+  const [m, d] = mmdd.split('-').map(Number)
+  const mesi = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre']
+  return `${d === 1 ? '1°' : d} ${mesi[m - 1]}`
+}
+
 const MONTHS = ['feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott']
 const BAR_START = 32 // 1 febbraio
 const BAR_END = 304 // 31 ottobre
@@ -11,6 +18,32 @@ const pct = (doy: number) => `${Math.min(100, Math.max(0, ((doy - BAR_START) / (
 const width = (a: number, b: number) => `calc(${pct(b)} - ${pct(a)})`
 
 const STORE_KEY = 'apipro.forecastPoint'
+
+const TICKS: { code: string; label: string }[] = [
+  { code: 'F0', label: 'Prima' },
+  { code: 'F1', label: 'Inizio' },
+  { code: 'F2', label: 'Aumento' },
+  { code: 'F3', label: 'Piena' },
+  { code: 'F4', label: 'In calo' },
+  { code: 'F5', label: 'Finita' }
+]
+
+/** Tacche di avanzamento della fioritura (F0–F5): la fase attesa oggi è evidenziata, quelle passate piene. */
+function PhaseTicks({ phase }: { phase: string | null }) {
+  if (!phase) return null
+  // il modello restituisce F0, F1 (inizio e aumento), F3, F4, F5
+  const cur = TICKS.findIndex((t) => t.code === phase)
+  return (
+    <div className="fc-ticks" role="img" aria-label={`Fase attesa oggi: ${TICKS[cur]?.label ?? phase}`}>
+      {TICKS.map((t, i) => (
+        <div key={t.code} className={`tick ${i < cur ? 'past' : i === cur ? 'cur' : ''}`}>
+          <span />
+          <small>{i === cur ? t.label : t.code}</small>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export function Forecast({ sites }: { sites: Site[] }) {
   const [data, setData] = useState<ForecastFile | null | undefined>(undefined)
@@ -61,7 +94,7 @@ export function Forecast({ sites }: { sites: Site[] }) {
       const f = preds[s.id]
       const st = describe(data.season, f, todayDoy)
       const order = st.key === 'now' ? 0 : st.key === 'before' ? 1 : st.key === 'after' ? 2 : 3
-      return { s, f, st, order, model: data.species[s.id]?.model }
+      return { s, f, st, order, model: data.species[s.id]?.model, info: data.species[s.id] }
     }).sort((a, b) => a.order - b.order || (a.f.F1?.p50 ?? 999) - (b.f.F1?.p50 ?? 999))
   }, [data, point, todayDoy])
 
@@ -99,7 +132,7 @@ export function Forecast({ sites }: { sites: Site[] }) {
         {!seasonStarted && ` · stagione ${data.season} non ancora iniziata: date calcolate con il meteo degli ultimi 20 anni`}
       </p>
 
-      {cards.map(({ s, f, st, model }) => (
+      {cards.map(({ s, f, st, model, info }) => (
         <article key={s.id} className={`fc-card ${st.key}`}>
           <div className="fc-row">
             <SpeciesBadge s={s} size={46} />
@@ -114,21 +147,27 @@ export function Forecast({ sites }: { sites: Site[] }) {
               <div className="track" />
               <div className="band" style={{ left: pct(f.F1.p10), width: width(f.F1.p10, f.F5.p90) }} />
               {f.F3 && <div className="core" style={{ left: pct(f.F3.p10), width: width(f.F3.p10, Math.max(f.F3.p90, f.F3.p10 + 2)) }} />}
+              {(['F1', 'F3', 'F5'] as const).map((k) => f[k] && <div key={k} className={`mark ${k}`} style={{ left: pct(f[k]!.p50) }} title={k} />)}
               {todayDoy != null && todayDoy >= BAR_START && todayDoy <= BAR_END && <div className="today" style={{ left: pct(todayDoy) }} />}
             </div>
           )}
           {f.F1 && f.F5 && <div className="fc-months">{MONTHS.map((m) => <span key={m}>{m}</span>)}</div>}
+          {seasonStarted && <PhaseTicks phase={f.phase_today} />}
           {model === 'calendar' && <p className="fc-small">Solo calendario da letteratura: la data dipende da semina o gestione e verrà affinata con le vostre segnalazioni.</p>}
+          {info?.validation && (
+            <p className="fc-small">Soglie dell'Università di Padova (gradi giorno dal {fmtStart(info.accumulation_start)}): stima per test preliminare, in validazione.</p>
+          )}
         </article>
       ))}
 
       <details className="fc-how">
         <summary>Come funziona la previsione</summary>
         <p>
-          Ogni notte il modello somma il calore accumulato dal 1° gennaio (gradi giorno sopra 5 °C) con le temperature
+          Ogni notte il modello somma il calore accumulato (gradi giorno sopra 5 °C) con le temperature
           misurate e previste a 16 giorni (Open-Meteo, dati ERA5-Land del programma europeo Copernicus). Ogni specie fiorisce
-          quando supera la propria soglia, ricavata dalle finestre di fioritura della letteratura scientifica. Oltre i 16 giorni
-          si usa il meteo degli anni 1991–2020: la barra chiara indica il margine, quella scura la piena fioritura.
+          quando supera la propria soglia: per acacia, castagno e tiglio le soglie indicate dall'Università di Padova
+          (accumulo dal 1° marzo), per le altre specie soglie ricavate dalle finestre di fioritura della letteratura scientifica.
+          Oltre i 16 giorni si usa il meteo dei 20 anni precedenti: la barra chiara indica il margine, quella scura la piena fioritura.
           Con le vostre segnalazioni le soglie verranno ricalibrate sul Veneto.
         </p>
         <p className="fc-small">

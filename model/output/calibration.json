@@ -1,131 +1,46 @@
 {
  "robinia": {
+  "source": "UNIPD (Birolo) 20/11/2026",
+  "accumulation_start": "03-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
-   "F1": 124.7,
-   "F3": 323.2,
-   "F5": 664.2
+   "F1": 350.0,
+   "F3": 450.0,
+   "F5": 550.0
   },
-  "spread_p10_p90": {
-   "F1": [
-    62.0,
-    212.9
-   ],
-   "F3": [
-    227.3,
-    445.0
-   ],
-   "F5": [
-    514.3,
-    826.2
-   ]
-  },
-  "n_samples": 510,
-  "calibration_points": [
-   "venezia",
-   "padova",
-   "treviso",
-   "vicenza",
-   "verona",
-   "rovigo",
-   "portegrandi",
-   "santa_giustina",
-   "crocetta",
-   "susegana",
-   "pederobba",
-   "bassano",
-   "valdobbiadene",
-   "schio",
-   "teolo",
-   "belluno",
-   "feltre"
-  ]
+  "spread_p10_p90": {},
+  "n_samples": 0,
+  "calibration_points": []
  },
  "castagno": {
+  "source": "UNIPD (Birolo) 20/11/2026",
+  "accumulation_start": "03-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
-   "F1": 678.2,
-   "F3": 880.9,
-   "F5": 1117.6
+   "F1": 950.0,
+   "F3": 1100.0,
+   "F5": 1250.0
   },
-  "spread_p10_p90": {
-   "F1": [
-    524.8,
-    841.3
-   ],
-   "F3": [
-    691.5,
-    1070.0
-   ],
-   "F5": [
-    905.5,
-    1322.2
-   ]
-  },
-  "n_samples": 510,
-  "calibration_points": [
-   "venezia",
-   "padova",
-   "treviso",
-   "vicenza",
-   "verona",
-   "rovigo",
-   "portegrandi",
-   "santa_giustina",
-   "crocetta",
-   "susegana",
-   "pederobba",
-   "bassano",
-   "valdobbiadene",
-   "schio",
-   "teolo",
-   "belluno",
-   "feltre"
-  ]
+  "spread_p10_p90": {},
+  "n_samples": 0,
+  "calibration_points": []
  },
  "tiglio": {
+  "source": "UNIPD (Birolo) 20/11/2026",
+  "accumulation_start": "03-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
-   "F1": 323.2,
-   "F3": 880.9,
-   "F5": 1654.5
+   "F1": 800.0,
+   "F3": 950.0,
+   "F5": 1100.0
   },
-  "spread_p10_p90": {
-   "F1": [
-    227.3,
-    445.0
-   ],
-   "F3": [
-    691.5,
-    1070.0
-   ],
-   "F5": [
-    1389.6,
-    1912.0
-   ]
-  },
-  "n_samples": 510,
-  "calibration_points": [
-   "venezia",
-   "padova",
-   "treviso",
-   "vicenza",
-   "verona",
-   "rovigo",
-   "portegrandi",
-   "santa_giustina",
-   "crocetta",
-   "susegana",
-   "pederobba",
-   "bassano",
-   "valdobbiadene",
-   "schio",
-   "teolo",
-   "belluno",
-   "feltre"
-  ]
+  "spread_p10_p90": {},
+  "n_samples": 0,
+  "calibration_points": []
  },
  "tarassaco": {
+  "source": "calibrazione inversa dalla finestra di letteratura",
+  "accumulation_start": "01-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
    "F1": 4.3,
@@ -168,6 +83,8 @@
   ]
  },
  "amorfa": {
+  "source": "calibrazione inversa dalla finestra di letteratura",
+  "accumulation_start": "01-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
    "F1": 323.2,
@@ -210,6 +127,8 @@
   ]
  },
  "rododendro": {
+  "source": "calibrazione inversa dalla finestra di letteratura",
+  "accumulation_start": "01-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
    "F1": 193.7,
@@ -240,6 +159,8 @@
   ]
  },
  "limonio": {
+  "source": "calibrazione inversa dalla finestra di letteratura",
+  "accumulation_start": "01-01",
   "base_temp_c": 5.0,
   "thresholds_gdd": {
    "F1": 817.8,

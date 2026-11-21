@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT / "model"))
 
 from apipro_model import openmeteo, thermal  # noqa: E402
 
-MODEL_VERSION = "0.2.0"
+MODEL_VERSION = "0.3.0"
 HISTORY = ROOT / "model" / "data" / "history.csv.gz"
 ELEVATIONS = ROOT / "model" / "data" / "elevations.json"
 OUT = ROOT / "model" / "output"
@@ -94,15 +94,56 @@ def cmd_fetch_history(_args) -> None:
 
 
 # ---------------------------------------------------------------- calibrazione
-def calibrations(species, points, temps) -> dict[str, thermal.Calibration]:
+def calibrations(species, points, temps, source: str | None = None) -> dict[str, thermal.Calibration]:
+    """Soglie per specie. source=None segue threshold_source in species.yaml (partner o inverse);
+    "inverse" o "partner" forzano il tipo, per il confronto."""
     cals = {}
     for s in species:
         if s.get("model") != "thermal_time" or not s.get("literature_window"):
             continue
-        c = thermal.calibrate(s, temps, points)
+        want = source or s.get("threshold_source", "inverse")
+        c = thermal.partner_calibration(s) if want == "partner" else thermal.calibrate(s, temps, points)
         if c:
             cals[s["id"]] = c
     return cals
+
+
+COMPARE_YEARS = range(2006, 2026)  # ultimi 20 anni completi, come gli anni analoghi
+
+
+def compare_sources(species, points, temps) -> list[dict]:
+    """Per le specie con soglie del partner: date medie (pianura e collina, 2006-2025) con le soglie UNIPD
+    e con la calibrazione inversa dalla finestra di letteratura."""
+    part = calibrations(species, points, temps, "partner")
+    inv = calibrations(species, points, temps, "inverse")
+    pts = [p for p in points if p["zone"] in ("pianura", "collina") and p["id"] in temps]
+    rows = []
+    for s in species:
+        sid = s["id"]
+        if sid not in part:
+            continue
+        win = s["literature_window"]
+        for label, cal in (("UNIPD", part[sid]), ("letteratura", inv.get(sid))):
+            if cal is None:
+                continue
+            vals = {ph: [] for ph in thermal.PHASES}
+            for p in pts:
+                for y in COMPARE_YEARS:
+                    od = thermal.observed_dates(temps[p["id"]], y, cal)
+                    for ph, d in od.items():
+                        if d is not None:
+                            vals[ph].append(d)
+            rows.append({"species": sid, "soglie": label,
+                         "gdd": {ph: round(cal.thresholds[ph]) for ph in thermal.PHASES},
+                         "inizio_accumulo": cal.start or "01-01",
+                         "doy_mediana": {ph: (int(np.median(v)) if v else None) for ph, v in vals.items()},
+                         "finestra_letteratura": [win["start_month"], win["end_month"]],
+                         "validazione": (s.get("partner_thresholds") or {}).get("validation") if label == "UNIPD" else None})
+    return rows
+
+
+def _mmdd(d: int | None) -> str:
+    return "—" if d is None else thermal.doy_to_date(2025, d).strftime("%d/%m")
 
 
 def cmd_calibrate(_args) -> None:
@@ -110,7 +151,8 @@ def cmd_calibrate(_args) -> None:
     temps = temps_by_point(load_history())
     cals = calibrations(species, points, temps)
     OUT.mkdir(parents=True, exist_ok=True)
-    data = {sid: {"base_temp_c": c.base, "thresholds_gdd": {k: round(v, 1) for k, v in c.thresholds.items()},
+    data = {sid: {"source": c.source, "accumulation_start": c.start or "01-01",
+                  "base_temp_c": c.base, "thresholds_gdd": {k: round(v, 1) for k, v in c.thresholds.items()},
                   "spread_p10_p90": {k: [round(a, 1), round(b, 1)] for k, (a, b) in c.spread.items()},
                   "n_samples": c.n_samples, "calibration_points": c.points}
             for sid, c in cals.items()}
@@ -175,7 +217,9 @@ def cmd_hindcast(_args) -> None:
            "model_version": MODEL_VERSION, "issue_dates": ISSUE_DATES, "analog_years": ANALOG_YEARS,
            "summary": summary.round(2).to_dict(orient="records"),
            "season_medians": years.round(0).to_dict(orient="records"),
-           "elevation_gradient_F1": grad}
+           "elevation_gradient_F1": grad,
+           "threshold_sources": {sid: c.source for sid, c in cals.items()},
+           "partner_vs_literature": compare_sources(species, points, temps)}
     (OUT / "hindcast.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, default=float))
     df.to_csv(OUT / "hindcast_rows.csv", index=False)
     md = ["# Verifica a ritroso 2024-2025", "",
@@ -188,6 +232,15 @@ def cmd_hindcast(_args) -> None:
         md.append(f"| {r.species} | {r.phase} | {r.issue} | {r.mae_giorni:.1f} | {r.bias_giorni:+.1f} | {r.entro_margine:.0%} | {r.n} |")
     md += ["", "## Gradiente di quota (inizio fioritura F1)", "", "| Specie | Anno | Giorni ogni 100 m | Punti |", "|---|---|---|---|"]
     md += [f"| {g['species']} | {g['year']} | {g['giorni_per_100m']} | {g['n_punti']} |" for g in grad]
+    md += ["", "## Soglie UNIPD a confronto con la calibrazione da letteratura", "",
+           "Date mediane (giorno/mese) nei punti di pianura e collina, anni 2006-2025, con il meteo reale. "
+           "Soglie UNIPD: file ApiPRO_GDD_5specie.xlsx (M. Birolo, 20/11/2026), stime per test preliminare.", "",
+           "| Specie | Soglie | GDD F1/F3/F5 | Accumulo dal | F1 | F3 | F5 | Finestra letteratura (mesi) |",
+           "|---|---|---|---|---|---|---|---|"]
+    for r in out["partner_vs_literature"]:
+        g, dd = r["gdd"], r["doy_mediana"]
+        md.append(f"| {r['species']} | {r['soglie']} | {g['F1']}/{g['F3']}/{g['F5']} | {r['inizio_accumulo']} | "
+                  f"{_mmdd(dd['F1'])} | {_mmdd(dd['F3'])} | {_mmdd(dd['F5'])} | {r['finestra_letteratura'][0]}–{r['finestra_letteratura'][1]} |")
     (OUT / "hindcast.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 
@@ -249,9 +302,14 @@ def cmd_forecast(args) -> None:
         "model_version": MODEL_VERSION, "season": season, "issued": today.isoformat(),
         "known_until": known_until.isoformat(),
         "sources": ["Open-Meteo (ERA5-Land, Copernicus; previsioni a 16 giorni) – CC BY 4.0",
-                    "Finestre di fioritura da letteratura: config/species.yaml"],
+                    "Finestre di fioritura da letteratura: config/species.yaml",
+                    "Soglie GDD robinia, castagno, tiglio: UNIPD (M. Birolo), stime per test preliminare"],
         "species": {s["id"]: {"model": ("thermal_time" if s["id"] in cals else "calendar"),
                               "window": s.get("literature_window"),
+                              "threshold_source": (cals[s["id"]].source if s["id"] in cals else None),
+                              "accumulation_start": ((cals[s["id"]].start or "01-01") if s["id"] in cals else None),
+                              "validation": ((s.get("partner_thresholds") or {}).get("validation")
+                                             if s.get("threshold_source") == "partner" else None),
                               "thresholds_gdd": ({k: round(v) for k, v in cals[s["id"]].thresholds.items()}
                                                  if s["id"] in cals else None)}
                     for s in species if s.get("literature_window")},
