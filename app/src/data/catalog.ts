@@ -8,8 +8,16 @@ export interface Species {
   label: string
   scientific: string
   habitat: string
+  /** Gruppo per il filtro delle Previsioni [DA VERIFICARE con UNIPD] */
+  group: SpeciesGroup
   hint?: string
 }
+
+export type SpeciesGroup = 'alberi' | 'prati'
+export const GROUPS: { id: SpeciesGroup; label: string }[] = [
+  { id: 'alberi', label: 'Alberi' },
+  { id: 'prati', label: 'Prati e campi' }
+]
 
 export interface Phase {
   code: PhaseCode
@@ -19,17 +27,17 @@ export interface Phase {
 }
 
 export const SPECIES: Species[] = [
-  { id: 'robinia', label: 'Acacia (robinia)', scientific: 'Robinia pseudoacacia', habitat: 'Boschi e gruppi di alberi' },
-  { id: 'castagno', label: 'Castagno', scientific: 'Castanea sativa', habitat: 'Castagneti e gruppi di alberi' },
-  { id: 'tiglio', label: 'Tiglio', scientific: 'Tilia spp.', habitat: 'Filari e gruppi di alberi' },
-  { id: 'colza', label: 'Colza', scientific: 'Brassica napus', habitat: 'Campi coltivati', hint: 'Considera il campo nel suo insieme' },
-  { id: 'girasole', label: 'Girasole', scientific: 'Helianthus annuus', habitat: 'Campi coltivati', hint: 'Considera il campo nel suo insieme' },
-  { id: 'tarassaco', label: 'Tarassaco', scientific: 'Taraxacum officinale agg.', habitat: 'Prati e superfici erbose', hint: 'Considera il prato nel suo insieme' },
-  { id: 'amorfa', label: 'Amorfa', scientific: 'Amorpha fruticosa', habitat: 'Siepi e popolamenti spontanei' },
-  { id: 'edera', label: 'Edera', scientific: 'Hedera helix', habitat: 'Su alberi, siepi e muri' },
-  { id: 'rododendro', label: 'Rododendro', scientific: 'Rhododendron spp.', habitat: 'Aree montane e popolamenti di quota' },
-  { id: 'limonio', label: 'Limonio (fiorella di barena)', scientific: 'Limonium narbonense', habitat: 'Barena' },
-  { id: 'astro_marino', label: 'Astro marino', scientific: 'Tripolium pannonicum', habitat: 'Barena' }
+  { id: 'robinia', label: 'Acacia (robinia)', scientific: 'Robinia pseudoacacia', habitat: 'Boschi e gruppi di alberi', group: 'alberi' },
+  { id: 'castagno', label: 'Castagno', scientific: 'Castanea sativa', habitat: 'Castagneti e gruppi di alberi', group: 'alberi' },
+  { id: 'tiglio', label: 'Tiglio', scientific: 'Tilia spp.', habitat: 'Filari e gruppi di alberi', group: 'alberi' },
+  { id: 'colza', label: 'Colza', scientific: 'Brassica napus', habitat: 'Campi coltivati', group: 'prati', hint: 'Considera il campo nel suo insieme' },
+  { id: 'girasole', label: 'Girasole', scientific: 'Helianthus annuus', habitat: 'Campi coltivati', group: 'prati', hint: 'Considera il campo nel suo insieme' },
+  { id: 'tarassaco', label: 'Tarassaco', scientific: 'Taraxacum officinale agg.', habitat: 'Prati e superfici erbose', group: 'prati', hint: 'Considera il prato nel suo insieme' },
+  { id: 'amorfa', label: 'Amorfa', scientific: 'Amorpha fruticosa', habitat: 'Siepi e popolamenti spontanei', group: 'alberi' },
+  { id: 'edera', label: 'Edera', scientific: 'Hedera helix', habitat: 'Su alberi, siepi e muri', group: 'alberi' },
+  { id: 'rododendro', label: 'Rododendro', scientific: 'Rhododendron spp.', habitat: 'Aree montane e popolamenti di quota', group: 'alberi' },
+  { id: 'limonio', label: 'Limonio (fiorella di barena)', scientific: 'Limonium narbonense', habitat: 'Barena', group: 'prati' },
+  { id: 'astro_marino', label: 'Astro marino', scientific: 'Tripolium pannonicum', habitat: 'Barena', group: 'prati' }
 ]
 
 export const PHASES: Phase[] = [

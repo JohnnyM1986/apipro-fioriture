@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
-import { SPECIES } from '../data/catalog'
+import { useState, type ReactNode } from 'react'
+import { GROUPS, type SpeciesGroup } from '../data/catalog'
 import { SpeciesBadge } from '../components/SpeciesBadge'
-import type { Site } from '../lib/types'
-import { dateToDoy, describe, doyToDate, loadForecast, nearestPoint, type ForecastFile } from '../lib/forecast'
+import { Meter } from '../components/Meter'
+import { IconClock, IconLocate, IconPin } from '../components/Icons'
+import { doyToDate, nearestPoint, placeWord, updatedLabel } from '../lib/forecast'
+import type { ForecastState } from '../lib/useForecast'
 
 function fmtStart(mmdd: string | null | undefined): string {
   if (!mmdd || mmdd === '01-01') return '1° gennaio'
@@ -11,58 +13,22 @@ function fmtStart(mmdd: string | null | undefined): string {
   return `${d === 1 ? '1°' : d} ${mesi[m - 1]}`
 }
 
-const MONTHS = ['feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott']
-const BAR_START = 32 // 1 febbraio
-const BAR_END = 304 // 31 ottobre
+/** "Piena fioritura 2–9 maggio": le date in grassetto. */
+function boldDates(text: string): ReactNode {
+  const m = text.match(/^(\D+?)\s(\d.*)$/)
+  return m ? <>{m[1]} <b>{m[2]}</b></> : text
+}
+
+const MONTHS = ['mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set']
+const BAR_START = 60 // 1 marzo
+const BAR_END = 273 // 30 settembre
 const pct = (doy: number) => `${Math.min(100, Math.max(0, ((doy - BAR_START) / (BAR_END - BAR_START)) * 100))}%`
 const width = (a: number, b: number) => `calc(${pct(b)} - ${pct(a)})`
 
-const STORE_KEY = 'apipro.forecastPoint'
-
-const TICKS: { code: string; label: string }[] = [
-  { code: 'F0', label: 'Prima' },
-  { code: 'F1', label: 'Inizio' },
-  { code: 'F2', label: 'Aumento' },
-  { code: 'F3', label: 'Piena' },
-  { code: 'F4', label: 'In calo' },
-  { code: 'F5', label: 'Finita' }
-]
-
-/** Tacche di avanzamento della fioritura (F0–F5): la fase attesa oggi è evidenziata, quelle passate piene. */
-function PhaseTicks({ phase }: { phase: string | null }) {
-  if (!phase) return null
-  // il modello restituisce F0, F1 (inizio e aumento), F3, F4, F5
-  const cur = TICKS.findIndex((t) => t.code === phase)
-  return (
-    <div className="fc-ticks" role="img" aria-label={`Fase attesa oggi: ${TICKS[cur]?.label ?? phase}`}>
-      {TICKS.map((t, i) => (
-        <div key={t.code} className={`tick ${i < cur ? 'past' : i === cur ? 'cur' : ''}`}>
-          <span />
-          <small>{i === cur ? t.label : t.code}</small>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-export function Forecast({ sites }: { sites: Site[] }) {
-  const [data, setData] = useState<ForecastFile | null | undefined>(undefined)
-  const [pointId, setPointId] = useState<string>(() => {
-    try { return localStorage.getItem(STORE_KEY) ?? '' } catch { return '' }
-  })
+export function Forecast({ fc, badge }: { fc: ForecastState; badge?: ReactNode }) {
+  const { data, point, choose, todayDoy, seasonStarted, cards } = fc
   const [gpsMsg, setGpsMsg] = useState('')
-
-  useEffect(() => { loadForecast().then(setData) }, [])
-
-  // punto iniziale: scelta precedente, altrimenti il più vicino al primo luogo salvato, altrimenti Treviso
-  useEffect(() => {
-    if (!data || (pointId && data.points.some((p) => p.id === pointId))) return
-    const s = sites[0]
-    const near = s ? nearestPoint(data.points, s.lat, s.lon)?.point.id : undefined
-    setPointId(near ?? data.points.find((p) => p.id === 'treviso')?.id ?? data.points[0]?.id ?? '')
-  }, [data, sites, pointId])
-
-  const choose = (id: string) => { setPointId(id); try { localStorage.setItem(STORE_KEY, id) } catch { /* memoria non disponibile */ } }
+  const [group, setGroup] = useState<SpeciesGroup | 'all'>('all')
 
   const useGps = () => {
     if (!data || !navigator.geolocation) return setGpsMsg('Posizione non disponibile su questo dispositivo.')
@@ -77,88 +43,82 @@ export function Forecast({ sites }: { sites: Site[] }) {
     )
   }
 
-  const point = data?.points.find((p) => p.id === pointId)
-  const today = new Date()
-  // giorno della stagione (negativo se la stagione inizia il prossimo anno)
-  const todayDoy = data
-    ? data.season === today.getFullYear()
-      ? dateToDoy(today)
-      : Math.round((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(data.season, 0, 1)) / 86400000) + 1
-    : null
-  const seasonStarted = !!data && data.season === today.getFullYear()
-
-  const cards = useMemo(() => {
-    if (!data || !point) return []
-    const preds = data.predictions[point.id] ?? {}
-    return SPECIES.filter((s) => preds[s.id]).map((s) => {
-      const f = preds[s.id]
-      const st = describe(data.season, f, todayDoy)
-      const order = st.key === 'now' ? 0 : st.key === 'before' ? 1 : st.key === 'after' ? 2 : 3
-      return { s, f, st, order, model: data.species[s.id]?.model, info: data.species[s.id] }
-    }).sort((a, b) => a.order - b.order || (a.f.F1?.p50 ?? 999) - (b.f.F1?.p50 ?? 999))
-  }, [data, point, todayDoy])
-
   if (data === undefined) return <p className="hint">Caricamento delle previsioni…</p>
   if (data === null)
     return (
       <section>
-        <h1 className="serif">Previsioni</h1>
+        <div className="page-head"><h1>Previsioni</h1>{badge}</div>
         <p className="card muted">Le previsioni non sono ancora disponibili: il calcolo notturno non ha prodotto dati. Riprova più tardi.</p>
       </section>
     )
 
   const sorted = [...data.points].sort((a, b) => a.name.localeCompare(b.name, 'it'))
-  const upd = new Date(data.generated_at).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const shown = cards.filter((c) => group === 'all' || c.s.group === group)
 
   return (
     <section className="forecast">
-      <div className="fc-head">
-        <h1 className="serif">Previsioni {data.season}</h1>
-      </div>
-      <div className="fc-place">
-        <label>
-          <span>Zona di riferimento</span>
-          <select value={pointId} onChange={(e) => choose(e.target.value)}>
+      <div className="page-head">
+        <h1>Previsioni</h1>
+        <label className="place-chip select">
+          <IconPin />
+          <span>{point ? placeWord(point.name) : '—'}{point?.elevation != null ? ` · ${Math.round(point.elevation)} m` : ''}</span>
+          <span className="caret" aria-hidden="true">▾</span>
+          <select aria-label="Zona di riferimento" value={point?.id ?? ''} onChange={(e) => choose(e.target.value)}>
             {sorted.map((p) => (
               <option key={p.id} value={p.id}>{p.name}{p.elevation != null ? ` · ${Math.round(p.elevation)} m` : ''}</option>
             ))}
           </select>
         </label>
       </div>
-      <button className="btn secondary small fc-gps" onClick={useGps}>📍 Usa la mia posizione</button>
+      <div className="fc-tools">
+        <button className="btn quiet" onClick={useGps}><IconLocate /> Usa la mia posizione</button>
+        {badge}
+      </div>
       {gpsMsg && <p className="hint">{gpsMsg}</p>}
-      <p className="fc-note">
-        Aggiornate il {upd} · versione sperimentale {data.model_version}
-        {!seasonStarted && ` · stagione ${data.season} non ancora iniziata: date calcolate con il meteo degli ultimi 20 anni`}
-      </p>
 
-      {cards.map(({ s, f, st, model, info }) => (
-        <article key={s.id} className={`fc-card ${st.key}`}>
-          <div className="fc-row">
-            <SpeciesBadge s={s} size={46} />
-            <div className="fc-t">
-              <b>{s.label}</b>
-              <span>{st.detail}</span>
+      <div className="seg" role="tablist" aria-label="Gruppo di piante">
+        {[{ id: 'all' as const, label: 'Tutte' }, ...GROUPS].map((g) => (
+          <button key={g.id} role="tab" aria-selected={group === g.id} className={group === g.id ? 'on' : ''} onClick={() => setGroup(g.id)}>{g.label}</button>
+        ))}
+      </div>
+
+      <p className="fc-note"><IconClock /> {updatedLabel(data.generated_at, new Date())} · versione sperimentale</p>
+      {!seasonStarted && <p className="fc-small">La stagione {data.season} non è ancora iniziata: date calcolate con il meteo degli ultimi 20 anni.</p>}
+
+      {shown.map(({ s, f, st, phase }) => {
+        const info = data.species[s.id]
+        return (
+          <article key={s.id} className={`fc-card ${st.key}`}>
+            <div className="fc-row">
+              <SpeciesBadge s={s} size={50} />
+              <div className="fc-t">
+                <b>{s.label}</b>
+                <span>{boldDates(st.detail)}</span>
+              </div>
+              <span className={`pill ${st.tone}`}>{st.label}</span>
             </div>
-            <span className={`fc-pill ${st.key}`}>{st.label}</span>
-          </div>
-          {f.F1 && f.F5 && (
-            <div className="fc-bar" aria-hidden="true">
-              <div className="track" />
-              <div className="band" style={{ left: pct(f.F1.p10), width: width(f.F1.p10, f.F5.p90) }} />
-              {f.F3 && <div className="core" style={{ left: pct(f.F3.p10), width: width(f.F3.p10, Math.max(f.F3.p90, f.F3.p10 + 2)) }} />}
-              {(['F1', 'F3', 'F5'] as const).map((k) => f[k] && <div key={k} className={`mark ${k}`} style={{ left: pct(f[k]!.p50) }} title={k} />)}
-              {todayDoy != null && todayDoy >= BAR_START && todayDoy <= BAR_END && <div className="today" style={{ left: pct(todayDoy) }} />}
-            </div>
-          )}
-          {f.F1 && f.F5 && <div className="fc-months">{MONTHS.map((m) => <span key={m}>{m}</span>)}</div>}
-          {seasonStarted && <PhaseTicks phase={f.phase_today} />}
-          {model === 'calendar' && <p className="fc-small">Solo calendario da letteratura: la data dipende da semina o gestione e verrà affinata con le vostre segnalazioni.</p>}
-          {info?.validation && (
-            <p className="fc-small">Soglie dell'Università di Padova (gradi giorno dal {fmtStart(info.accumulation_start)}): stima per test preliminare, in validazione.</p>
-          )}
-        </article>
-      ))}
+            {f.F1 && f.F5 && (
+              <>
+                <div className="fc-bar" aria-hidden="true">
+                  <div className="track" />
+                  <div className="band" style={{ left: pct(f.F1.p10), width: width(f.F1.p10, f.F5.p90) }} />
+                  {f.F3 && <div className="core" style={{ left: pct(f.F3.p10), width: width(f.F3.p10, Math.max(f.F3.p90, f.F3.p10 + 2)) }} />}
+                  {todayDoy != null && todayDoy >= BAR_START && todayDoy <= BAR_END && <div className="today" style={{ left: pct(todayDoy) }}><span>oggi</span></div>}
+                </div>
+                <div className="fc-months">{MONTHS.map((m) => <span key={m}>{m}</span>)}</div>
+              </>
+            )}
+            {(seasonStarted || st.key === 'before') && st.key !== 'none' && (
+              <div className="fc-today"><Meter phase={phase} wait={st.key === 'before' ? st.wait : undefined} inline compact /></div>
+            )}
+            {info?.model === 'calendar' && <p className="fc-small">Solo calendario da letteratura: la data dipende da semina o gestione e verrà affinata con le vostre segnalazioni.</p>}
+            {info?.validation && (
+              <p className="fc-small">Soglie dell'Università di Padova (gradi giorno dal {fmtStart(info.accumulation_start)}): stima per test preliminare, in validazione.</p>
+            )}
+          </article>
+        )
+      })}
+      {shown.length === 0 && <p className="card muted">Nessuna specie di questo gruppo ha una previsione per questa zona.</p>}
 
       <details className="fc-how">
         <summary>Come funziona la previsione</summary>
@@ -168,12 +128,14 @@ export function Forecast({ sites }: { sites: Site[] }) {
           quando supera la propria soglia: per acacia, castagno e tiglio le soglie indicate dall'Università di Padova
           (accumulo dal 1° marzo), per le altre specie soglie ricavate dalle finestre di fioritura della letteratura scientifica.
           Oltre i 16 giorni si usa il meteo dei 20 anni precedenti: la barra chiara indica il margine, quella scura la piena fioritura.
+          Le tacchette indicano quanto è intensa la fioritura attesa oggi.
           Con le vostre segnalazioni le soglie verranno ricalibrate sul Veneto.
         </p>
         <p className="fc-small">
           Date calcolate per {point?.name}
           {point?.elevation != null ? ` (${Math.round(point.elevation)} m)` : ''}. In zone a quota diversa la fioritura può
-          anticipare o ritardare. Dati meteo: Open-Meteo.com, CC BY 4.0. Stagione {data.season}, inizio barra {doyToDate(data.season, BAR_START).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', timeZone: 'UTC' })}.
+          anticipare o ritardare. Dati meteo: Open-Meteo.com, CC BY 4.0. Stagione {data.season}, modello {data.model_version}, barra
+          dal {doyToDate(data.season, BAR_START).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', timeZone: 'UTC' })} al {doyToDate(data.season, BAR_END).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', timeZone: 'UTC' })}.
         </p>
       </details>
     </section>

@@ -73,23 +73,87 @@ export function nearestPoint(points: ForecastPoint[], lat: number, lon: number):
   return best
 }
 
-export type Status = { key: 'before' | 'now' | 'after' | 'none'; label: string; detail: string }
+/** Giorno della stagione per la data indicata (negativo se la stagione inizia il prossimo anno). */
+export function seasonDoy(season: number, d: Date): number {
+  return Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(season, 0, 1)) / 86400000) + 1
+}
+
+export type PhaseNow = 'F0' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5'
+
+/**
+ * Fase attesa in un giorno, dalle date mediane: stessa regola di model/apipro_model/thermal.py (phase_today),
+ * ricalcolata sul giorno del dispositivo. Il modello non distingue F1 e F2 ("inizio/aumento"):
+ * solo per il misuratore la prima metà di quel periodo è F1 e la seconda F2.
+ */
+export function phaseOn(f: SpeciesForecast, doy: number): PhaseNow | null {
+  if (!f.F1 || !f.F5) return null
+  const f1 = f.F1.p50, f5 = f.F5.p50
+  const f3 = f.F3 ? f.F3.p50 : Math.round((f1 + f5) / 2)
+  if (doy < f1) return 'F0'
+  if (doy < f3 - 2) return doy < (f1 + f3 - 2) / 2 ? 'F1' : 'F2'
+  if (doy <= f3 + 2) return 'F3'
+  if (doy <= f5) return 'F4'
+  return 'F5'
+}
+
+/** Tacche piene del misuratore (su 5) per la fase attesa oggi. */
+export const METER_LEVEL: Record<PhaseNow, number> = { F0: 0, F1: 1, F2: 3, F3: 4, F4: 2, F5: 0 }
+
+export const PHASE_NOW_LABEL: Record<PhaseNow, string> = {
+  F0: 'non ancora in fiore',
+  F1: 'primi fiori aperti',
+  F2: 'fioritura in aumento',
+  F3: 'piena fioritura',
+  F4: 'fioritura in diminuzione',
+  F5: 'fioritura terminata'
+}
+
+/** Tono della pillola di stato: ocra (ora), verde (in arrivo), beige (in calo / finita). */
+export type Tone = 'now' | 'soon' | 'calo' | 'muted'
+export type Status = { key: 'before' | 'now' | 'after' | 'none'; label: string; detail: string; tone: Tone; wait?: string }
+
+function waitLabel(days: number): string {
+  return days <= 13 ? `${days} ${days === 1 ? 'giorno' : 'giorni'}` : days < 60 ? `${Math.round(days / 7)} sett.` : `${Math.round(days / 30)} mesi`
+}
 
 /** Frase principale e stato rispetto a oggi (todayDoy = null se la stagione non è quella in corso). */
 export function describe(season: number, f: SpeciesForecast, todayDoy: number | null): Status {
-  if (!f.F1 || !f.F5) return { key: 'none', label: 'Non prevista', detail: 'In questa zona la fioritura non raggiunge la soglia del modello.' }
+  if (!f.F1 || !f.F5) return { key: 'none', label: 'Non prevista', detail: 'In questa zona la fioritura non raggiunge la soglia del modello.', tone: 'muted' }
   const f3 = f.F3 ?? f.F1
   const full = `Piena fioritura ${formatRange(season, f3.p10, f3.p90)}`
-  if (todayDoy == null) return { key: 'before', label: `Stagione ${season}`, detail: full }
+  if (todayDoy == null) return { key: 'before', label: `Stagione ${season}`, detail: full, tone: 'soon' }
   if (todayDoy < f.F1.p50) {
     const days = f.F1.p50 - todayDoy
-    const label = days <= 13 ? `Tra ${days} giorni` : days < 60 ? `Tra ${Math.round(days / 7)} sett.` : `Tra ${Math.round(days / 30)} mesi`
-    return { key: 'before', label, detail: days > 45 ? full : `Inizio atteso ${formatRange(season, f.F1.p10, f.F1.p90)}` }
+    const wait = waitLabel(days)
+    return { key: 'before', label: `Tra ${wait}`, wait, detail: days > 45 ? full : `Inizio atteso ${formatRange(season, f.F1.p10, f.F1.p90)}`, tone: 'soon' }
   }
   if (todayDoy <= f.F5.p50) {
     const ph = f.phase_today
-    const label = ph === 'F3' ? 'Piena fioritura' : ph === 'F4' ? 'In calo' : 'In fioritura'
-    return { key: 'now', label, detail: `Fine attesa ${formatRange(season, f.F5.p10, f.F5.p90)}` }
+    if (ph === 'F4') return { key: 'now', label: 'In calo', detail: `Fine attesa ${formatRange(season, f.F5.p10, f.F5.p90)}`, tone: 'calo' }
+    return { key: 'now', label: ph === 'F3' ? 'In piena' : 'Ora', detail: full, tone: 'now' }
   }
-  return { key: 'after', label: 'Finita', detail: `Terminata intorno al ${formatRange(season, f.F5.p50, f.F5.p50)}` }
+  return { key: 'after', label: 'Finita', detail: `Terminata intorno al ${formatRange(season, f.F5.p50, f.F5.p50)}`, tone: 'muted' }
+}
+
+/** "Crocetta del Montello" → "Crocetta d. M." (etichetta corta del punto). */
+export function shortPlace(name: string): string {
+  return name.replace(/\s+(?:del|della|dello|dei|delle|di|de)\s+(\S)\S*/gi, (_m, c: string) => ` d. ${c.toUpperCase()}.`)
+}
+
+/** "Crocetta del Montello" → "Crocetta" (etichetta del punto nelle Previsioni). */
+export function placeWord(name: string): string {
+  return name.split(/\s+(?:del|della|dello|dei|delle|di|de)\s+/i)[0]
+}
+
+/** "Acacia (robinia)" → "Acacia" */
+export const shortSpecies = (label: string) => label.split(' (')[0]
+
+/** "Aggiornate stanotte", "Aggiornate ieri", "Aggiornate il 21 nov 2026". */
+export function updatedLabel(generatedAt: string, now: Date): string {
+  const g = new Date(generatedAt)
+  const day = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())
+  const diff = Math.round((day(now) - day(g)) / 86400000)
+  if (diff === 0) return g.getHours() < 8 ? 'Aggiornate stanotte' : `Aggiornate oggi alle ${g.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`
+  if (diff === 1) return g.getHours() >= 18 ? 'Aggiornate stanotte' : 'Aggiornate ieri'
+  return `Aggiornate il ${g.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' })}`
 }

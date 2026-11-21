@@ -99,6 +99,14 @@ Test: `python -m pytest model/tests`.
 - Le finestre di letteratura ampie producono fasi lunghe (es. robinia: fine fioritura a inizio giugno in collina):
   servono le date medie per il Veneto.
 
+## Schermata Previsioni (release 0.3.1)
+
+- Filtro per gruppi [DA VERIFICARE con UNIPD]: **Alberi** = robinia, castagno, tiglio, amorfa, rododendro, edera;
+  **Prati e campi** = tarassaco, colza, girasole, limonio, astro marino.
+- Barra della stagione da marzo a settembre e misuratore a 5 tacchette della fase attesa oggi
+  (F0 = 0, F1 = 1, F2 = 3, F3 = 4, F4 = 2, F5 = 0). Il modello non distingue F1 e F2: la divisione serve solo al
+  misuratore. Dettagli in [GRAFICA.md](GRAFICA.md).
+
 ## Limiti noti e punti da validare con UNIPD
 
 - Le finestre di letteratura sono ampie e riferite in parte all'Italia intera: le soglie vanno affinate con le

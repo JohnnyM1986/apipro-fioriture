@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { MapPicker } from '../components/MapPicker'
 import type { DataStore } from '../lib/store'
 import type { Site } from '../lib/types'
+import { IconPin } from '../components/Icons'
 
 interface Props {
   store: DataStore
@@ -45,7 +46,7 @@ export function Sites({ store, sites, onChanged }: Props) {
       <ul className="obs-list">
         {sites.map((s) => (
           <li key={s.id}>
-            <span className="emoji big">📌</span>
+            <span className="ico-tile"><IconPin /></span>
             <div className="obs-body"><b>{s.name}</b><small>{s.lat.toFixed(5)}, {s.lon.toFixed(5)}</small></div>
             <div className="obs-actions">
               <button className="btn secondary small" onClick={() => setEdit(s)}>Modifica</button>

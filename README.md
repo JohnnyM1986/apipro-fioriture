@@ -18,6 +18,7 @@ WebApp di *citizen science* del progetto **ApiPRO** (PEI-AGRI, CSR Veneto 2023�
 
 - [Come funziona](#come-funziona)
 - [Partecipare](#partecipare)
+- [Veste grafica (release 0.3.1)](#veste-grafica-release-031)
 - [Funzioni della release 0.1](#funzioni-della-release-01)
 - [Le 11 piante e la scala F0–F5](#le-11-piante-e-la-scala-f0f5)
 - [Architettura](#architettura)
@@ -46,6 +47,18 @@ Partecipare è semplice e non richiede registrazione:
 - indica la posizione **delle piante**, non quella in cui ti trovi mentre compili;
 - se la fioritura finisce per **sfalcio, raccolta o rimozione**, scrivilo nelle note e non indicare F5 solo per questo;
 - osserva solo da luoghi accessibili in sicurezza, senza entrare in proprietà private.
+
+## Veste grafica (release 0.3.1)
+
+<p align="center">
+  <img src="docs/img/grafica_A_inizio.png" width="220" alt="Inizio: cosa fiorisce intorno a te">
+  <img src="docs/img/grafica_A_previsioni.png" width="220" alt="Previsioni per Crocetta del Montello">
+  <img src="docs/img/grafica_A_fase.png" width="220" alt="Segnala: scelta della fase">
+</p>
+
+Veste «Prato» (proposta A) con il misuratore a tacchette della proposta B: fondo color carta, card bianche,
+titoli in Bitter, pulsante «+» ocra al centro della barra in basso. Colori, font e componenti in
+[docs/GRAFICA.md](docs/GRAFICA.md). *Schermate con data simulata 12/05/2027.*
 
 ## Funzioni della release 0.1
 
@@ -112,7 +125,7 @@ Dettagli in [`docs/ARCHITETTURA.md`](docs/ARCHITETTURA.md).
 ## Piano di sviluppo
 
 - [x] **Fase 1 – Raccolta**: WebApp di segnalazione secondo protocollo, database, esportazione CSV *(release 0.1, in prova con l'Università di Padova)*
-- [~] **Fase 2 – Previsioni** (in corso, versione sperimentale 0.3): modello a gradi giorno (soglie UNIPD per robinia, castagno e tiglio) con dati Open-Meteo ERA5-Land e previsioni a 16 giorni, calcolo notturno, schermata Previsioni – vedi [docs/PREVISIONI.md](docs/PREVISIONI.md)
+- [~] **Fase 2 – Previsioni** (in corso, versione sperimentale 0.3): modello a gradi giorno (soglie UNIPD per robinia, castagno e tiglio) con dati Open-Meteo ERA5-Land e previsioni a 16 giorni, calcolo notturno, schermata Previsioni con filtro Alberi / Prati e campi e misuratore della fioritura (0.3.1) – vedi [docs/PREVISIONI.md](docs/PREVISIONI.md) e [docs/GRAFICA.md](docs/GRAFICA.md)
 - [ ] **Fase 3 – Calibrazione**: ricalibrazione automatica con le segnalazioni, registro delle versioni del modello ed errore medio in giorni
 - [ ] **Fase 4 – Mappe**: livelli di potenzialità mellifera da Earth Engine e indice millefiori
 
@@ -145,6 +158,7 @@ npm install
 npm run dev     # senza variabili VITE_SUPABASE_* parte in MODALITÀ DEMO (dati solo nel browser)
 npm test        # test dei controlli e dell'esportazione CSV
 npm run build
+npm run screenshots   # schermate di docs/img e controllo a 360 px (vedi docs/GRAFICA.md)
 ```
 
 Per collegarsi a un database copiare `app/.env.example` in `app/.env.local` e indicare URL e chiave pubblica del progetto Supabase. Lo schema si applica con i file di `supabase/migrations/` in ordine.

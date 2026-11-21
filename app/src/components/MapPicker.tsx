@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, LayersControl, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { LocationSource } from '../lib/types'
+import { IconLocate } from './Icons'
 
 const VENETO: [number, number] = [45.65, 11.9]
 
@@ -69,7 +70,7 @@ export function MapPicker({ lat, lon, onChange, readOnly, height = 300 }: Props)
     <div className="map-picker">
       {!readOnly && (
         <div className="map-tools">
-          <button type="button" className="btn secondary" onClick={useGps}>📍 Usa la mia posizione</button>
+          <button type="button" className="btn secondary" onClick={useGps}><IconLocate /> Usa la mia posizione</button>
           <div className="search-row">
             <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), search())} placeholder="Cerca località o comune" />
             <button type="button" className="btn secondary" onClick={search}>Cerca</button>

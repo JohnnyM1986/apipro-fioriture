@@ -7,8 +7,10 @@ import { Sites } from './screens/Sites'
 import { Info } from './screens/Info'
 import { Export } from './screens/Export'
 import { Forecast } from './screens/Forecast'
-import { speciesById } from './data/catalog'
-import { Istituzionale } from './components/Istituzionale'
+import { Home } from './screens/Home'
+import { IconForecast, IconHome, IconInfo, IconList, IconPin, IconPlus } from './components/Icons'
+import { shortPlace } from './lib/forecast'
+import { useForecast } from './lib/useForecast'
 
 type View = 'home' | 'new' | 'mine' | 'sites' | 'info' | 'export' | 'forecast'
 
@@ -23,6 +25,7 @@ export default function App() {
   const [editing, setEditing] = useState<Observation | null>(null)
   const [admin, setAdmin] = useState(false)
   const [toast, setToast] = useState('')
+  const fc = useForecast(sites)
   const envLabel = (import.meta.env.VITE_ENV_LABEL as string | undefined) ?? (store.mode === 'demo' ? 'DEMO' : '')
 
   const refresh = useCallback(async () => {
@@ -48,43 +51,43 @@ export default function App() {
   if (fatal) return <main className="wrap"><p className="error">{fatal}</p></main>
   if (!ready) return <main className="wrap"><p className="hint">Caricamento…</p></main>
 
-  const last = obs[0]
+  const badge = envLabel ? <span className="env">{envLabel}</span> : null
+  const showHeader = view !== 'new' && view !== 'forecast'
+  const exportLink =
+    (admin && store.mode === 'supabase' && <button className="btn link" onClick={() => go('export')}>Esportazione dati (responsabili)</button>) ||
+    (store.mode === 'demo' && <button className="btn link" onClick={() => go('export')}>Prova l'esportazione CSV</button>) ||
+    null
 
   return (
     <>
-      <header className="top">
-        <button className="brand" onClick={() => go('home')}>
-          <img src="./img/brand/apipro-logo-bianco.png" alt="ApiPro" height={30} />
-          <span>Fioriture</span>
-        </button>
-        {envLabel && <span className="env">{envLabel}</span>}
-      </header>
+      {showHeader && (
+        <header className="top">
+          <button className="brand" onClick={() => go('home')} aria-label="ApiPro Fioriture – Inizio">
+            <img src="./img/brand/apipro-logo.png" alt="ApiPro" height={44} />
+          </button>
+          {badge}
+          {fc.point && (
+            <button className="place-chip" onClick={() => go('forecast')} aria-label={`Punto delle previsioni: ${fc.point.name}`}>
+              <IconPin /><span>{shortPlace(fc.point.name)}</span>
+            </button>
+          )}
+        </header>
+      )}
 
-      <main className="wrap">
+      <main className={'wrap' + (view === 'new' ? ' wizard-wrap' : '')}>
         {toast && <div className="toast" role="status">{toast}</div>}
 
         {view === 'home' && (
-          <section className="home">
-            <img className="home-logo" src="./img/brand/apipro-logo.png" alt="ApiPro – Apicoltura e Innovazione per la Produzione Regionale Ottimizzata" />
-            <h1>Segnala le fioriture per le api</h1>
-            <p>Indica luogo, pianta, fase della fioritura e data: bastano meno di un minuto e aiuti a prevedere le fioriture in Veneto.</p>
-            <button className="btn big" onClick={() => go('new')}>🌼 Nuova segnalazione</button>
-            {last && (
-              <p className="hint">Ultima segnalazione: {speciesById(last.species_id)?.label}, {last.phase_code}, {new Date(last.observed_on + 'T12:00:00').toLocaleDateString('it-IT')}.</p>
-            )}
-            <div className="tiles">
-              <button onClick={() => go('mine')}><b>{obs.length}</b><span>Le mie osservazioni</span></button>
-              <button onClick={() => go('sites')}><b>{sites.length}</b><span>I miei luoghi</span></button>
-              <button onClick={() => go('info')}><b>?</b><span>Come partecipare</span></button>
-            </div>
-            <button className="card fc-teaser" onClick={() => go('forecast')}>
-              <b>Previsioni delle fioriture ›</b>
-              <span>Quando fioriscono acacia, castagno, tiglio e le altre specie nella tua zona (versione sperimentale).</span>
-            </button>
-            {admin && store.mode === 'supabase' && <button className="btn link" onClick={() => go('export')}>Esportazione dati (responsabili)</button>}
-            {store.mode === 'demo' && <button className="btn link" onClick={() => go('export')}>Prova l'esportazione CSV</button>}
-            <Istituzionale />
-          </section>
+          <Home
+            fc={fc}
+            nObs={obs.length}
+            nSites={sites.length}
+            onNew={() => go('new')}
+            onForecast={() => go('forecast')}
+            onMine={() => go('mine')}
+            onSites={() => go('sites')}
+            footer={exportLink}
+          />
         )}
 
         {view === 'new' && (
@@ -93,6 +96,7 @@ export default function App() {
             sites={sites}
             observations={obs}
             editing={editing}
+            badge={badge}
             onCancel={() => go(editing ? 'mine' : 'home')}
             onSitesChanged={refresh}
             onSaved={async () => {
@@ -116,16 +120,18 @@ export default function App() {
         {view === 'sites' && <Sites store={store} sites={sites} onChanged={refresh} />}
         {view === 'info' && <Info participantId={pid} mode={store.mode} />}
         {view === 'export' && <Export store={store} />}
-        {view === 'forecast' && <Forecast sites={sites} />}
+        {view === 'forecast' && <Forecast fc={fc} badge={badge} />}
       </main>
 
-      <nav className="bottom">
-        <button className={view === 'home' ? 'on' : ''} onClick={() => go('home')}>🏠<span>Inizio</span></button>
-        <button className={view === 'forecast' ? 'on' : ''} onClick={() => go('forecast')}>🌸<span>Previsioni</span></button>
-        <button className={view === 'new' ? 'on' : ''} onClick={() => go('new')}>➕<span>Segnala</span></button>
-        <button className={view === 'mine' ? 'on' : ''} onClick={() => go('mine')}>📋<span>Mie</span></button>
-        <button className={view === 'info' ? 'on' : ''} onClick={() => go('info')}>ℹ️<span>Info</span></button>
-      </nav>
+      {view !== 'new' && (
+        <nav className="bottom" aria-label="Menu principale">
+          <button className={view === 'home' ? 'on' : ''} aria-current={view === 'home' ? 'page' : undefined} onClick={() => go('home')}><IconHome /><span>Inizio</span></button>
+          <button className={view === 'forecast' ? 'on' : ''} aria-current={view === 'forecast' ? 'page' : undefined} onClick={() => go('forecast')}><IconForecast /><span>Previsioni</span></button>
+          <button className="fab" onClick={() => go('new')} aria-label="Segnala una fioritura"><i><IconPlus size={30} /></i></button>
+          <button className={view === 'mine' || view === 'sites' ? 'on' : ''} aria-current={view === 'mine' ? 'page' : undefined} onClick={() => go('mine')}><IconList /><span>Le mie</span></button>
+          <button className={view === 'info' ? 'on' : ''} aria-current={view === 'info' ? 'page' : undefined} onClick={() => go('info')}><IconInfo /><span>Info</span></button>
+        </nav>
+      )}
     </>
   )
 }

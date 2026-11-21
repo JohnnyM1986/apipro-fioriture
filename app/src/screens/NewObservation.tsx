@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { PHASES, SPECIES, phaseByCode, speciesById, type PhaseCode } from '../data/catalog'
 import { MapPicker } from '../components/MapPicker'
 import { PhaseIcon } from '../components/PhaseIcon'
 import { SpeciesBadge } from '../components/SpeciesBadge'
+import { IconCheck, IconClose, IconPin, IconPlus } from '../components/Icons'
 import type { DataStore } from '../lib/store'
 import type { LocationSource, Observation, Site } from '../lib/types'
 import { WARNING_TEXT, qcWarnings, requiredErrors, todayRome } from '../lib/validation'
@@ -15,11 +16,12 @@ interface Props {
   onSaved: (o: Observation) => void
   onSitesChanged: () => void
   onCancel: () => void
+  badge?: ReactNode
 }
 
 const STEPS = ['Luogo', 'Pianta', 'Fase', 'Data', 'Foto e note', 'Conferma']
 
-export function NewObservation({ store, sites, observations, editing, onSaved, onSitesChanged, onCancel }: Props) {
+export function NewObservation({ store, sites, observations, editing, onSaved, onSitesChanged, onCancel, badge }: Props) {
   const today = todayRome()
   const [step, setStep] = useState(editing ? 5 : 0)
   const [siteId, setSiteId] = useState<string | null>(editing?.site_id ?? null)
@@ -43,6 +45,7 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
   const errors = requiredErrors(draft, today)
   const warnings = useMemo(() => qcWarnings(draft, observations), [lat, lon, speciesId, phase, date, siteId, observations])
   const species = speciesId ? speciesById(speciesId) : undefined
+  const chip = species && <span className="sp-chip"><SpeciesBadge s={species} size={30} />{species.label}</span>
 
   const stepOk = [
     lat != null && lon != null && (!newPlace || !saveAsSite || siteName.trim().length > 0),
@@ -93,16 +96,18 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
 
   return (
     <div className="wizard">
-      <ol className="steps" aria-label="Passaggi">
+      <ol className="progress" aria-label="Passaggi">
         {STEPS.map((s, i) => (
-          <li key={s} className={i === step ? 'cur' : i < step ? 'done' : ''}>
-            <button type="button" onClick={() => (i <= step || stepOk.slice(0, i).every(Boolean)) && setStep(i)} aria-current={i === step}>
-              <span>{i + 1}</span>
-              <small>{s}</small>
-            </button>
+          <li key={s} className={i <= step ? 'done' : ''}>
+            <button type="button" onClick={() => (i <= step || stepOk.slice(0, i).every(Boolean)) && setStep(i)} aria-current={i === step ? 'step' : undefined} aria-label={`Passo ${i + 1}: ${s}`} />
           </li>
         ))}
       </ol>
+      <div className="step-head">
+        <p className="step-no">Passo {step + 1} di {STEPS.length}</p>
+        {badge}
+        <button type="button" className="icon-btn" onClick={onCancel} aria-label="Chiudi la segnalazione"><IconClose /></button>
+      </div>
 
       {step === 0 && (
         <section>
@@ -111,12 +116,12 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
             <div className="choice-list">
               {sites.map((s) => (
                 <button key={s.id} type="button" className={'choice' + (siteId === s.id && !newPlace ? ' sel' : '')} onClick={() => pickSite(s)}>
-                  <span className="emoji">📌</span>
+                  <span className="ico-tile"><IconPin /></span>
                   <span><b>{s.name}</b><small>Luogo salvato</small></span>
                 </button>
               ))}
               <button type="button" className={'choice' + (newPlace ? ' sel' : '')} onClick={() => { setNewPlace(true); setSiteId(null); setLat(null); setLon(null) }}>
-                <span className="emoji">➕</span>
+                <span className="ico-tile"><IconPlus size={18} /></span>
                 <span><b>Nuovo luogo</b><small>Segnalazione occasionale o nuovo luogo abituale</small></span>
               </button>
             </div>
@@ -155,12 +160,18 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
       {step === 2 && (
         <section>
           <h2>In che fase è la fioritura?</h2>
+          {chip}
           <p className="hint">Guarda l'aspetto generale del gruppo di piante, non un singolo fiore. Non servono percentuali.{species?.hint ? ' ' + species.hint + '.' : ''}</p>
-          <div className="choice-list">
+          <div className="phase-grid">
             {PHASES.map((p) => (
-              <button key={p.code} type="button" className={'choice' + (phase === p.code ? ' sel' : '')} onClick={() => { setPhase(p.code); setStep(3) }}>
-                <PhaseIcon code={p.code} />
-                <span><b>{p.code} · {p.label}</b><small>{p.definition}</small></span>
+              <button key={p.code} type="button" className={'phase-card' + (phase === p.code ? ' sel' : '')} aria-pressed={phase === p.code} onClick={() => { setPhase(p.code); setStep(3) }}>
+                <span className="phase-tile">
+                  <PhaseIcon code={p.code} size={96} />
+                  <small className="phase-code">{p.code}</small>
+                  {phase === p.code && <span className="phase-check"><IconCheck /></span>}
+                </span>
+                <b>{p.label}</b>
+                <small>{p.definition}</small>
               </button>
             ))}
           </div>
@@ -171,6 +182,7 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
       {step === 3 && (
         <section>
           <h2>Quando hai visto le piante?</h2>
+          {chip}
           <input className="full" type="date" value={date} max={today} onChange={(e) => setDate(e.target.value)} />
           <p className="hint">Se compili più tardi, indica la data reale dell'osservazione.</p>
           {date > today && <p className="error">La data non può essere futura.</p>}
@@ -180,6 +192,7 @@ export function NewObservation({ store, sites, observations, editing, onSaved, o
       {step === 4 && (
         <section>
           <h2>Foto e note (facoltative)</h2>
+          {chip}
           <label className="file">
             📷 {photo ? photo.name : keepPhoto ? 'Sostituisci la foto' : 'Aggiungi una foto'}
             <input type="file" accept="image/*" capture="environment" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />

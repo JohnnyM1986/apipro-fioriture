@@ -28,7 +28,7 @@ export function Info({ participantId, mode }: { participantId: string; mode: str
       </ul>
       <h3>I tuoi dati</h3>
       <p>Non chiediamo nome né email. Le tue segnalazioni sono collegate a un codice anonimo di questo dispositivo: <code>{participantId.slice(0, 8)}</code>. Per le elaborazioni scientifiche vengono esportati solo specie, fase, data, posizione, note e la presenza della foto. [Informativa privacy completa: DA VERIFICARE]</p>
-      <p className="hint">Gruppo Operativo ApiPRO – Apicoltura e Innovazione per la Produzione Regionale Ottimizzata. Capofila: Moretto Farm Società Agricola s.s. Versione {mode === 'demo' ? 'dimostrativa: i dati restano solo su questo dispositivo' : 'collegata all\'archivio del progetto'}.</p>
+      <p className="hint">Gruppo Operativo ApiPRO – Apicoltura e Innovazione per la Produzione Regionale Ottimizzata. Capofila: Moretto Farm Società Agricola s.s. Versione {__APP_VERSION__} {mode === 'demo' ? 'dimostrativa: i dati restano solo su questo dispositivo' : 'collegata all\'archivio del progetto'}.</p>
       <Istituzionale />
     </section>
   )
