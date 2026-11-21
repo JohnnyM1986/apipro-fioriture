@@ -28,6 +28,13 @@ Attività 12 (WP4). Riprende lo strumento *stima-api-favo* senza l'analisi autom
 4. Lo stesso per il **lato B**. Se la foto non viene bene si può valutare «senza foto», direttamente a vista.
 5. Totali automatici: per lato (su 36), per arnia e media per lato.
 
+**Report PDF (release 0.4.1).** Ogni stima salvata ha il pulsante **«Scarica PDF»** (dopo il salvataggio la stima si
+apre da sola): logo ApiPRO, apicoltore, data, apiario e posizione, arnia e note, riepilogo (favi, lati, totale dei
+sesti, media per lato) e, per ogni favo, le griglie 3 × 2 dei lati A e B con i valori colorati dal color carta (0)
+all'ocra (6); in fondo loghi istituzionali, dicitura FEASR, versione dell'app e codice della stima. Il PDF si crea sul
+telefono, senza server (libreria jsPDF caricata solo quando serve, disponibile anche senza rete); circa 90 KB, più
+pagine se i favi sono tanti. Nome del file: `ApiPRO_forza_<data>_<arnia>.pdf`. Le foto non sono nel PDF.
+
 **Le foto non vengono mai salvate né inviate**: restano nella memoria del telefono finché la pagina è aperta. Sul
 database (tabella `strength_visits`) vanno solo data, apiario e posizione, arnia, i 6 valori di ogni lato e le note.
 La stima in corso è salvata sul telefono (solo i numeri) e si riprende se la pagina si chiude per sbaglio.

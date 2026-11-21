@@ -151,7 +151,7 @@ export default function App() {
           {view === 'forza' && <StrengthHome store={store} onNew={() => go('forza-new')} flash={flash} />}
           {view === 'forza-new' && (
             <StrengthVisitForm store={store} sites={sites} badge={badge} onCancel={() => go('forza')}
-              onSaved={() => { go('forza'); flash('Stima salvata ✓') }} />
+              onSaved={() => { go('forza'); flash('Stima salvata ✓ Puoi scaricare il PDF') }} />
           )}
           {view === 'admin' && <Admin store={store} isAdmin={admin || store.mode === 'demo'} onBecameAdmin={() => { setAdmin(true); flash('Accesso responsabili attivo ✓') }} flash={flash} />}
         </Suspense>

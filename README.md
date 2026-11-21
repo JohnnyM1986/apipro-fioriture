@@ -61,7 +61,7 @@ Partecipare è semplice e non richiede registrazione:
 - **Forza degli alveari** (Att.12): stima a vista con il metodo dei sesti. L'app raddrizza la foto del favo, la divide in
   6 sesti (3 colonne × 2 righe) e l'apicoltore indica da 0 a 6 la copertura di ogni sesto. **Le foto non vengono salvate**:
   sul database vanno solo i valori. Accesso con **codice personale** chiesto dall'app e approvato dai responsabili, con
-  mail automatiche (Brevo).
+  mail automatiche (Brevo). Ogni stima si può **scaricare in PDF** (0.4.1) da conservare.
 - **Area responsabili**: richieste, codici degli apicoltori, esportazioni CSV di fioriture, forza e altre segnalazioni.
 
 Dettagli e configurazione in [docs/FORZA_E_SEGNALAZIONI.md](docs/FORZA_E_SEGNALAZIONI.md).

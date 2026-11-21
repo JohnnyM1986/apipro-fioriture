@@ -99,8 +99,13 @@ async function run(width, height, tag) {
   check((await over()) === 0, `${tag} stima senza scorrimento orizzontale`)
   await p.getByRole('button', { name: 'Salva stima' }).click()
   await p.waitForSelector('.visit-list li')
-  await p.locator('.visit-row').first().click()
+  await p.waitForSelector('.visit-detail') // la stima appena salvata si apre da sola
   await shot('7_stime')
+  const [dl] = await Promise.all([p.waitForEvent('download'), p.getByRole('button', { name: 'Scarica PDF' }).click()])
+  const pdfPath = `${dir}${tag}_report.pdf`
+  await dl.saveAs(pdfPath)
+  const head = (await import('node:fs')).readFileSync(pdfPath).subarray(0, 5).toString()
+  check(head === '%PDF-' && dl.suggestedFilename() === 'ApiPRO_forza_2027-05-12_Arnia-12.pdf', `${tag} PDF scaricato: ${dl.suggestedFilename()}`)
   const txt = await p.locator('.visit-detail').innerText()
   check(txt.includes('3 4 5 2 3 1 (18)') && txt.includes('4 4 4 4 4 4 (24)'), `${tag} stima salvata con i valori giusti`)
   await ctx.close()

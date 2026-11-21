@@ -7,6 +7,8 @@ import type { Site, StrengthStatus, StrengthVisit } from '../lib/types'
 import { combProblems, summarize } from '../lib/strength'
 import { todayRome } from '../lib/validation'
 
+const JUST_SAVED = 'apipro.forzaAppenaSalvata'
+
 const fmtDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('it-IT')
 const fmt1 = (n: number) => n.toLocaleString('it-IT', { maximumFractionDigits: 1 })
 
@@ -19,12 +21,27 @@ export function StrengthHome({ store, onNew, flash }: { store: DataStore; onNew:
   const [panel, setPanel] = useState<'none' | 'request' | 'code'>('none')
   const [err, setErr] = useState('')
   const [open, setOpen] = useState<string | null>(null)
+  const [pdfBusy, setPdfBusy] = useState('')
+
+  const pdf = async (v: StrengthVisit) => {
+    setPdfBusy(v.id)
+    try {
+      const { downloadVisitPdf } = await import('../lib/strengthPdf')
+      await downloadVisitPdf(v, status?.beekeeperName ?? null, __APP_VERSION__)
+    } catch (e) {
+      flash('PDF non riuscito: ' + (e as Error).message)
+    } finally {
+      setPdfBusy('')
+    }
+  }
 
   const load = async () => {
     try {
       const s = await store.strengthStatus()
       setStatus(s)
       if (s.active) setVisits(await store.listVisits())
+      // dopo il salvataggio si apre la stima appena fatta, con il pulsante del PDF
+      try { const id = sessionStorage.getItem(JUST_SAVED); if (id) { setOpen(id); sessionStorage.removeItem(JUST_SAVED) } } catch { /* */ }
     } catch (e) {
       setErr('Non riesco a leggere i dati: ' + (e as Error).message)
     }
@@ -104,7 +121,10 @@ export function StrengthHome({ store, onNew, flash }: { store: DataStore; onNew:
                     </tbody>
                   </table>
                   <p className="hint">Totale {s.total} su {s.max} · media per lato {s.meanPerSide != null ? fmt1(s.meanPerSide) : '—'} su 36{v.note ? ` · ${v.note}` : ''}</p>
-                  <button className="btn link" onClick={async () => { if (confirm('Eliminare questa stima?')) { await store.deleteVisit(v.id); flash('Stima eliminata'); load() } }}>Elimina</button>
+                  <div className="row-actions">
+                    <button className="btn small ocra" disabled={pdfBusy === v.id} onClick={() => pdf(v)}>{pdfBusy === v.id ? 'Preparo il PDF…' : 'Scarica PDF'}</button>
+                    <button className="btn link" onClick={async () => { if (confirm('Eliminare questa stima?')) { await store.deleteVisit(v.id); flash('Stima eliminata'); load() } }}>Elimina</button>
+                  </div>
                 </div>
               )}
             </li>
@@ -216,11 +236,12 @@ export function StrengthVisitForm({ store, sites, badge, onCancel, onSaved }: { 
     if (problems.length) return setErr(problems.join('. ') + '.')
     setBusy(true); setErr('')
     try {
-      await store.saveVisit({
+      const saved = await store.saveVisit({
         visited_on: d.date, site_id: d.siteId, site_name: d.siteName || null, lat: d.lat!, lon: d.lon!, hive_label: d.hive.trim(), note: d.note.trim() || null,
         combs: d.combs.map((c, k) => ({ n: k + 1, a: c.a as number[] | null, b: c.b as number[] | null }))
       })
       clearDraft()
+      try { sessionStorage.setItem(JUST_SAVED, saved.id) } catch { /* */ }
       onSaved()
     } catch (e) {
       setErr('Salvataggio non riuscito: ' + ((e as Error).message || 'riprova'))
