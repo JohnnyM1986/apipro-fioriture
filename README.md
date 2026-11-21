@@ -18,6 +18,7 @@ WebApp di *citizen science* del progetto **ApiPRO** (PEI-AGRI, CSR Veneto 2023�
 
 - [Come funziona](#come-funziona)
 - [Partecipare](#partecipare)
+- [Novità della release 0.4](#novità-della-release-04)
 - [Veste grafica (release 0.3.1)](#veste-grafica-release-031)
 - [Funzioni della release 0.1](#funzioni-della-release-01)
 - [Le 11 piante e la scala F0–F5](#le-11-piante-e-la-scala-f0f5)
@@ -47,6 +48,23 @@ Partecipare è semplice e non richiede registrazione:
 - indica la posizione **delle piante**, non quella in cui ti trovi mentre compili;
 - se la fioritura finisce per **sfalcio, raccolta o rimozione**, scrivilo nelle note e non indicare F5 solo per questo;
 - osserva solo da luoghi accessibili in sicurezza, senza entrare in proprietà private.
+
+## Novità della release 0.4
+
+<p align="center">
+  <img src="docs/img/segnala_scelta.png" width="200" alt="Cosa vuoi segnalare?">
+  <img src="docs/img/forza_griglia.png" width="200" alt="Forza degli alveari: griglia dei sesti">
+</p>
+
+- **Altre segnalazioni**: oltre alle fioriture si possono segnalare sciami, morie o spopolamenti, il calabrone asiatico
+  o altri eventi (tipo, luogo, data, note; anonime, senza foto).
+- **Forza degli alveari** (Att.12): stima a vista con il metodo dei sesti. L'app raddrizza la foto del favo, la divide in
+  6 sesti (3 colonne × 2 righe) e l'apicoltore indica da 0 a 6 la copertura di ogni sesto. **Le foto non vengono salvate**:
+  sul database vanno solo i valori. Accesso con **codice personale** chiesto dall'app e approvato dai responsabili, con
+  mail automatiche (Brevo).
+- **Area responsabili**: richieste, codici degli apicoltori, esportazioni CSV di fioriture, forza e altre segnalazioni.
+
+Dettagli e configurazione in [docs/FORZA_E_SEGNALAZIONI.md](docs/FORZA_E_SEGNALAZIONI.md).
 
 ## Veste grafica (release 0.3.1)
 

@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { observationToRow } from './csv'
-import type { Observation, ObservationInput, Site } from './types'
+import type { AccessRequest, AccessRequestInput, Beekeeper, EventInput, GenericEvent, Observation, ObservationInput, Site, StrengthStatus, StrengthVisit, StrengthVisitInput } from './types'
 
 /** Accesso ai dati: Supabase (produzione/test) oppure archivio locale (modalità demo). */
 export interface DataStore {
@@ -14,7 +14,45 @@ export interface DataStore {
   deleteObservation(id: string): Promise<void>
   isAdmin(): Promise<boolean>
   exportRows(): Promise<Record<string, unknown>[]>
+
+  // altre segnalazioni (release 0.4)
+  listEvents(): Promise<GenericEvent[]>
+  saveEvent(e: EventInput): Promise<GenericEvent>
+  deleteEvent(id: string): Promise<void>
+
+  // forza degli alveari
+  strengthStatus(): Promise<StrengthStatus>
+  /** invia la richiesta; `notified` = la mail ai responsabili è partita */
+  requestStrengthAccess(r: AccessRequestInput): Promise<{ notified: boolean }>
+  /** collega il dispositivo all'apicoltore; restituisce il nome */
+  redeemCode(code: string): Promise<string>
+  listVisits(): Promise<StrengthVisit[]>
+  saveVisit(v: StrengthVisitInput): Promise<StrengthVisit>
+  deleteVisit(id: string): Promise<void>
+
+  // responsabili
+  claimAdmin(code: string): Promise<boolean>
+  adminRequests(): Promise<AccessRequest[]>
+  adminBeekeepers(): Promise<Beekeeper[]>
+  adminApprove(requestId: string): Promise<{ beekeeperId: string; code: string; mail: MailResult }>
+  adminReject(requestId: string): Promise<void>
+  adminUpdateBeekeeper(id: string, patch: Partial<Pick<Beekeeper, 'active' | 'trained_on' | 'protocol_delivered'>>): Promise<void>
+  adminRenewCode(id: string): Promise<string>
+  adminSendCode(id: string): Promise<MailResult>
+  exportStrength(): Promise<Record<string, unknown>[]>
+  exportEvents(): Promise<Record<string, unknown>[]>
 }
+
+/** esito dell'invio di una mail: inviata, servizio non ancora configurato (chiave Brevo), errore, oppure DEMO */
+export type MailResult = 'inviata' | 'non_configurato' | 'errore' | 'demo'
+
+/** Codice personale nel formato APR-XXXX-XXXX (usato solo in modalità DEMO: in Supabase lo genera il database). */
+export function demoCode(): string {
+  const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  const r = Array.from({ length: 8 }, () => a[Math.floor(Math.random() * a.length)]).join('')
+  return `APR-${r.slice(0, 4)}-${r.slice(4)}`
+}
+const normCode = (c: string) => c.toUpperCase().replace(/[^A-Z0-9]/g, '')
 
 const uuid = () =>
   (crypto as Crypto & { randomUUID?: () => string }).randomUUID?.() ??
@@ -112,6 +150,112 @@ class LocalStore implements DataStore {
   async exportRows() {
     return (await this.listObservations()).map(observationToRow)
   }
+
+  // ---- altre segnalazioni ----
+  async listEvents() {
+    return this.read<(GenericEvent & { deleted?: boolean })[]>('events', []).filter((e) => !e.deleted).sort((a, b) => (a.observed_on < b.observed_on ? 1 : -1))
+  }
+  async saveEvent(e: EventInput) {
+    const ev: GenericEvent = { ...e, id: uuid(), participant_id: this.pid, created_at: new Date().toISOString() }
+    this.write('events', [...this.read<GenericEvent[]>('events', []), ev])
+    return ev
+  }
+  async deleteEvent(id: string) {
+    this.write('events', this.read<(GenericEvent & { deleted?: boolean })[]>('events', []).map((e) => (e.id === id ? { ...e, deleted: true } : e)))
+  }
+
+  // ---- forza degli alveari (DEMO: richieste, codici e stime restano su questo dispositivo) ----
+  private beekeepers() { return this.read<Beekeeper[]>('bk', []) }
+  private linked(): Beekeeper | undefined {
+    const id = this.read<string>('bkdev', '')
+    return this.beekeepers().find((b) => b.id === id)
+  }
+  async strengthStatus() {
+    const b = this.linked()
+    return { beekeeperName: b?.full_name ?? null, active: !!b?.active, pending: this.read<AccessRequest[]>('sreq', []).some((r) => r.status === 'in_attesa') }
+  }
+  async requestStrengthAccess(r: AccessRequestInput) {
+    const all = this.read<AccessRequest[]>('sreq', [])
+    if (all.some((x) => x.status === 'in_attesa')) throw new Error('Hai già una richiesta in attesa')
+    this.write('sreq', [...all, { ...r, id: uuid(), status: 'in_attesa', created_at: new Date().toISOString() }])
+    return { notified: false }
+  }
+  async redeemCode(code: string) {
+    const b = this.beekeepers().find((x) => x.active && normCode(x.code) === normCode(code))
+    if (!b) throw new Error('Codice non valido o non più attivo')
+    this.write('bkdev', b.id)
+    return b.full_name
+  }
+  async listVisits() {
+    return this.read<(StrengthVisit & { deleted?: boolean })[]>('visits', []).filter((v) => !v.deleted).sort((a, b) => (a.visited_on < b.visited_on ? 1 : -1))
+  }
+  async saveVisit(v: StrengthVisitInput) {
+    if (!this.linked()?.active) throw new Error('Serve il codice personale')
+    const all = this.read<StrengthVisit[]>('visits', [])
+    const prev = all.find((x) => x.id === v.id)
+    const visit: StrengthVisit = { ...v, id: v.id ?? uuid(), created_at: prev?.created_at ?? new Date().toISOString() }
+    this.write('visits', prev ? all.map((x) => (x.id === visit.id ? visit : x)) : [...all, visit])
+    return visit
+  }
+  async deleteVisit(id: string) {
+    this.write('visits', this.read<(StrengthVisit & { deleted?: boolean })[]>('visits', []).map((v) => (v.id === id ? { ...v, deleted: true } : v)))
+  }
+
+  // ---- responsabili (in DEMO chiunque lo è, per provare) ----
+  async claimAdmin() { return true }
+  async adminRequests() { return this.read<AccessRequest[]>('sreq', []).sort((a, b) => (a.created_at < b.created_at ? 1 : -1)) }
+  async adminBeekeepers() { return this.beekeepers().sort((a, b) => a.full_name.localeCompare(b.full_name, 'it')) }
+  async adminApprove(requestId: string) {
+    const reqs = this.read<AccessRequest[]>('sreq', [])
+    const r = reqs.find((x) => x.id === requestId && x.status === 'in_attesa')
+    if (!r) throw new Error('Richiesta non trovata')
+    const b: Beekeeper = {
+      id: uuid(), full_name: r.full_name, email: r.email, phone: r.phone, farm: r.farm, municipality: r.municipality,
+      code: demoCode(), active: true, trained_on: null, protocol_delivered: false, code_sent_at: null, created_at: new Date().toISOString()
+    }
+    this.write('bk', [...this.beekeepers(), b])
+    this.write('sreq', reqs.map((x) => (x.id === r.id ? { ...x, status: 'approvata' } : x)))
+    this.write('bkdev', b.id) // in DEMO la richiesta è partita da questo dispositivo
+    return { beekeeperId: b.id, code: b.code, mail: 'demo' as MailResult }
+  }
+  async adminReject(requestId: string) {
+    this.write('sreq', this.read<AccessRequest[]>('sreq', []).map((x) => (x.id === requestId ? { ...x, status: 'rifiutata' } : x)))
+  }
+  async adminUpdateBeekeeper(id: string, patch: Partial<Beekeeper>) {
+    this.write('bk', this.beekeepers().map((b) => (b.id === id ? { ...b, ...patch } : b)))
+  }
+  async adminRenewCode(id: string) {
+    const code = demoCode()
+    this.write('bk', this.beekeepers().map((b) => (b.id === id ? { ...b, code, code_sent_at: null } : b)))
+    if (this.read<string>('bkdev', '') === id) this.write('bkdev', '')
+    return code
+  }
+  async adminSendCode() { return 'demo' as MailResult }
+  async exportStrength() {
+    const bk = this.linked()
+    return (await this.listVisits()).flatMap((v) => strengthRows(v, bk))
+  }
+  async exportEvents() {
+    return (await this.listEvents()).map((e) => ({
+      id_segnalazione: e.id, id_partecipante: e.participant_id, tipo: e.event_type, data_evento: e.observed_on,
+      data_inserimento: e.created_at, latitudine: e.lat.toFixed(6), longitudine: e.lon.toFixed(6), note: e.note
+    }))
+  }
+}
+
+/** Righe di esportazione della forza (una per lato di favo), come la vista export_strength del database. */
+function strengthRows(v: StrengthVisit, b?: Beekeeper): Record<string, unknown>[] {
+  return v.combs.flatMap((c) =>
+    (['a', 'b'] as const).filter((k) => c[k]).map((k) => {
+      const sc = c[k]!
+      return {
+        id_stima: v.id, data_visita: v.visited_on, apicoltore: b?.full_name ?? '', azienda: b?.farm ?? '', comune: b?.municipality ?? '',
+        apiario: v.site_name, latitudine: v.lat.toFixed(6), longitudine: v.lon.toFixed(6), arnia: v.hive_label, favo: c.n, lato: k.toUpperCase(),
+        sesto_1: sc[0], sesto_2: sc[1], sesto_3: sc[2], sesto_4: sc[3], sesto_5: sc[4], sesto_6: sc[5],
+        totale_lato: sc.reduce((a, x) => a + x, 0), note: v.note, data_inserimento: v.created_at
+      }
+    })
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -205,6 +349,113 @@ class SupabaseStore implements DataStore {
     }
     return out
   }
+
+  private async selectAll(view: string, order: string) {
+    const out: Record<string, unknown>[] = []
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await this.sb.from(view).select('*').order(order).range(from, from + 999)
+      if (error) throw error
+      out.push(...(data as Record<string, unknown>[]))
+      if (!data || data.length < 1000) break
+    }
+    return out
+  }
+  private async mail(body: Record<string, unknown>): Promise<MailResult> {
+    const { error } = await this.sb.functions.invoke('apipro-mail', { body })
+    if (!error) return 'inviata'
+    const status = (error as { context?: Response }).context?.status
+    return status === 503 ? 'non_configurato' : 'errore'
+  }
+
+  // ---- altre segnalazioni ----
+  async listEvents() {
+    const { data, error } = await this.sb.from('events').select('*').eq('participant_id', this.uid).eq('deleted', false).order('observed_on', { ascending: false })
+    if (error) throw error
+    return data as GenericEvent[]
+  }
+  async saveEvent(e: EventInput) {
+    const { data, error } = await this.sb.from('events').insert(e).select('*').single()
+    if (error) throw error
+    return data as GenericEvent
+  }
+  async deleteEvent(id: string) {
+    const { error } = await this.sb.from('events').update({ deleted: true }).eq('id', id)
+    if (error) throw error
+  }
+
+  // ---- forza degli alveari ----
+  async strengthStatus() {
+    const { data, error } = await this.sb.rpc('my_strength_status')
+    if (error) throw error
+    const r = (Array.isArray(data) ? data[0] : data) as { beekeeper_name: string | null; active: boolean; pending: boolean } | undefined
+    return { beekeeperName: r?.beekeeper_name ?? null, active: !!r?.active, pending: !!r?.pending }
+  }
+  async requestStrengthAccess(r: AccessRequestInput) {
+    const { data, error } = await this.sb.from('strength_requests').insert({ ...r, privacy_accepted: true }).select('id').single()
+    if (error) throw new Error(error.code === '23505' ? 'Hai già una richiesta in attesa' : error.message)
+    return { notified: (await this.mail({ action: 'nuova_richiesta', id: (data as { id: string }).id })) === 'inviata' }
+  }
+  async redeemCode(code: string) {
+    const { data, error } = await this.sb.rpc('redeem_beekeeper_code', { p_code: code })
+    if (error) throw new Error(error.message.includes('codice_non_valido') ? 'Codice non valido o non più attivo' : error.message)
+    return data as string
+  }
+  async listVisits() {
+    const { data, error } = await this.sb.from('strength_visits').select('id,visited_on,site_id,site_name,lat,lon,hive_label,combs,note,created_at')
+      .eq('participant_id', this.uid).eq('deleted', false).order('visited_on', { ascending: false })
+    if (error) throw error
+    return data as StrengthVisit[]
+  }
+  async saveVisit(v: StrengthVisitInput) {
+    const { data, error } = await this.sb.from('strength_visits').upsert(v).select('id,visited_on,site_id,site_name,lat,lon,hive_label,combs,note,created_at').single()
+    if (error) throw new Error(error.message.includes('codice_richiesto') ? 'Serve il codice personale' : error.message)
+    return data as StrengthVisit
+  }
+  async deleteVisit(id: string) {
+    const { error } = await this.sb.from('strength_visits').update({ deleted: true }).eq('id', id)
+    if (error) throw error
+  }
+
+  // ---- responsabili ----
+  async claimAdmin(code: string) {
+    const { data, error } = await this.sb.rpc('claim_admin', { p_code: code })
+    if (error) throw error
+    return data === true
+  }
+  async adminRequests() {
+    const { data, error } = await this.sb.from('strength_requests').select('id,full_name,email,phone,farm,municipality,status,created_at').order('created_at', { ascending: false })
+    if (error) throw error
+    return data as AccessRequest[]
+  }
+  async adminBeekeepers() {
+    const { data, error } = await this.sb.from('beekeepers').select('*').order('full_name')
+    if (error) throw error
+    return data as Beekeeper[]
+  }
+  async adminApprove(requestId: string) {
+    const { data, error } = await this.sb.rpc('approve_strength_request', { p_request: requestId })
+    if (error) throw error
+    const r = (Array.isArray(data) ? data[0] : data) as { beekeeper_id: string; code: string }
+    return { beekeeperId: r.beekeeper_id, code: r.code, mail: await this.mail({ action: 'invia_codice', beekeeper_id: r.beekeeper_id }) }
+  }
+  async adminReject(requestId: string) {
+    const { error } = await this.sb.from('strength_requests').update({ status: 'rifiutata' }).eq('id', requestId)
+    if (error) throw error
+  }
+  async adminUpdateBeekeeper(id: string, patch: Partial<Beekeeper>) {
+    const { error } = await this.sb.from('beekeepers').update(patch).eq('id', id)
+    if (error) throw error
+  }
+  async adminRenewCode(id: string) {
+    const { data, error } = await this.sb.rpc('renew_beekeeper_code', { p_beekeeper: id })
+    if (error) throw error
+    return data as string
+  }
+  async adminSendCode(id: string) {
+    return this.mail({ action: 'invia_codice', beekeeper_id: id })
+  }
+  async exportStrength() { return this.selectAll('export_strength', 'data_visita') }
+  async exportEvents() { return this.selectAll('export_events', 'data_evento') }
 }
 
 export function createStore(): DataStore {

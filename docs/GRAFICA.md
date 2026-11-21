@@ -101,6 +101,16 @@ anche su un portatile 1366 × 768.
   <img src="img/grafica_A_pc_previsioni.png" width="420" alt="Previsioni su PC">
 </p>
 
+## Componenti della release 0.4
+
+- **«Cosa vuoi segnalare?»**: tre schede (fioritura in evidenza su fondo ocra chiaro, altro evento, forza degli alveari);
+  su tablet e PC affiancate.
+- **Altro evento**: tipi in schede a 2 colonne (4 su tablet e PC), luogo come nella segnalazione delle fioriture.
+- **Griglia dei sesti**: foto raddrizzata con linee bianche, numero del sesto in alto a sinistra, valore in un cerchio
+  (ocra quando assegnato), sesto attivo con bordo ocra; sotto, 7 pulsanti 0–6. Senza foto: tessera beige a righe.
+  Su tablet e PC i lati A e B del favo stanno affiancati.
+- **Area responsabili**: schede Richieste / Apicoltori / Esportazioni, codice in un riquadro con pulsante «copia».
+
 ## Gruppi di specie nel filtro delle Previsioni [DA VERIFICARE con UNIPD]
 
 - **Alberi:** robinia (acacia), castagno, tiglio, amorfa, rododendro, edera.

@@ -51,7 +51,8 @@ const overflow = (page) => page.evaluate(() => document.documentElement.scrollWi
 const nav = (page, label) => page.locator('nav.bottom button', { hasText: label }).click()
 
 async function toPhaseStep(page) {
-  await page.getByRole('button', { name: 'Segnala una fioritura' }).first().click()
+  await page.locator('.bottom .fab:visible, .top-new:visible').first().click()
+  await page.locator('.report-card', { hasText: 'Una fioritura' }).click()
   await page.locator('.choice', { hasText: 'Apiario Montello' }).click()
   await page.getByRole('button', { name: 'Avanti' }).click()
   await page.locator('.choice', { hasText: 'Acacia (robinia)' }).click()
@@ -79,6 +80,8 @@ async function sizes(dir) {
     await go('Le mie'); await shot('le_mie')
     await go('Info'); await shot('info')
     await p.locator('.bottom .fab:visible, .top-new:visible').first().click()
+    await p.waitForSelector('.report-cards'); await shot('scelta')
+    await p.locator('.report-card', { hasText: 'Una fioritura' }).click()
     await p.locator('.choice', { hasText: 'Nuovo luogo' }).click(); await p.waitForSelector('.leaflet-container'); await shot('luogo_mappa')
     await p.locator('.icon-btn').click()
     await toPhaseStep(p); await shot('fase')

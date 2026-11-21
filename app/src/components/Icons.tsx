@@ -35,3 +35,26 @@ export const IconLocate = () => (
 export const IconMap = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path {...P} d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z M9 4.5v13 M15 6.5v13" /></svg>
 )
+
+/** Arnia / favo (esagono) per la forza degli alveari. */
+export const IconHive = ({ size = 26 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true"><path {...P} d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z" /><path {...P} d="M12 8.2 15.3 10v3.9L12 15.8 8.7 13.9V10z" /></svg>
+)
+/** Segnalazione di un evento (triangolo con punto esclamativo). */
+export const IconAlert = ({ size = 26 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true"><path {...P} d="M12 3.5 21.5 20h-19z" /><path {...P} d="M12 9.5v5" /><circle cx="12" cy="17.3" r="1.1" fill="currentColor" /></svg>
+)
+/** Fiore (segnalazione di fioritura). */
+export const IconFlower = ({ size = 26 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+    {[0, 72, 144, 216, 288].map((a) => <ellipse key={a} {...P} cx="12" cy="6.6" rx="2.6" ry="3.6" transform={`rotate(${a} 12 11)`} />)}
+    <circle {...P} cx="12" cy="11" r="2.2" />
+    <path {...P} d="M12 15.5V21.5" />
+  </svg>
+)
+export const IconCamera = ({ size = 20 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true"><path {...P} d="M4 8h3.2l1.6-2.5h6.4L16.8 8H20a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" /><circle {...P} cx="12" cy="13.3" r="3.6" /></svg>
+)
+export const IconCopy = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true"><rect {...P} x="8" y="8" width="12" height="12" rx="2" /><path {...P} d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
+)

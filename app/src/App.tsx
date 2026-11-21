@@ -1,18 +1,26 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react'
 import { createStore } from './lib/store'
-import type { Observation, Site } from './lib/types'
+import type { GenericEvent, Observation, Site } from './lib/types'
 import { NewObservation } from './screens/NewObservation'
 import { MyObservations } from './screens/MyObservations'
 import { Sites } from './screens/Sites'
 import { Info } from './screens/Info'
-import { Export } from './screens/Export'
 import { Forecast } from './screens/Forecast'
 import { Home } from './screens/Home'
+import { ChooseReport } from './screens/ChooseReport'
+import { EventReport } from './screens/EventReport'
 import { IconForecast, IconHome, IconInfo, IconList, IconPin, IconPlus } from './components/Icons'
 import { shortPlace } from './lib/forecast'
 import { useForecast } from './lib/useForecast'
 
-type View = 'home' | 'new' | 'mine' | 'sites' | 'info' | 'export' | 'forecast'
+// sezioni usate da pochi: caricate solo quando si aprono (l'app resta leggera per chi segnala le fioriture)
+const StrengthHome = lazy(() => import('./screens/Strength').then((m) => ({ default: m.StrengthHome })))
+const StrengthVisitForm = lazy(() => import('./screens/Strength').then((m) => ({ default: m.StrengthVisitForm })))
+const Admin = lazy(() => import('./screens/Admin'))
+
+type View = 'home' | 'choose' | 'new' | 'event' | 'mine' | 'sites' | 'info' | 'admin' | 'forecast' | 'forza' | 'forza-new'
+/** schermate a tutta pagina con pulsanti fissi in basso (niente barra di navigazione su telefono) */
+const FULL: View[] = ['new', 'event', 'forza-new']
 
 export default function App() {
   const store = useMemo(() => createStore(), [])
@@ -22,6 +30,7 @@ export default function App() {
   const [view, setView] = useState<View>('home')
   const [sites, setSites] = useState<Site[]>([])
   const [obs, setObs] = useState<Observation[]>([])
+  const [events, setEvents] = useState<GenericEvent[]>([])
   const [editing, setEditing] = useState<Observation | null>(null)
   const [admin, setAdmin] = useState(false)
   const [toast, setToast] = useState('')
@@ -29,8 +38,8 @@ export default function App() {
   const envLabel = (import.meta.env.VITE_ENV_LABEL as string | undefined) ?? (store.mode === 'demo' ? 'DEMO' : '')
 
   const refresh = useCallback(async () => {
-    const [s, o] = await Promise.all([store.listSites(), store.listObservations()])
-    setSites(s); setObs(o)
+    const [s, o, e] = await Promise.all([store.listSites(), store.listObservations(), store.listEvents().catch(() => [] as GenericEvent[])])
+    setSites(s); setObs(o); setEvents(e)
   }, [store])
 
   useEffect(() => {
@@ -52,23 +61,24 @@ export default function App() {
   if (!ready) return <main className="wrap"><p className="hint">Caricamento…</p></main>
 
   const badge = envLabel ? <span className="env">{envLabel}</span> : null
-  const showHeader = view !== 'new' && view !== 'forecast'
-  const exportLink =
-    (admin && store.mode === 'supabase' && <button className="btn link" onClick={() => go('export')}>Esportazione dati (responsabili)</button>) ||
-    (store.mode === 'demo' && <button className="btn link" onClick={() => go('export')}>Prova l'esportazione CSV</button>) ||
-    null
+  const full = FULL.includes(view)
+  const showHeader = !full && view !== 'forecast'
+  const adminLink = (admin || store.mode === 'demo') && (
+    <button className="btn link" onClick={() => go('admin')}>Area responsabili{store.mode === 'demo' ? ' (prova)' : ''}</button>
+  )
+  const loading = <p className="hint">Caricamento…</p>
 
   return (
     <>
-      {/* su telefono la testata manca in Segnala e Previsioni; su PC c'è sempre, con il menu */}
+      {/* su telefono la testata manca nelle schermate a tutta pagina e in Previsioni; su PC c'è sempre, con il menu */}
       <header className={'top' + (showHeader ? '' : ' desk-only')}>
         <button className="brand" onClick={() => go('home')} aria-label="ApiPro Fioriture – Inizio">
           <img src="./img/brand/apipro-logo.png" alt="ApiPro" height={64} />
         </button>
         {badge}
         <nav className="top-nav" aria-label="Menu principale">
-          {([['home', 'Inizio'], ['forecast', 'Previsioni'], ['mine', 'Le mie'], ['info', 'Info']] as const).map(([v, label]) => (
-            <button key={v} className={view === v || (v === 'mine' && view === 'sites') ? 'on' : ''} aria-current={view === v ? 'page' : undefined} onClick={() => go(v)}>{label}</button>
+          {([['home', 'Inizio'], ['forecast', 'Previsioni'], ['forza', 'Forza alveari'], ['mine', 'Le mie'], ['info', 'Info']] as const).map(([v, label]) => (
+            <button key={v} className={view === v || (v === 'mine' && view === 'sites') || (v === 'forza' && view === 'forza-new') ? 'on' : ''} aria-current={view === v ? 'page' : undefined} onClick={() => go(v)}>{label}</button>
           ))}
         </nav>
         {fc.point && view !== 'forecast' && (
@@ -76,24 +86,27 @@ export default function App() {
             <IconPin /><span>{shortPlace(fc.point.name)}</span>
           </button>
         )}
-        <button className="btn ocra small top-new" onClick={() => go('new')}><IconPlus size={18} /> Segnala</button>
+        <button className="btn ocra small top-new" onClick={() => go('choose')}><IconPlus size={18} /> Segnala</button>
       </header>
 
-      <main className={'wrap' + (view === 'new' ? ' wizard-wrap' : '')}>
+      <main className={'wrap' + (full ? ' wizard-wrap' : '')}>
         {toast && <div className="toast" role="status">{toast}</div>}
 
         {view === 'home' && (
           <Home
             fc={fc}
-            nObs={obs.length}
+            nObs={obs.length + events.length}
             nSites={sites.length}
             onNew={() => go('new')}
             onForecast={() => go('forecast')}
             onMine={() => go('mine')}
             onSites={() => go('sites')}
-            footer={exportLink}
+            onStrength={() => go('forza')}
+            footer={adminLink}
           />
         )}
+
+        {view === 'choose' && <ChooseReport onFlowering={() => go('new')} onEvent={() => go('event')} onStrength={() => go('forza')} />}
 
         {view === 'new' && (
           <NewObservation
@@ -113,28 +126,44 @@ export default function App() {
           />
         )}
 
+        {view === 'event' && (
+          <EventReport store={store} sites={sites} badge={badge} onCancel={() => go('home')}
+            onSaved={async () => { await refresh(); go('home'); flash('Grazie! Segnalazione inviata ✓') }} />
+        )}
+
         {view === 'mine' && (
           <MyObservations
             observations={obs}
+            events={events}
             sites={sites}
-            onNew={() => go('new')}
+            onNew={() => go('choose')}
             onEdit={(o) => { setEditing(o); setView('new'); window.scrollTo(0, 0) }}
             onDelete={async (o) => { await store.deleteObservation(o.id); await refresh(); flash('Segnalazione eliminata') }}
+            onDeleteEvent={async (e) => { await store.deleteEvent(e.id); await refresh(); flash('Segnalazione eliminata') }}
+            onStrength={() => go('forza')}
           />
         )}
         {view === 'sites' && <Sites store={store} sites={sites} onChanged={refresh} />}
-        {view === 'info' && <Info participantId={pid} mode={store.mode} />}
-        {view === 'export' && <Export store={store} />}
+        {view === 'info' && <Info participantId={pid} mode={store.mode} onAdmin={() => go('admin')} />}
         {view === 'forecast' && <Forecast fc={fc} badge={badge} sites={sites} />}
+
+        <Suspense fallback={loading}>
+          {view === 'forza' && <StrengthHome store={store} onNew={() => go('forza-new')} flash={flash} />}
+          {view === 'forza-new' && (
+            <StrengthVisitForm store={store} sites={sites} badge={badge} onCancel={() => go('forza')}
+              onSaved={() => { go('forza'); flash('Stima salvata ✓') }} />
+          )}
+          {view === 'admin' && <Admin store={store} isAdmin={admin || store.mode === 'demo'} onBecameAdmin={() => { setAdmin(true); flash('Accesso responsabili attivo ✓') }} flash={flash} />}
+        </Suspense>
       </main>
 
-      {view !== 'new' && (
+      {!full && (
         <nav className="bottom" aria-label="Menu principale">
           <button className={view === 'home' ? 'on' : ''} aria-current={view === 'home' ? 'page' : undefined} onClick={() => go('home')}><IconHome /><span>Inizio</span></button>
           <button className={view === 'forecast' ? 'on' : ''} aria-current={view === 'forecast' ? 'page' : undefined} onClick={() => go('forecast')}><IconForecast /><span>Previsioni</span></button>
-          <button className="fab" onClick={() => go('new')} aria-label="Segnala una fioritura"><i><IconPlus size={30} /></i></button>
-          <button className={view === 'mine' || view === 'sites' ? 'on' : ''} aria-current={view === 'mine' ? 'page' : undefined} onClick={() => go('mine')}><IconList /><span>Le mie</span></button>
-          <button className={view === 'info' ? 'on' : ''} aria-current={view === 'info' ? 'page' : undefined} onClick={() => go('info')}><IconInfo /><span>Info</span></button>
+          <button className="fab" onClick={() => go('choose')} aria-label="Nuova segnalazione"><i><IconPlus size={30} /></i></button>
+          <button className={['mine', 'sites', 'forza'].includes(view) ? 'on' : ''} aria-current={view === 'mine' ? 'page' : undefined} onClick={() => go('mine')}><IconList /><span>Le mie</span></button>
+          <button className={view === 'info' || view === 'admin' ? 'on' : ''} aria-current={view === 'info' ? 'page' : undefined} onClick={() => go('info')}><IconInfo /><span>Info</span></button>
         </nav>
       )}
     </>

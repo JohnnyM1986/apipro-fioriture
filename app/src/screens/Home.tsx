@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { SpeciesBadge } from '../components/SpeciesBadge'
 import { Meter } from '../components/Meter'
-import { IconPlus } from '../components/Icons'
+import { IconHive, IconPlus } from '../components/Icons'
 import { Istituzionale } from '../components/Istituzionale'
 import { shortSpecies } from '../lib/forecast'
 import type { ForecastState } from '../lib/useForecast'
@@ -14,10 +14,11 @@ interface Props {
   onForecast: () => void
   onMine: () => void
   onSites: () => void
+  onStrength: () => void
   footer?: ReactNode
 }
 
-export function Home({ fc, nObs, nSites, onNew, onForecast, onMine, onSites, footer }: Props) {
+export function Home({ fc, nObs, nSites, onNew, onForecast, onMine, onSites, onStrength, footer }: Props) {
   // in fiore ora, poi le più vicine (le fioriture già finite o non previste non compaiono)
   const near = fc.cards.filter((c) => c.st.key === 'now' || c.st.key === 'before').slice(0, 3)
   return (
@@ -54,6 +55,11 @@ export function Home({ fc, nObs, nSites, onNew, onForecast, onMine, onSites, foo
         <button className="stat" onClick={onMine}><b>{nObs}</b><span>{nObs === 1 ? 'segnalazione inviata' : 'segnalazioni inviate'}</span></button>
         <button className="stat" onClick={onSites}><b>{nSites}</b><span>{nSites === 1 ? 'luogo salvato' : 'luoghi salvati'}</span></button>
       </div>
+      <button className="strength-card" onClick={onStrength}>
+        <span className="ico-tile"><IconHive size={26} /></span>
+        <span><b>Forza degli alveari</b><small>Stima a vista con il metodo dei sesti, per gli apicoltori del progetto</small></span>
+        <span className="chev" aria-hidden="true">›</span>
+      </button>
       </div>
 
       {footer}

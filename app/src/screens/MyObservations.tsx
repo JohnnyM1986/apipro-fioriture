@@ -1,23 +1,64 @@
 import { phaseByCode, speciesById } from '../data/catalog'
 import { PhaseIcon } from '../components/PhaseIcon'
-import type { Observation, Site } from '../lib/types'
+import type { GenericEvent, Observation, Site } from '../lib/types'
+import { IconAlert, IconHive } from '../components/Icons'
+import { eventLabel } from './EventReport'
 import { WARNING_TEXT } from '../lib/validation'
 
 interface Props {
   observations: Observation[]
+  events: GenericEvent[]
   sites: Site[]
   onEdit: (o: Observation) => void
   onDelete: (o: Observation) => void
+  onDeleteEvent: (e: GenericEvent) => void
+  onStrength: () => void
   onNew: () => void
 }
 
-export function MyObservations({ observations, sites, onEdit, onDelete, onNew }: Props) {
-  if (!observations.length)
+const day = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('it-IT')
+
+/** Altre segnalazioni (sciami, morie…) e collegamento alle stime di forza. */
+function OtherReports({ events, onDeleteEvent, onStrength }: Pick<Props, 'events' | 'onDeleteEvent' | 'onStrength'>) {
+  return (
+    <>
+      {events.length > 0 && (
+        <>
+          <h3>Altre segnalazioni ({events.length})</h3>
+          <ul className="obs-list">
+            {events.map((e) => (
+              <li key={e.id}>
+                <span className="ico-tile"><IconAlert size={22} /></span>
+                <div className="obs-body">
+                  <b>{eventLabel(e.event_type)}</b>
+                  <small>{day(e.observed_on)} · {e.lat.toFixed(4)}, {e.lon.toFixed(4)}</small>
+                  {e.note && <small>{e.note}</small>}
+                </div>
+                <div className="obs-actions">
+                  <button className="btn link small" onClick={() => confirm('Eliminare questa segnalazione?') && onDeleteEvent(e)}>Elimina</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <button className="strength-card" onClick={onStrength}>
+        <span className="ico-tile"><IconHive size={26} /></span>
+        <span><b>Le mie stime di forza</b><small>Forza degli alveari con il metodo dei sesti</small></span>
+        <span className="chev" aria-hidden="true">›</span>
+      </button>
+    </>
+  )
+}
+
+export function MyObservations({ observations, events, sites, onEdit, onDelete, onDeleteEvent, onStrength, onNew }: Props) {
+  if (!observations.length && !events.length)
     return (
       <section className="empty">
         <h2>Le mie osservazioni</h2>
         <p>Non hai ancora inviato segnalazioni.</p>
         <button className="btn" onClick={onNew}>Nuova segnalazione</button>
+        <OtherReports events={events} onDeleteEvent={onDeleteEvent} onStrength={onStrength} />
       </section>
     )
   return (
@@ -45,6 +86,7 @@ export function MyObservations({ observations, sites, onEdit, onDelete, onNew }:
           )
         })}
       </ul>
+      <OtherReports events={events} onDeleteEvent={onDeleteEvent} onStrength={onStrength} />
     </section>
   )
 }
